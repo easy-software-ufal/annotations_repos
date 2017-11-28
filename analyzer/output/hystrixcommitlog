@@ -1,0 +1,114 @@
+commit 338aadca7ece5a8bda30ae20791693404d2840cc
+Merge: 4262904 717f13b
+Author: Matt Jacobs <mattrjacobs@gmail.com>
+Date:   Tue May 16 11:18:31 2017 -0700
+
+    Merge pull request #1584 from mattrjacobs/add-javanica-support-for-allow-maximum-size-to-diverge-from-core-size
+    
+    Added Javanica support for setting allowMaximumSizeToDivergeFromCoreSize in an annotation
+
+commit 717f13bcb100480ecc4f8f5cf95a7296af9dabb8
+Author: Matt Jacobs <mattrjacobs@gmail.com>
+Date:   Tue May 16 10:58:40 2017 -0700
+
+    Added Javanica support for setting allowMaximumSizeToDivergeFromCoreSize in annotation
+
+commit 2ad0baa6083f2aae3a21d10e723693a9966a90c6
+Merge: bfa5ba0 df5b5b3
+Author: Matt Jacobs <mattrjacobs@gmail.com>
+Date:   Tue May 9 16:06:58 2017 -0700
+
+    Merge pull request #1572 from dmgcodevil/iss1565
+    
+    1565: Set maximumSize using @HystrixCommand annotation
+
+commit df5b5b36ba2a80fb6e67616a3609193428536a62
+Author: dmgcodevil <dmgcodevil@gmail.com>
+Date:   Mon May 8 21:48:55 2017 -0400
+
+    1565: Set maximumSize using @HystrixCommand annotation
+
+commit cb2767fe02a1cedf5296d6e45a72b596c5e21b39
+Author: dmgcodevil <dmgcodevil@gmail.com>
+Date:   Mon Feb 20 17:38:15 2017 -0500
+
+    iss1458: added sanity checker for the method that detects point cut type by method annotations
+
+commit f918595cf2fed44c9e1706abe4b55d73d80f31e9
+Merge: 3bfe053 584deb0
+Author: Matt Jacobs <mattrjacobs@gmail.com>
+Date:   Wed Jul 6 16:17:02 2016 -0700
+
+    Merge pull request #1259 from dmgcodevil/iss993
+    
+    iss993: added DefaultProperties annotation [ready for review]
+
+commit 9a56749f88a6adb419ace651403db1894f1fe140
+Author: dmgcodevil <dmgcodevil@gmail.com>
+Date:   Tue Jun 28 23:21:35 2016 -0400
+
+    iss993: added the following properties in DefaultProperties annotation: groupKey, threadPoolKey, commandProperties, threadPoolProperties
+
+commit ea27ba14a08c3b35810746b0a79fbfcb11ffbc75
+Author: dmgcodevil <dmgcodevil@gmail.com>
+Date:   Sun Jun 26 23:40:28 2016 -0400
+
+    iss993: added DefaultProperties annotation [initial commit]
+
+commit bf56d9036e77f2425f62096bd906dabb76f11099
+Merge: 7d3afbf fe962df
+Author: Matt Jacobs <mattrjacobs@gmail.com>
+Date:   Sun May 22 20:36:20 2016 -0700
+
+    Merge pull request #1210 from mebigfatguy/master
+    
+    no need to fetch the method's parameter annotations, if there aren't any
+
+commit fe962dfdb92d77656f309b2428c9223831e38289
+Author: Dave Brosius <dbrosius@mebigfatguy.com>
+Date:   Sat May 21 18:05:20 2016 -0400
+
+    no need to fetch the method's parameter annotations, if there aren't any.
+
+commit 66505b8b87243f7d43947d6f93369400f1e8b1c5
+Merge: 4286cd1 9b5e5c0
+Author: Matt Jacobs <mattrjacobs@gmail.com>
+Date:   Mon Mar 21 10:41:02 2016 -0700
+
+    Merge pull request #1154 from fcalderonnearsoft/master
+    
+    Removed methods and variables with unused annotation
+
+commit 1103a558ac1a2c52359811d40462c9bff402103f
+Author: fernando <fcalderon@nearsoft.com>
+Date:   Wed Mar 16 22:44:00 2016 -0700
+
+    Removed methods and variables with unused annotation
+
+commit bda7a6b35775405402c8a7cc95f0c5d2b3ac1ae7
+Author: dmgcodevil <dmgcodevil@gmail.com>
+Date:   Sat Jan 10 20:35:03 2015 +0300
+
+    iss380: remove cacheKeyMethod from HystrixCommand annotation
+
+commit 9caa979c2f65d5a253dfe3cb7aedf06596d7c0f9
+Author: dmgcodevil <dmgcodevil@gmail.com>
+Date:   Mon Jan 5 23:06:26 2015 +0300
+
+    #iss380: If no CacheKey annotation exists then all parameters are included
+
+commit 020b8d9a7ab7b28ac25f5e0f332e64b38f228630
+Merge: 62ac93f 9acbd36
+Author: Ben Christensen <benjchristensen@gmail.com>
+Date:   Sat Nov 8 21:18:49 2014 -0800
+
+    Merge pull request #326 from yuhanz/master
+    
+    Added supports for setting threadPoolProperties through @HystrixCommand annotation
+
+commit ebead68e0ad3246121326b6119bbe134bfbdfeef
+Author: Zhang Yuhan <yzhang@yzhang-mbp113.edmunds.hq>
+Date:   Fri Oct 17 23:44:50 2014 -0700
+
+    To define threadPoolProperties from @HystrixCommand annotation
+

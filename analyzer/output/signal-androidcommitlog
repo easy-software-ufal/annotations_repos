@@ -1,0 +1,38 @@
+commit 962944a974c28d656fda39f9dcbd7e6dd3adcf2e
+Author: Moxie Marlinspike <moxie@thoughtcrime.org>
+Date:   Sun Sep 10 11:21:51 2017 -0700
+
+    Add some annotations
+    
+    // FREEBIE
+
+commit 77fb2f520f7ab6f388284b6507b90d36f80c9853
+Author: Moxie Marlinspike <moxie@thoughtcrime.org>
+Date:   Fri Feb 12 12:47:05 2016 -0800
+
+    Add nullable annotation to Recipient contact URI
+    
+    // FREEBIE
+
+commit 5fe7c687f36ebd7a2f800d07448735c47407d487
+Author: Rhodey Orbits <rhodey@anhonesteffort.org>
+Date:   Mon Jun 1 21:44:10 2015 -0700
+
+    1) renamed test build type to 'debugTest' because updated gradle
+    plugin doesn't allow build types to start with 'test'.
+    
+    2) exclude support-annotations to avoid warning
+    
+    Closes #3273
+    // FREEBIE
+
+commit 141ee6565dfffd4b6cf42a17c9547769e72968fd
+Author: Jake McGinty <me@jake.su>
+Date:   Mon Mar 30 12:34:57 2015 -0700
+
+    add @Nullable annotation to outoging mms api
+    
+    Closes #2830
+    
+    // FREEBIE
+

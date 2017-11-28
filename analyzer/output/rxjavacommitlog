@@ -1,0 +1,471 @@
+commit 6a44e5d0543a48f1c378dc833a155f3f71333bc2
+Author: Zac Sweers <pandanomic@gmail.com>
+Date:   Sun Nov 19 02:39:00 2017 -0800
+
+    2.x: Implement as() (#5729)
+    
+    * Implement Observable.as()
+    
+    * Implement Single.as()
+    
+    * Implement Maybe.as()
+    
+    * Implement Flowable.as()
+    
+    * Implement Completable.as()
+    
+    * Add Experimental annotations
+    
+    * Add throws doc
+    
+    * Fix docs and validation errors
+    
+    * Add @since 2.1.7 - experimental
+    
+    * ParallelFlowable.as()
+    
+    * Start ConverterTest
+    
+    * Fix tests and update validator
+    
+    * Remove exceptions from signatures
+    
+    * Remove exception signature from implementations
+    
+    * Assert the full execution of extend() tests
+    
+    * Use test() helpers
+
+commit e1cb606ab23590c6537af7f6c53dd72d01618dc1
+Author: Peter Hewitt <peter@hewittsoft.com>
+Date:   Mon Oct 9 04:44:35 2017 -0400
+
+    2.x Add concatMapCompletable() to Observable (#5649)
+    
+    * Initial implementation of Observable.concatMapCompletable()
+    
+    * Update serialVersionUID
+    
+    * Fix javadoc and verify prefetch is positive
+    
+    * Put back auto-changed whitespace
+    
+    * Put back more whitespace intellij is removing
+    
+    * More javadoc fixes
+    
+    * switch from testng to junit
+    
+    * Add experimental annotation and change prefetch to capacityHint
+
+commit c43229b6793a698c03293cd35b7c8516029ef02b
+Author: Boris Maslakov <b.maslakov@gmail.com>
+Date:   Mon Sep 4 15:28:23 2017 +0300
+
+    implement Maybe.switchIfEmpty(Single) (#5582)
+    
+    * implement Maybe.switchIfEmpty(Single)
+    
+    * switchIfEmpty(Single) returns single; remove all changes unrelated to the PR
+    
+    * add 'experimental' annotation
+
+commit 5d6ac534b3af7b885c2e0f877bdffdbef020e85a
+Author: Nicklas Ansman Giertz <nicklas@ansman.se>
+Date:   Wed Jun 28 10:43:24 2017 +0200
+
+    Remove the @NonNull annotation from Function (#5449)
+    
+    As per per the discussion in #5447
+
+commit 4c19753714d7f53f4d78e2b07d56e65732c2adbe
+Author: Nicklas Ansman Giertz <nicklas@ansman.se>
+Date:   Tue Jun 27 15:11:09 2017 +0200
+
+    Remove @NonNull annotation in Consumer method parameter (#5447)
+    
+    This fixes #5442
+
+commit 7bfa6c0ccf12de0234b5b56ea6fcbe702a5a7618
+Author: Mahach Imangazaliev <mahach.imangazaliev@mail.ru>
+Date:   Mon Apr 3 10:25:18 2017 +0300
+
+    Fixed broken links (#5262)
+    
+    Fixed broken links for @Beta and @Experimental annotations
+
+commit 83d1a4f4eb66fbf6e2afd6045f96e31ced6aedfc
+Author: Bloder <aptgetinstalldanielleme@gmail.com>
+Date:   Sun Apr 2 05:46:55 2017 -0300
+
+    Remove @NonNull annotations in BiConsumer (#5257)
+
+commit fa58d36375ecc084b21bca299ca4780946b15dc5
+Author: Michael <mibac138@users.noreply.github.com>
+Date:   Sat Apr 1 21:11:23 2017 +0200
+
+    More nullability annotations (#5251)
+    
+    * More nullability annotations
+    
+    * Refactored imports
+    
+    * Changes based on akarnokd's review
+    
+    * A few more annotations
+    
+    * Changes based on akarnokd's 2nd review
+
+commit 851de4154895d899577ce69b13585c26eb96cf84
+Author: Jihong Park <ggikko88@gmail.com>
+Date:   Mon Mar 27 01:49:39 2017 +0900
+
+    Add TimeUnit null check test case in Timed (#5231)
+    
+    * Add TimeUnit null check test case in Timed
+    
+    * Correct ugly formatting in BasicIntQueueDisposable
+    
+    * Reformatting line
+    
+    * Add blockingIterable’s negative buffer size fail test
+    
+    * Modify BlockingMultiObserver field’s modfier to private
+    
+    * revert style, modifier
+    
+    * Remove duplicated test case.
+    
+    * Remove no need annotation and variable
+
+commit 7df3e3ccc4ca6b2378f6e19039ed887034dc9496
+Author: Niklas Baudy <niklas.baudy@vanniktech.de>
+Date:   Sun Mar 19 16:17:51 2017 +0100
+
+    2.x: Add a few more @Nullable & @NonNull annotations to public interfaces. (#5196)
+
+commit 70922a6a4f7093cb7c924e91a1edf966bd0071c0
+Author: Dávid Karnok <akarnokd@gmail.com>
+Date:   Tue Feb 21 22:37:45 2017 +0100
+
+    2.x cleanup: add missing override annotations.
+
+commit b5c0fb8ad821f7faaeb9d3b140b03eddf0cf9a6c
+Author: Johannes Schneider <js@cedarsoft.com>
+Date:   Fri Feb 3 17:41:33 2017 +0100
+
+    2.x: Feature/#4876 more null checks (#5055)
+    
+    * add NotNull annotations
+    add assertion to help static code analysis
+    
+    * avoid false positive
+    
+    * add annotations and assert statement to help static code analysis
+    
+    * remove redundant check
+    
+    * mark parameter as nullable
+    
+    * add test to reproduce npe
+    
+    * add null check for avoid npe
+    
+    * parameter time unit marked as @NonNull
+    
+    * add annotations and assert to help static code analysis
+    
+    * remove assert statements
+    
+    * add missing annotation
+    
+    * add comment for test case
+
+commit e5d3b0e1de992719c88766558c4b5ad21a8725ba
+Author: Johannes Schneider <js@cedarsoft.com>
+Date:   Fri Feb 3 12:18:17 2017 +0100
+
+    add nullable annotation to simple queue (fixes #5053) (#5054)
+
+commit 87208280d40ee23ab5499b08c5664dc1826d5c3a
+Author: Johannes Schneider <js@cedarsoft.com>
+Date:   Fri Feb 3 11:29:34 2017 +0100
+
+    Feature/#4876 nonnull annotations (#5051)
+    
+    * add @Nullable annotations to RxJavaPlugins
+    
+    * add @NonNull annotations to schedulers
+    
+    * javadoc for NonNull/Nullable annotations
+
+commit f38eb995d3f3a1a45c31f160c0fa61d233fde740
+Author: David Karnok <akarnokd@gmail.com>
+Date:   Sat Jan 7 09:45:06 2017 +0100
+
+    2.x: add strict() operator for strong RS conformance (#4966)
+    
+    * 2.x: add strict() operator for strong RS conformance
+    
+    * Fix javadoc and annotation
+
+commit baa00f7f8bad0e9849b32245aadbcb1b09dea317
+Author: Niklas Baudy <niklas.baudy@vanniktech.de>
+Date:   Sat Nov 26 13:41:37 2016 +0100
+
+    Add CheckReturnValue annotation (#4881)
+    
+    * Add CheckReturnValue method
+    
+    * Add annotation to more methods
+    
+    * Java 6 Compatibility
+
+commit 58fb5660c74b27ff246ae3fb59ea347e6049d06b
+Author: Niklas Baudy <niklas.baudy@vanniktech.de>
+Date:   Sun Sep 25 19:42:05 2016 +0200
+
+    2.x: Add missing @Test annotation on tests (#4597)
+    
+    * 2.x: Add missing @Test annotation on tests
+    
+    * Fix test
+
+commit ebec0b29e283130345a96417d19c43c0be6e2c1c
+Author: David Karnok <akarnokd@gmail.com>
+Date:   Mon Sep 12 08:40:25 2016 +0200
+
+    2.x: add Maybe operators, add annotation and source code checker tests (#4528)
+
+commit 176346a8adce3ce1a2eccfd7eb5f6e4305e51587
+Author: Dimitar Asenov <dimitar.asenov@gmail.com>
+Date:   Tue Aug 16 20:00:12 2016 +0200
+
+    Add missing @Test annotation (#4358)
+
+commit 287286e39fcdda7198d91b38184203537e794a9b
+Author: Jake Wharton <jakewharton@gmail.com>
+Date:   Tue Jun 21 18:16:17 2016 -0400
+
+    Convert SchedulerSupport annotation to accept a string value. (#4053)
+
+commit b80a051b9791ed83928ac2ee74b5c987fd65abae
+Author: akarnokd <akarnokd@gmail.com>
+Date:   Wed Sep 9 15:16:13 2015 +0200
+
+    2.x: disposable unit tests + fix to RefCountDisposable behavior
+    
+    + sorted `Observable` and added `@BackpressureSupport` and
+    `SchedulerSupport` annotations.
+    + created `@Beta` and `@Experimental` annotations, nothing is marked
+    with them because I intent everything to be standard at this point.
+
+commit f036cd0e6ee1832169b793814a8fdd35165fd852
+Merge: afbd89a 18a47ea
+Author: David Karnok <akarnokd@gmail.com>
+Date:   Thu Jul 23 15:12:19 2015 +0200
+
+    Merge pull request #3077 from ReactiveX/PLP
+    
+    Add "since" annotations to javadocs for new Experimental/Beta methods
+
+commit 3deba11f33e8cdca2fd7b84d8acc14ec26e41c99
+Author: David Gross <davgross@netflix.com>
+Date:   Tue Jul 14 13:23:54 2015 -0700
+
+    Add "since" annotations to javadocs for new Experimental/Beta methods
+
+commit 6e3e344e47f24ccb8fcd5e6a51a11481d459ef77
+Merge: 9549363 11a4157
+Author: Ben Christensen <benjchristensen@gmail.com>
+Date:   Mon Jul 13 14:03:41 2015 -0700
+
+    Merge pull request #3069 from ReactiveX/PLP
+    
+    Improve toSingle() javadoc (diagram, see also, since-annotation)
+
+commit 11a4157a55b2f6dc5071f65a082b1f4a149c88cd
+Author: David Gross <davgross@netflix.com>
+Date:   Thu Jul 9 08:12:22 2015 -0700
+
+    Improve toSingle() javadoc (diagram, see also, since-annotation)
+
+commit 5e41b0482d071efa9f7d86ad5b4589dc815ad72c
+Author: David Gross <davgross@netflix.com>
+Date:   Wed Apr 29 14:00:02 2015 -0700
+
+    Javadocs: adding @since annotations to new public methods, cleaning up Subject javadocs a bit
+
+commit 00e58f40b52837e875a8cfd6dabdca48b44a24bc
+Author: David Gross <davgross@netflix.com>
+Date:   Tue Mar 17 10:09:38 2015 -0700
+
+    javadocs: adding @since annotation; adjusting failed @link targets to @code
+
+commit dded0d2f3d7e4b715040f5a588cb2d709cad9493
+Author: David Gross <davgross@netflix.com>
+Date:   Sun Feb 22 11:43:05 2015 -0800
+
+    javadocs: withLatestFrom diagram, @since annotations, standardize on formatting and terminology, add compiler nags for missing content
+
+commit 844cc95842cbdcfc54fd00a87f8f4e8f5b552312
+Author: akarnokd <akarnokd@gmail.com>
+Date:   Thu Feb 19 13:43:47 2015 +0100
+
+    Experimental annotation.
+
+commit bc1ed77ad777c068fe7d2731a1067c7127a4af20
+Author: David Gross <davgross@netflix.com>
+Date:   Thu Feb 12 10:28:46 2015 -0800
+
+    javadocs: adding (+ correcting one) @since annotations
+
+commit f67f97c914e7e0c33617fd7e3d37256de56c429d
+Author: David Gross <davgross@netflix.com>
+Date:   Wed Feb 11 15:25:22 2015 -0800
+
+    javadocs: add @since annotations to new methods; fix formatting, polish wording for new Subscriber constructor
+
+commit 8937c6083c6000c4d610fc4f6b5172291dbc81dd
+Author: David Gross <davgross@netflix.com>
+Date:   Wed Feb 4 10:49:58 2015 -0800
+
+    add @since annotation to javadocs for new takeUntil variant
+
+commit 4b4bea248558005100bd9774e38b573bf7fcbc86
+Author: akarnokd <akarnokd@akarnokd-PC2>
+Date:   Wed Feb 4 19:18:09 2015 +0100
+
+    Added experimental annotation, using propagate.
+
+commit e382e7ec62e8b87fe61403e5a0726c2f443d411e
+Author: David Gross <davgross@netflix.com>
+Date:   Tue Feb 3 09:08:31 2015 -0800
+
+    add @since annotation to new operator (also: remove "Beta" section as it's been moved from Beta to Experimental status)
+
+commit 9544c6aa6416bd4686615af330e019d84e8d1aaf
+Author: akarnokd <akarnokd@gmail.com>
+Date:   Wed Jan 21 09:15:30 2015 +0100
+
+    Added experimental annotations
+
+commit da987ed17e9b0dae68d382ec04e616a55e6e4ce2
+Author: David Gross <davgross@netflix.com>
+Date:   Mon Dec 15 12:03:48 2014 -0800
+
+    javadocs: minor style, grammar changes; add @since annotation to new method
+
+commit eb8254ebaf9a865cd3a91d08b9d6a3f319696e2d
+Merge: 702a8d3 04c0698
+Author: Ben Christensen <benjchristensen@gmail.com>
+Date:   Sat Nov 29 13:44:49 2014 -0800
+
+    Merge pull request #1905 from benjchristensen/lifecycle-annotations
+    
+    Beta & Experimental Annotations
+
+commit 04c06988a78f064f2f2bb01eb54714dabc188f53
+Author: Ben Christensen <benjchristensen@netflix.com>
+Date:   Sat Nov 29 12:32:37 2014 -0800
+
+    Beta & Experimental Annotations
+    
+    See https://github.com/ReactiveX/RxJava/issues/1824
+
+commit a45fa0c4a76bd4e90fce800bb96510a6553712f2
+Author: Ben Christensen <benjchristensen@gmail.com>
+Date:   Sat Nov 29 12:17:21 2014 -0800
+
+    Version and Lifecycle Annotations
+    
+    Use of annotations for lifecycle are inspired by Guava: https://github.com/google/guava#important-warnings
+
+commit 3dc4a310cf0450b414d74afb64946b31d64a0a95
+Author: David Gross <davgross@netflix.com>
+Date:   Mon Nov 17 12:17:30 2014 -0800
+
+    javadocs: remove leftover "@since" annotations; add param description
+
+commit d4ffe9582b25a749a6c60b9bd7b83a2e5e2901c3
+Merge: e976af1 1b0ccc8
+Author: Ben Christensen <benjchristensen@gmail.com>
+Date:   Wed Oct 15 08:38:45 2014 -0700
+
+    Merge pull request #1757 from akarnokd/Cleanup_Override_n_SuppressWarnings
+    
+    Cleanup: added missing annotations, removed unnecesary annotations
+
+commit 1b0ccc85100749f3b377ce1dc09c2bd901508222
+Author: akarnokd <akarnokd@gmail.com>
+Date:   Wed Oct 15 10:21:07 2014 +0200
+
+    Cleanup: added missing annotations, removed unnecesary annotations
+
+commit a7953e6e2adc9c7616acdace344673f8c10f67be
+Author: David Gross <davgross@netflix.com>
+Date:   Thu Jul 31 09:00:55 2014 -0700
+
+    add "@since 0.20" annotation to new multicast() variant
+
+commit e6832d28ae79acdca4d420c39e309ad5741e24d7
+Author: David Gross <davgross@netflix.com>
+Date:   Wed Jul 23 11:54:18 2014 -0700
+
+    adding @since annotations, a few other touch-ups to javadocs of new operators
+
+commit 0f6dd5a3a21c3e0034282b9d8a49dd423902513e
+Author: David Gross <davgross@netflix.com>
+Date:   Tue Jul 22 08:54:37 2014 -0700
+
+    remove javadoc warnings from cache(); add @since annotation to cache(b)
+
+commit 83f78c46f2781da37bca071f841bc507e1d8d916
+Author: David Gross <davgross@netflix.com>
+Date:   Thu Jun 12 11:38:43 2014 -0700
+
+    add @since annotations to javadocs of new ...With() instance variants
+
+commit 37bdda4f1ce65c3d0a8b3f0e739a8d5ce9393a08
+Author: David Gross <davgross@netflix.com>
+Date:   Fri May 30 11:32:00 2014 -0700
+
+    add annotations about default schedulers to javadocs for Observable operators
+
+commit 566e89282fe687a66571b6fe6c9a362f98238ee7
+Author: David Gross <davgross@netflix.com>
+Date:   Tue May 20 11:23:56 2014 -0700
+
+    Adding another @since annotation to the toBlocking() javadocs
+
+commit 6b60a4a75f52df4db1dd8c42499ed259eec3643a
+Author: David Gross <davgross@netflix.com>
+Date:   Tue May 20 11:18:52 2014 -0700
+
+    adding @since javadoc annotation to new methods
+
+commit e36e7174773a9e5d5895e8259d1f3e52bc6b4892
+Author: Ben Christensen <benjchristensen@netflix.com>
+Date:   Mon Jan 6 12:08:22 2014 -0800
+
+    Deprecate multiple arity ‘from’
+    
+    - added @Deprecated annotations where it was only part of the Javadoc
+    - deprecated ‘where’ which is a duplicate of `filter` kept from early days matching Rx.Net
+
+commit 9d48d219963045d9e678fc65664bca33e8296dfa
+Author: Mairbek Khadikov <mkhadikov@gmail.com>
+Date:   Fri Apr 12 17:44:23 2013 +0300
+
+    Removed annotation
+
+commit 256e083db75403aba4f792d58bdeef61c5fbbb05
+Author: Ben Christensen <benjchristensen@netflix.com>
+Date:   Wed Mar 27 16:33:31 2013 -0700
+
+    Remove use of JSR 305 and dependency on com.google.code.findbugs
+    
+    https://github.com/Netflix/RxJava/issues/192
+    
+    The library and annotations were being used for trivial reasons so removing the usage so we don't have the dependency.
+

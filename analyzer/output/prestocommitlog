@@ -1,0 +1,555 @@
+commit 377f68c0f979a4cb13cf9c3717cd81245d75f4df
+Author: David Phillips <david@acz.org>
+Date:   Mon Oct 30 07:17:27 2017 -0700
+
+    Use correct non-null annotation in client
+
+commit 3001e941417a8f12da5a5f7474a376b9380017ed
+Author: Wenlei Xie <wenlei.xie@gmail.com>
+Date:   Sat Sep 2 14:09:58 2017 -0700
+
+    Minor typo fix in TestAnnotationEngineForScalars
+
+commit 816364a92ed4e820dfa913544a86a71cfc9fd044
+Author: David Phillips <david@acz.org>
+Date:   Mon Jul 24 10:24:45 2017 -0700
+
+    Remove trailing comma for annotation arrays
+    
+    The Checkstyle Indentation rule does not handle this properly.
+
+commit 3030ab66d4c9610ec85efdc762180c663e953cde
+Author: Andrzej Fiedukowicz <Andrzej.Fiedukowicz@teradata.com>
+Date:   Thu Jul 20 11:27:53 2017 -0700
+
+    Refactor in Annotation based functions
+    
+    The main goals here are:
+     * Allow all applicable annotation syntax from ParametricScalar
+       to ParametricAggregates
+     * Align two versions of parallel annotations engines where possible,
+       extract whatever they have in common, to avoid desync of annotation
+       syntax in future
+     * Use newly created syntax to simplify existing aggregates implementations,
+       namely MIN/MAX
+     * Add tests to annotation engine
+    
+    Out of scope TODO:
+     * Separate parsing and validation code. Currently checking if functions
+       are properly defined is mixed with parsing procedures. It would be much
+       cleaner to separate that, especially as there are lots of checks there
+       and we cannot even read those contracts easily.
+     * `@IsNull` support in aggregates (i.e. extracting that to common
+       scalar/aggregates code).
+     * Support for constructor based injections in annotations
+     * Support for specialized aggregates implementations
+
+commit 40fa566fac23b71d5f69f40a95a34c00cef52c07
+Author: Min(Dongmin Yu) <miniway@gmail.com>
+Date:   Fri Jun 30 17:39:44 2017 +0900
+
+    Add missing JsonCreator annotation
+
+commit 286cff598f5ea4c2576c8edaa6422d0fb4b3a4a9
+Author: Haozhun Jin <haozhun.jin@gmail.com>
+Date:   Wed Jun 28 10:32:11 2017 -0700
+
+    Fix NoClassDefFound for annotation based non-static scalar functions
+    
+    At query execution time, projection/filter do not have access to classes
+    defined in plugins. As a result, Object type (instead of the actual
+    classes) must be used.
+
+commit 538ac1ac9dc273a907d943f68770e73cee8ad498
+Author: James Sun <jamessun@fb.com>
+Date:   Wed Mar 29 17:58:29 2017 -0700
+
+    Allow TypeParameters with concrete types in ScalarImplementation
+    
+    When a TypeParameter is used in a scalar function, it has to be
+    annotated. This disallow some concrete types to be passed in to a
+    function, e.g.: array(map(varchar, integer)). This patch relaxes the
+    restriction by allows StandardTypes to be used in a signature without
+    annotation.
+
+commit cbdc0b3c746c418d759dabeadf2c523b95a6b443
+Author: Vinoth Chandar <vinoth@uber.com>
+Date:   Wed Jan 4 10:42:26 2017 -0800
+
+    Enable FileSplits to be obtained directly from InputFormat
+    
+    The getSplits() method of the InputFormat will be called if the
+    InputFormat is annotated with an annotation named
+    @UseFileSplitsFromInputFormat.
+
+commit 2a26cecb64feb14fffa420d2358337db122a4151
+Author: Andrzej Fiedukowicz <Andrzej.Fiedukowicz@teradata.com>
+Date:   Mon Oct 17 18:32:12 2016 +0200
+
+    Add AggregationState annotation to avoid hardcoded 0 index
+
+commit 1f0bbb24eb9de649bd80340dcae67de06fafa0e8
+Author: Piotr Nowojski <piotr.nowojski@teradata.com>
+Date:   Thu Nov 24 09:42:00 2016 +0100
+
+    Fix missing @Override annotation in presto-main
+
+commit 4b5a3d1646e15620267f0a3fcaf55e7ea210b55f
+Author: Dain Sundstrom <dain@iq80.com>
+Date:   Thu Oct 20 10:26:21 2016 -0700
+
+    Remove incorrect @NotNull annotation from Metadata
+    
+    None of the methods on Metadata return null, and the code was
+    using the validation constrint @NotNull annotation.
+
+commit d6322db37f3f25d05aef4e6230e526f4ec2f9907
+Author: Lukasz Osipiuk <lukasz@osipiuk.net>
+Date:   Fri Aug 26 17:00:37 2016 +0200
+
+    Make Constraint annotation repeatable
+
+commit 2754aaa65ca8d5b84f2cdca73eb8e23dc1230489
+Author: Wojciech Biela <Wojciech.Biela@teradata.com>
+Date:   Tue Feb 2 11:00:05 2016 +0100
+
+    Avg aggregate function for decimal(p,s)
+    
+    This is the first of the aggregate functions for parametric types.
+    Implemented using the "old" way, via specialize() not annotations, since
+    that "new" mechanism doesn't support parametric types for aggregates
+    yet. Probably to be refactored after improving latter.
+    
+    This implementation follows the other aggregate functions implementation
+    patterns (like having the state object initialized in the function, etc).
+    
+    The return value of the "avg" function is a decimal with the scale and
+    precision of the input column. The implementation uses a BigInteger
+    internally as the accumulator.
+
+commit 7c92b1e6ed8438d597fae68f8d8c2a94c5c81c4e
+Author: Yang Yang <geraint0923@gmail.com>
+Date:   Tue Jun 21 17:38:37 2016 -0700
+
+    Add @IsNull for scalar function
+    
+    @IsNull annotation will help the scalar functions determine if the input
+    arguments are null without using the boxed type.
+
+commit a388a620dade0b9160381c4587ac2d2d497e6050
+Author: Grzegorz Kokosiński <Grzegorz.Kokosinski@Teradata.com>
+Date:   Mon Aug 29 12:37:04 2016 +0200
+
+    Add missing @Test annotation for test method
+
+commit aaf01fde3438ce9307a1fa6b237648a4b8038500
+Author: Min(Dongmin Yu) <miniway@gmail.com>
+Date:   Wed Aug 24 12:46:05 2016 +0900
+
+    Add missing JsonCreator annotation
+
+commit 6844f59b7c34c68ebf7b023557d25ac4d48f82f8
+Author: Piotr Nowojski <piotr.nowojski@teradata.com>
+Date:   Thu Aug 25 12:34:37 2016 +0200
+
+    Remove ThreadSafe annotation from OperatorContext and DriverContext
+
+commit a557b1dddb389f2ed6e35c534ca6e9f3a50aaf8f
+Author: David Phillips <david@acz.org>
+Date:   Fri Aug 19 11:39:09 2016 -0700
+
+    Hide all non-annotation Jackson classes from plugins
+    
+    This hides classes in other packages like "datatype".
+
+commit e31c5a4ea4686f2ace2bf9998c914352e0178092
+Author: David Phillips <david@acz.org>
+Date:   Fri Aug 19 12:36:19 2016 -0700
+
+    Remove non-annotation Jackson dependencies from SPI
+
+commit cb6b5f9fc070d3b321eaf5ece13f72223956149f
+Author: Raghav Sethi <raghavsethi@fb.com>
+Date:   Tue May 24 17:26:46 2016 -0700
+
+    Change to only jackson.annotations being provided
+    
+    Also removed unused dependencies from plugins.
+
+commit 11fca35e922d762c248a612a2f0594985cf61cbe
+Author: Maciej Grzybek <maciej.grzybek@teradata.com>
+Date:   Tue Jul 19 08:28:09 2016 -0400
+
+    Remove @IntermediateInputFunction annotation
+
+commit 10ea3576f9a92d7e8e387ed7a74c91a6232f7ffa
+Author: Maciej Grzybek <maciej.grzybek@teradata.com>
+Date:   Thu Jul 14 16:34:27 2016 -0400
+
+    Remove @IntermediateInputFunction annotation in functions
+    
+    This removes @IntermediateInputFunction annotation providing @CombineFunction instead.
+    This covers functions:
+     * BooleanAndAggregation
+     * BooleanOrAggregation
+     * CustomSum
+     * DoubleSumAggregation
+     * LongSumAggregation
+    
+    Missing MergeHyperLogLogAggregation will be covered in next commits because it misses testing.
+    
+    This is a prerequisite to remove @IntermediateInputFunction annotation entirely.
+
+commit 86914b7b1546850df0889c42c77aeaa0690eb706
+Author: David Phillips <david@acz.org>
+Date:   Sun Jul 10 22:53:55 2016 -0700
+
+    Minor improvements to scalar annotations validation
+
+commit afae204dbe67bdf06f8e62e9dd9b08d629a4523f
+Author: David Phillips <david@acz.org>
+Date:   Sun Jul 10 22:04:00 2016 -0700
+
+    Move function annotations into SPI
+
+commit 0ad8c14df9386063f630c7aac3238f9e8e9ae005
+Author: David Phillips <david@acz.org>
+Date:   Sat Jul 9 22:34:13 2016 -0700
+
+    Add annotations for registering window functions
+
+commit 4fe60a2dfa6793c1bc27ecdf18aebc907a00ecb0
+Author: David Phillips <david@acz.org>
+Date:   Fri Jul 8 09:47:25 2016 -0700
+
+    Fix warnings in ScalarFromAnnotationsParser
+
+commit 60b96626bea0f842b4ffe72cef140c8099f0533d
+Author: Andrzej Fiedukowicz <Andrzej.Fiedukowicz@teradata.com>
+Date:   Tue May 24 15:06:33 2016 +0200
+
+    Move annotation classes to annotations package
+
+commit b72cb0d0a1b31e404df8272d09c1ed9d3fd0ca1a
+Author: Andrzej Fiedukowicz <Andrzej.Fiedukowicz@teradata.com>
+Date:   Thu Jun 30 18:36:51 2016 +0200
+
+    Extract annotation parser classes from ReflectionParametricScalar
+    
+    Parsing annotations is not strictly part of SqlScalar specialization
+    behavior. This is why it was moved to external class, so it can be reused
+    in other contexts if required.
+    
+    ReflectionParametricScalar was renamed to ParametricScalar as it is
+    no longer bounded to its origin.
+
+commit a0a2c125cf3615575ad90975a80273c826b83f6f
+Author: Andrzej Fiedukowicz <Andrzej.Fiedukowicz@teradata.com>
+Date:   Fri Jul 1 10:56:17 2016 +0200
+
+    Extract ScalarHeader class to cover basic scalar properties
+    
+    The class ScalarHeader that can be created from element annotations
+    and keeps track of basic function informations like:
+     - isHidden boolean
+     - isDeterministic boolean
+     - description
+    
+    Additionaly ScalarImplementationHeader was defined to keep track
+    of all informations including name before Signature is created
+    (for the time of Implementation parsing process).
+    
+    ScalarHeader is not part of Signature it is container for
+    informations about function that are not part of Signature
+    but are required for presto to perform some operations on function.
+    
+    The ScalarHeader class may and should be reused in other SqlScalarFunction
+    based classes to keep things smooth and compact but it is not done
+    as part of this refactoring.
+
+commit 9f1725bca2a1d755e9d47dc4711176021a50919a
+Author: Andrzej Fiedukowicz <Andrzej.Fiedukowicz@teradata.com>
+Date:   Fri May 20 19:43:15 2016 +0200
+
+    Add example usage of fixed Description annotation in aggregations
+
+commit 52763d6f0a97a8df791f95b43be4aab783fe6de4
+Author: Andrzej Fiedukowicz <Andrzej.Fiedukowicz@teradata.com>
+Date:   Tue Apr 26 19:44:31 2016 +0200
+
+    Make FunctionRegisty to use bindable aggregate functions
+    
+    Update aggregation functions to use parametrized varchar
+    
+    Extract BindableAggregationFunction class.
+    
+    Remove AnnotationBasedSqlAggregationFunction.
+
+commit 19e10e0020aaa86ab40619ca34987e1f2297b555
+Author: Nileema Shingte <nileema.shingte@gmail.com>
+Date:   Mon Jun 13 17:12:59 2016 -0700
+
+    Add missing override annotation
+
+commit c5680aed4eb9fb48a9ed13e9e2a20d1638eecc90
+Author: David Phillips <david@acz.org>
+Date:   Fri May 20 16:06:23 2016 -0700
+
+    Remove unused annotation ForStorageManager
+
+commit 481f159e0c89927e092427480ae25b04ddb6264e
+Author: Lukasz Osipiuk <lukasz@osipiuk.net>
+Date:   Fri Mar 11 17:23:54 2016 +0100
+
+    Handle literal parameters in ReflectionParametricScalar
+    
+    Add support for @LiteralParameters annotation for scalars implemented by
+    ReflectionParameterScalar class. ReflectionParameterScalar.specialize now
+    builds valid Signature by binding values to all variables listed in
+    @LiteralParameters annotation.
+    
+    This is temporary solution. Following refactoring move the logic to
+    Signature/FunctionRegistry classes.
+
+commit f5276e3b8a4e1579b36ec8504c712b710bf7ced5
+Author: Christopher Berner <christopherberner@gmail.com>
+Date:   Wed Mar 9 14:15:05 2016 -0800
+
+    Remove banned @NotNull annotation
+
+commit 2cd3d475a3a803f73dee16faa683c2d50462eaae
+Author: David Phillips <david@acz.org>
+Date:   Wed Mar 9 09:54:00 2016 -0800
+
+    Add checkstyle rules for JetBrains annotations
+
+commit d2b445a1a8eba63a4c9057141444417360724cf4
+Author: David Phillips <david@acz.org>
+Date:   Wed Mar 9 09:41:16 2016 -0800
+
+    Remove JetBrains NotNull annotation
+    
+    The default for the codebase is not null.
+
+commit 6de2ee8b3600ea0ede301bd3891ad0edbbae2ac8
+Author: Christopher Berner <christopherberner@gmail.com>
+Date:   Mon Sep 28 08:59:03 2015 -0700
+
+    Add new framework for parametric scalar functions
+    
+    This allows parametric scalar functions to be written in an annotation
+    based way, similar to other scalar functions.
+
+commit beed0ae43738f8f48cc479ce2edd0ef102bdbc59
+Author: Rebecca Schlussel <rebecca.schlussel@teradata.com>
+Date:   Mon Dec 21 13:41:37 2015 -0500
+
+    Add @Test annotation for outerjoin test
+    
+    Testing: ran test
+
+commit 7dfb577bdb751143600b3fd91fa3948c0d226361
+Author: David Phillips <david@acz.org>
+Date:   Mon Dec 14 10:53:36 2015 -0800
+
+    Add UsedByGenerated annotation
+
+commit 56872b7877d87dc87c1a8743027ffc8e4c888032
+Author: Min(Dongmin Yu) <miniway@gmail.com>
+Date:   Wed Aug 12 21:31:14 2015 -0700
+
+    Add missing JsonCreator annotation at PageBufferInfo
+
+commit 9e4db0087e0806989348e9ff098446e849f830c7
+Author: Martin Traverso <martint@fb.com>
+Date:   Wed Aug 5 09:44:36 2015 -0700
+
+    Remove use of deprecated @NotNull annotation
+    
+    It's no longer supported in Antlr 4.5+
+
+commit 98a0859cd3161e6a4716609ccdc627394e5b4a5a
+Author: Xin Yao <yaoxin226@gmail.com>
+Date:   Wed May 20 03:27:05 2015 -0700
+
+    Add missing @Override annotation
+
+commit c87e94fee0b0f57b02802c245c0d5d7cd95d9f70
+Author: Christopher Berner <christopherberner@gmail.com>
+Date:   Mon Mar 30 16:46:16 2015 -0700
+
+    Fix assertion for @SampleWeight annotation
+
+commit 0b37cca6b5133b1b8c67b15cbf783e045fdcbfd1
+Author: David Phillips <david@acz.org>
+Date:   Fri Oct 17 19:10:31 2014 -0700
+
+    Add missing Nullable annotation
+
+commit c2aadae04dfabe626451b0166f1ca4653e7c4064
+Author: Dain Sundstrom <dain@iq80.com>
+Date:   Tue Oct 14 14:42:48 2014 -0700
+
+    Swap Intellij annotations for JetBrains annotations
+    
+    Change JetBrains annotations to compile scope
+
+commit f045c8c488c516147d15ec04d0e83be96143ebb0
+Author: Christopher Berner <christopherberner@gmail.com>
+Date:   Thu Oct 9 18:24:21 2014 -0700
+
+    Remove unnessary annotations
+
+commit f422cb9b8b2162c8c1b2ceea66ab510c0ada6793
+Author: David Phillips <david@acz.org>
+Date:   Wed Oct 8 13:58:49 2014 -0700
+
+    Merge ForMetadata and ForShardManager annotations
+
+commit ee19ad34e386299cfce593c7a53449bfd8598cc5
+Author: Henning Schmiedehausen <henning@schmiedehausen.org>
+Date:   Thu Sep 11 20:31:01 2014 -0700
+
+    Add missing @Override annotations
+    
+    These were found by static code analysis in Eclipse.
+
+commit 39b89bbb9bcf0e9d0991b0cc20bba4a6444f2e19
+Author: Christopher Berner <cberner@fb.com>
+Date:   Mon Jul 28 16:32:46 2014 -0700
+
+    Make aggregation annotations more user friendly
+
+commit eaa10330ec3b409681ef98eadce0a722b04022a5
+Author: Christopher Berner <cberner@fb.com>
+Date:   Wed Jul 16 18:11:13 2014 -0700
+
+    Improve aggregation framework
+    
+    * Introduce a compiler for accumulators
+    * Introduce compiler for aggregation functions
+    * Add annotations, so that aggregation functions can be defined as a combination of static methods
+    * Benchmarks show ~10% performance improvement on TPCH query 1, and ~30% speed up for SUM()
+
+commit 790a1768f4da356b33f6b465a648337d5710d5d4
+Author: Nileema Shingte <nileema.shingte@gmail.com>
+Date:   Mon Jul 14 14:59:48 2014 -0700
+
+    Add javax.annotation to PARENT_FIRST_CLASSES
+
+commit dabde1b15d46d0956b2a7088144db6d76c7a5988
+Author: David Phillips <david@acz.org>
+Date:   Mon Jun 23 09:28:52 2014 -0700
+
+    Remove unused PrestoInternalPlugin annotation
+
+commit 99b79346339a0aabe5b5e9e4491fab12cf74d417
+Author: David Phillips <david@acz.org>
+Date:   Mon Jun 23 07:45:23 2014 -0700
+
+    Remove Singleton annotation from class
+
+commit cf36a45f7f33b22ee22713ca3a0d59e38be77c03
+Author: Dain Sundstrom <dain@iq80.com>
+Date:   Fri Apr 18 09:23:24 2014 -0700
+
+    Cleanup IDE warnings
+    
+    Add missing @Override annotations
+    Replace uses of StringBuffer with StringBuilder
+    Make utility classes final
+
+commit 754322cbaa7dd3982f842eaebccde9e6f5205f85
+Author: Christopher Berner <cberner@fb.com>
+Date:   Thu Mar 13 11:03:40 2014 -0700
+
+    Add missing @Override annotations
+
+commit 5539c8399a2c5e8827da2417cd830a12608e945c
+Author: Martin Traverso <martint@fb.com>
+Date:   Mon Feb 24 12:10:05 2014 -0800
+
+    Add null checks to create*Block
+    
+    Make the errors more explicit for calls like this, which do not do what the caller expects due to varargs semantics in Java:
+    
+      createStringsBlock(null)
+    
+    Also, remove the @Nullable annotation as it's ambiguous: does it refer to the varargs parameter or to each of the varargs elements.
+
+commit e1d50b99752c85f0d05b4b4190fe26d372922dc8
+Author: David Phillips <david@acz.org>
+Date:   Thu Sep 26 20:08:58 2013 -0700
+
+    Rename annotation for LocalStorageManager
+
+commit 6e951329212dfff3e69073ca5a8f875d023416a7
+Author: amleshjk <amleshjk@fb.com>
+Date:   Tue Aug 6 18:29:30 2013 -0700
+
+    Add function annotation for more verbose descriptions
+
+commit b06c2a6bdcbfbf6afca8e2d20c69ffbd91526db0
+Author: Dain Sundstrom <dain@iq80.com>
+Date:   Mon May 20 13:55:40 2013 -0700
+
+    Add missing @JsonProperty annotation to session source field
+
+commit 33e2f523ee42871bace8109d2a3281f581febeb5
+Author: David Phillips <david@acz.org>
+Date:   Sat Mar 30 20:36:43 2013 -0700
+
+    Move annotation to upper level
+
+commit 4bb8d0ffb779d436cf76a675a58b3eac4fd64e2a
+Author: Henning Schmiedehausen <hgschmie@fb.com>
+Date:   Wed Mar 27 10:46:20 2013 -0700
+
+    remove singleton annotation
+
+commit c8e17fa0b0c9353f8195454411c85d0ed3de08a1
+Author: Dain Sundstrom <dain@iq80.com>
+Date:   Wed Mar 13 19:33:11 2013 -0700
+
+    Move intellij annotations to test scope
+
+commit 1b494889ffd6130db4dbe32342fa7e18cd070a19
+Author: Dain Sundstrom <dain@iq80.com>
+Date:   Sat Mar 9 11:11:50 2013 -0800
+
+    Move Intellij annotations dep to test scope
+
+commit cd488e9965ff10fdcfb5e50871387aaac30c0070
+Author: David Phillips <david@acz.org>
+Date:   Wed Feb 20 13:05:15 2013 -0800
+
+    Remove unused annotations
+    
+    Apparently, an @Test annotation on an abstract class applies to the methods
+    declared in the abstract class. Adding an @Test annotation to a child class
+    does not affect the methods in the parent class.
+
+commit 042f8e19703285b110f0a7d396110281b281c4e9
+Author: Henning Schmiedehausen <hgschmie@fb.com>
+Date:   Fri Feb 15 17:24:21 2013 -0800
+
+    Get rid of the TableHandle annotations.
+
+commit 3ec9a2574c4a4c12646b00c654a12d642ecc6e2b
+Author: Dain Sundstrom <dain@iq80.com>
+Date:   Fri Feb 1 23:24:13 2013 -0800
+
+    Add missing @JsonCreator annotation
+
+commit bbec9f397564a35607d6d30afa5be1b1b81cb87e
+Author: Dain Sundstrom <dain@iq80.com>
+Date:   Tue Jan 29 23:02:07 2013 -0800
+
+    Add @JsonCreator annotation to PlanFragment
+
+commit e2089685c67043adc2890fab3347208d12053a2a
+Author: Dain Sundstrom <dain@iq80.com>
+Date:   Fri Jan 4 13:17:19 2013 -0800
+
+    Add annotation to identify scalar functions
+

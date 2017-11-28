@@ -1,0 +1,385 @@
+commit 99df632f24374e89d16a9c6909952fd0d14e727f
+Author: Johnny Lim <izeye@naver.com>
+Date:   Wed Nov 1 22:28:29 2017 +0900
+
+    Add missing @Override annotations
+    
+    This commit also adds MissingOverrideCheck module to Checkstyle configuration.
+
+commit 78bf6e2bd5dadabd258921393710d45211c18967
+Author: Rob Winch <rwinch@gopivotal.com>
+Date:   Tue May 3 13:07:45 2016 -0500
+
+    WithSecurityContextTestExecutionListener supports generic Annotation
+    
+    Previously Spring Security's WithSecurityContextTestExecutionListener
+    allowed a WithSecurityContextFactory<Annotation> to be used. This
+    was broken in SEC-3074.
+    
+    This commit ensures that WithSecurityContextFactory<Annotation> is
+    supported again.
+    
+    Fixes gh-3837
+
+commit c79bceab03555df0825b5d0c96fc9bc38eb88b9a
+Author: Rob Winch <rwinch@gopivotal.com>
+Date:   Wed Aug 19 15:43:09 2015 -0500
+
+    SEC-2956: Improve AnnotationParameterNameDiscoverer Performance
+
+commit cbed1d75ee35d7c4c5d6b3b23397b3df489c4c3c
+Author: Rob Winch <rwinch@gopivotal.com>
+Date:   Wed Aug 19 15:39:15 2015 -0500
+
+    SEC-3076: Add Method Level Security Meta Annotations
+
+commit 567c51e109ded0c9e632e57e811c3178593f2081
+Author: Rob Winch <rwinch@gopivotal.com>
+Date:   Wed Aug 19 14:01:05 2015 -0500
+
+    SEC-3074: Add Test Meta Annotation Support
+
+commit 3171cc4364d953d880e4f5ca0f696e0af383d7b8
+Author: Rob Winch <rwinch@gopivotal.com>
+Date:   Mon Dec 8 16:06:58 2014 -0600
+
+    SEC-2788: Add @Configuration as meta annotation to @Enable* annotations
+
+commit 4e7398eec037b95f3db9c30e4599d1380db8c8e6
+Author: Rob Winch <rwinch@gopivotal.com>
+Date:   Fri Sep 26 13:47:37 2014 -0500
+
+    SEC-2150: Support class level annotations on Spring Data Repositories
+
+commit 61e6acb3f43a6f89fd439591c4bd426210633d19
+Author: Rob Winch <rwinch@vmware.com>
+Date:   Fri Sep 27 11:53:39 2013 -0500
+
+    SEC-2151: AnnotationParameterNameDiscoverer support single annotated param
+    
+    This makes sense since often times only a single argument is necessary in
+    the expression.
+
+commit a09756745fd95bcfa8c05eb977227ef06d929ad4
+Author: Rob Winch <rwinch@vmware.com>
+Date:   Fri Sep 27 11:18:37 2013 -0500
+
+    SEC-2151: Support binding method arguments with Annotations
+    
+    This allow utilizing method arguments for method access control on
+    interfaces prior to JDK 8.
+
+commit c5c141952181a09edf2a55816aff2272d958628e
+Author: Rob Winch <rwinch@vmware.com>
+Date:   Wed Sep 18 18:27:12 2013 -0500
+
+    SEC-2332: GlobalMethodSecurityConfiguration includes proper voters
+    
+    Previously GlobalMethodSecurityConfiguration did not include the correct
+    voters. This updates the code and the tests to ensure that the proper
+    voters are added. Note this got past testing previously due to all the
+    voters abstaining, so tests were added for ensuring that methods could also
+    be invoked sucessfully using the configured annotation.
+
+commit 7f2308f46c098ab984dd1b8c45616113eec6aefc
+Author: Rob Winch <rwinch@vmware.com>
+Date:   Sun Aug 25 11:06:36 2013 -0500
+
+    SEC-2146: Document AspectJ does not inherit annotations
+
+commit 914ec45e43bfc88d4c73aaa891fc2ac91ce7cf3d
+Author: Rob Winch <rwinch@vmware.com>
+Date:   Thu Feb 28 10:26:12 2013 -0600
+
+    SEC-2136: Lazy load MethodSecurityExpressionHandler & MethodSecurityExpressionHandler.expressionParser
+    
+    Previously wiring dependencies created with a FactoryBean into
+    MethodSecurityExpressionHandler &
+    MethodSecurityExpressionHandler.expressionParser and  would cause
+    NoSuchBeanDefinitionException's to occur. These changes make it easier
+    (but not impossible) to avoid such errors.
+    
+    The following changes were made:
+    
+        - ExpressionBasedAnnotationAttributeFactory delays the invocation of
+          MethodSecurityExpressionHandler.getExpressionParser()
+        - MethodSecurityExpressionHandler is automatically wrapped in a
+          LazyInitTargetSource and marked as lazyInit=true
+
+commit b493afa18cad61431f8754f076981a7c6c35ad07
+Author: Luke Taylor <luke.taylor@springsource.com>
+Date:   Tue Jan 31 18:56:17 2012 +0000
+
+    SEC-1888: Improving the doc on (not) using multiple annotation types in the same class.
+
+commit 2d556c7b4f48537f91ea0ebed06e05182223ee7a
+Author: Rob Winch <rwinch@gmail.com>
+Date:   Sat Jan 7 12:27:40 2012 -0600
+
+    SEC-1885: Change SecurityDebugBeanFactoryPostProcessor to only interact with BeanDefinitions rather than instances to prevent premature instatiation of FilterChainProxy and its dependencies
+    
+    This issue occurred because the AutowiredAnnotationBeanPostProcessor had not been registered when the SecurityDebugBeanFactoryPostProcessor tried to obtain the FilterChainProxy. This caused
+    all of the FilterChainProxy's dependant beans to be resolved and if they used @Autowired they would not get processed properly.
+
+commit 74daa68691beeda4c3c6330e8124923a421671ab
+Author: Luke Taylor <luke.taylor@springsource.com>
+Date:   Fri Aug 12 14:29:55 2011 +0100
+
+    SEC-1796: Check for annotated annotations at class/interface level. Previously only the specific security annotation was checked for. By delegating to Spring's AnnotationUtils, custom annotations carrying the security annotation are also detected.
+
+commit 5a1ddc660bc49f53e3bfa3b7d1b706c2cdf34771
+Author: Luke Taylor <luke.taylor@springsource.com>
+Date:   Sat Jun 18 14:32:11 2011 +0100
+
+    SEC-1768: Added tests to reproduce "double-proxying" issue combining intercept-methods and tx-annotation-driven. Problem is caused by use of ProxyFactoryBean with auto-proxying.
+
+commit 3084ad878fa44d830a0dd947a299c6133d416eae
+Author: Luke Taylor <luke.taylor@springsource.com>
+Date:   Mon Apr 4 19:48:27 2011 +0100
+
+    SEC-1491: Added AnnotationMetadataExtractor to SecuredAnnotationSecurityMetadataSource to allow a custom security annotation to be used.
+
+commit ead669f10c11e60a6b67917c16028920b1fc6bbd
+Author: Luke Taylor <luke.taylor@springsource.com>
+Date:   Mon Apr 4 18:25:25 2011 +0100
+
+    Move single-use annotation test classes into SecuredAnnotationSecurityMetadataDefinitionSourceTests.
+
+commit c1f2fa1983a19611fe2e8cd41478160a207708cd
+Author: Luke Taylor <luke.taylor@springsource.com>
+Date:   Wed Jan 5 16:56:28 2011 +0000
+
+    SEC-1558: Changed signatures of PrePostInvocationAttributeFactory to take strings rather than annotation types to allow the metadata to be obtained from other sources (not just annotations).
+
+commit e2ba500c3c287bcc083f86162582c441d742f806
+Author: Luke Taylor <luke.taylor@springsource.com>
+Date:   Thu Aug 5 18:14:11 2010 +0100
+
+    SEC-1529: More user-friendly expressions on method annotations in EL chapter.
+
+commit f54831f2b5a939eb10d475fbcb43aac096903b9d
+Author: Luke Taylor <luke.taylor@springsource.com>
+Date:   Sat Feb 6 18:01:34 2010 +0000
+
+    SEC-1398: Minor changes to method security annotation information in namespace chapter.
+    
+    Added some explanation of the different annotation types and their suitability.
+
+commit 4e4242d01096f268a1f293a94515545dc6f3c8f4
+Author: Luke Taylor <luke.taylor@springsource.com>
+Date:   Wed Jan 6 22:23:01 2010 +0000
+
+    SEC-1354: Added integration tests for combinations of @PreAuthorize and @Secured annotations.
+
+commit d5b7ce69ccd96fbc19163d9c3225822457e8732c
+Author: Luke Taylor <luke.taylor@springsource.com>
+Date:   Mon May 11 05:35:20 2009 +0000
+
+    SEC-1158: Decoupling of Pre/Post annotations implementation from Spring EL.
+
+commit 14c473960522cef5d2b6d34fdc24199cef4c9d33
+Author: Luke Taylor <luke.taylor@springsource.com>
+Date:   Mon May 11 05:18:20 2009 +0000
+
+    SEC-1158: Decoupling of Pre/Post annotations implementation from Spring EL.
+
+commit 482cb23d9c76e4bcb34bf5fe058c76208aec999f
+Author: Luke Taylor <luke.taylor@springsource.com>
+Date:   Sat Nov 22 01:49:16 2008 +0000
+
+    Forgot to add @Before and @After annotations to junit test.
+
+commit c7abdadc066e8192ae5651d63f0267c6426c5b0b
+Author: Luke Taylor <luke.taylor@springsource.com>
+Date:   Tue Oct 28 06:37:04 2008 +0000
+
+    SEC-999: Moved caching from AbstractFallbackMethodDefinitionSource to DelegatingMethodDefinitionSource, to allow ExpressionBasedMethodDefinitionSource to take advantage of it. The latter no-longer uses the fallback approach as it requires its own strategy to combine annotations which may be defined at method-on-class, class,  method-on-interface or interface level.
+
+commit f592357c278b896e7b2c32020aa61f028f958be9
+Author: Luke Taylor <luke.taylor@springsource.com>
+Date:   Mon Oct 27 09:04:22 2008 +0000
+
+    SEC-999,SEC-1013: removed ConfigAtributeDefinition from ObjectDefinitionSource and implementations. Modified el-authz to allow methods which use an annotation without explicitly specifying a PreAuthorize condition
+
+commit 91c44a47fdf88cc42500bba411b46e9fbfaba427
+Author: Luke Taylor <luke.taylor@springsource.com>
+Date:   Tue Oct 21 05:54:42 2008 +0000
+
+    SEC-999: Added spel-annotations to newly created 2.5 schema file.
+    http://jira.springframework.org/browse/SEC-999
+
+commit 09cf90258f5b94ca4e841422f3aaedcfba69ac67
+Author: Luke Taylor <luke.taylor@springsource.com>
+Date:   Mon Aug 18 14:47:28 2008 +0000
+
+    SEC-758: Both AspectJSecurityInterceptor and AspectJAnnotationSecurityInterceptor not usable with @AspectJ notation
+    http://jira.springframework.org/browse/SEC-758. Added "throws Throwable" to AspectJAnnotationCallback signature.
+
+commit 59543af4fb6bfa94a9090660dc8a2cab9010e793
+Author: Luke Taylor <luke.taylor@springsource.com>
+Date:   Wed May 14 16:41:52 2008 +0000
+
+     SEC-826: Support for JPA PersistenceContext annotation broken
+    http://jira.springframework.org/browse/SEC-826 Moved all injection post-processing to BeanPostProcessors (and deleted bean factory post-processor) to prevent early instantiation problems. Beas should now all be instantiated before the injection takes place.
+
+commit 67d5a5b814b3950eb9e92d40d9cba536a1ec0e65
+Author: Luke Taylor <luke.taylor@springsource.com>
+Date:   Sun Apr 6 00:04:50 2008 +0000
+
+    SEC-750: Support for JPA PersistenceContext annotation broken
+    http://jira.springframework.org/browse/SEC-750. Updates to prevent the HttpSecurityPostProcessor from causing beans to be instantiated. Added a simplified test case to HttpSecurityBeanDefinitionParserTests.
+
+commit ef5b3e2f9c52ac992caddecc960c42925161df67
+Author: Luke Taylor <luke.taylor@springsource.com>
+Date:   Wed Mar 26 21:48:24 2008 +0000
+
+    SEC-733: Changed names of <global-method-security> attributes as discussed with Ben and updated sample to reflect the changes. Also changed explicit instantiation of Jsr250 and Secured annotation MethodDefinitionSource beans in GlobalMethodSecurityBDP into bean definitions to make more tooling friendly.
+
+commit 9372f6175b2ecc7e1e96947ff6d44d82fcbab3f8
+Author: Luke Taylor <luke.taylor@springsource.com>
+Date:   Fri Feb 15 17:09:14 2008 +0000
+
+    Removed unnecessary braces from annotations
+
+commit adbf18a091ba909fa2c71a9233c87036871a5310
+Author: Luke Taylor <luke.taylor@springsource.com>
+Date:   Wed Feb 6 13:14:46 2008 +0000
+
+    SEC-507: Updated JSR-250 impl to include better support for PermitAll and DenyAll as suggested by Ryan Heaton. Includes JSR-250 voter which is now used by AnnotationDriverbeanDefinitionParser.
+
+commit 95c6ecdb1e1ae61e1ca8023d6d5db4090f0bc69b
+Author: Luke Taylor <luke.taylor@springsource.com>
+Date:   Tue Jan 29 11:33:38 2008 +0000
+
+    SEC-468: Added Mike Wiesner's patch for AspectJ annotation support.
+
+commit d66b9693ba8c5136ffba402ceb2851591a3beb9d
+Author: Luke Taylor <luke.taylor@springsource.com>
+Date:   Thu Jan 10 20:19:15 2008 +0000
+
+    SEC-507: Initial support for JSR-250 "RolesAllowed" attributes.
+    
+    Added jsr250 boolean to annotation-driven element to determine whether JSR-250 annotations should be used in preference to the traditional Acegi "Secured" attribute.
+
+commit fad2b597af4f7358f124a9c243ac44832c3bbe57
+Author: Luke Taylor <luke.taylor@springsource.com>
+Date:   Thu Jan 10 19:31:03 2008 +0000
+
+    Updated SecurityAnotationAttributes to user Spring's AnnotationUtils explicitly since we are now using Spring 2.0+
+
+commit 09f68400ecb0d8b7faafea3b6c1cea113e97349c
+Author: Ben Alex <ben.alex@springsource.com>
+Date:   Fri Dec 14 19:56:31 2007 +0000
+
+    Add <intercept-methods> to example, but it is disabled in favour of @Secured annotation. Still, we include it so people can have a play around and switch between the two syntaxes easily in demos etc.
+
+commit d90ff50686dd1697195ab8d2c9fd77ec71116d5a
+Author: Ben Alex <ben.alex@springsource.com>
+Date:   Fri Dec 14 16:54:10 2007 +0000
+
+    Use Java 5 to illustrate annotation support.
+
+commit 9b6c798a52efbc628e1d6f36011343f181b9a3a4
+Author: Ben Alex <ben.alex@springsource.com>
+Date:   Tue Dec 4 14:14:17 2007 +0000
+
+    SEC-496: <annotation-driven> element.
+
+commit acb02246e092dbae77c5c7faf527fc48029d7da6
+Author: Luke Taylor <luke.taylor@springsource.com>
+Date:   Tue Oct 2 10:52:06 2007 +0000
+
+    Refactored embedded LDAP server tests to make use of new namespace configuration. Use Junit 4 annotations in preference to AbstractDependencyInjectionSpringContextTests so that it is possible to clear up the context after each class is run rather than at JVM shutdown (causes problems with running embedded apache DS).
+
+commit 1a7b00106d4d94a3bbfc6b47c134dac6564afb72
+Author: Luke Taylor <luke.taylor@springsource.com>
+Date:   Tue Oct 2 10:41:24 2007 +0000
+
+    Upgraded to junit 4.4 (mainly to allow use of BeforeClass and AfterClass annotations) and changed pom to use different source and versions for production and test sources (1.4 and 1.5 respectively)
+
+commit e0956920c7a73b7646273fc7548930d97bd19fee
+Author: Vishal Puri <vishal.puri@springsource.com>
+Date:   Tue Jun 19 04:15:25 2007 +0000
+
+    SEC-271: copied Bank* unit test and relevant classes to test @Secured annotation as a part of autoconfig tag work
+
+commit 44cae6b2ee102496cfa3a0e4abe76a551da66134
+Author: Ben Alex <ben.alex@springsource.com>
+Date:   Fri Nov 17 02:17:45 2006 +0000
+
+    SEC-274: Correctly handle bridge methods, using AnnotationUtils when on classpath.
+
+commit 4fd3693df0e90502237a2bf2c97dbd4d4bc08361
+Author: Ben Alex <ben.alex@springsource.com>
+Date:   Mon May 29 22:22:50 2006 +0000
+
+    Move to annotation package to avoid jarsigner problems during deployment.
+
+commit a6ef43d8270c9887c88ed119eeeaa175cc52dbaa
+Author: Ben Alex <ben.alex@springsource.com>
+Date:   Mon May 29 15:04:50 2006 +0000
+
+    Move to annotation package to avoid jarsigner problems during deployment.
+
+commit 1ca02b6922ef47aac444c7ef0d1300217ae99b95
+Author: Mark St. Godard <markstg@users.sourceforge.net>
+Date:   Mon Jan 30 03:27:18 2006 +0000
+
+    Include @Inherited and @Documented to Secured annotation
+    see SEC-148
+
+commit 9b898e84c41041cc80817259e41659e1d77b6c25
+Author: Mark St. Godard <markstg@users.sourceforge.net>
+Date:   Sun Sep 25 05:58:49 2005 +0000
+
+    Added Java 5 Annotations version of Contacts sample (contacts-tiger).
+    
+    Note: I have added a pre goal to add the source dir of  the original Contacts example.
+    
+    I also added an exclude on the main project.properties for the attributes sample, as the Commons Attributes plugin causes issues with Java 5 source compilation.
+    
+    The Annotations version will eventually replace the Commons Attributes approach, for now those users will need to manually build the attributes example.
+
+commit 1bd4d0becaa85cb38b657c467447d6672eb0f516
+Author: Mark St. Godard <markstg@users.sourceforge.net>
+Date:   Mon Sep 5 05:56:39 2005 +0000
+
+    Started adding Java 5 Annotation documentation, including example configuration and usage.
+
+commit e850849be59a585ef3e7d720e751c6af990ce4c8
+Author: Mark St. Godard <markstg@users.sourceforge.net>
+Date:   Mon Sep 5 04:38:45 2005 +0000
+
+    Added Java 5 Annotations version of the BankService sample. Note: This project requires the Secured annotation which is in "core-tiger"... make sure you have built and installed the acegi-security-tiger-0.9.0-SNAPSHOT.jar in your local maven repo.
+
+commit e805aa2e7368659621028f084bfb658d047157ef
+Author: Ben Alex <ben.alex@springsource.com>
+Date:   Sun Aug 21 09:40:09 2005 +0000
+
+    Add annotation support.
+
+commit 0a8699003f7d20e6845ea04e5e985f37d41e41c3
+Author: Mark St. Godard <markstg@users.sourceforge.net>
+Date:   Fri Aug 12 02:57:38 2005 +0000
+
+    Initial checkin of Security Java 5 Annotation support
+    (see http://opensource.atlassian.com/projects/spring/browse/SEC-4)
+    
+    Note: I have created a new source dir "core-tiger" for Java 5 related core security classes,   as well as test dir.
+    
+    Note: project.properties should compile this project using 1.5.
+    
+    WAR test application using Spring 1.2  Transaction Annotations and Security to follow
+
+commit 1e12e51b9cc633fa4711d3a440383b81e65f9e85
+Author: Ben Alex <ben.alex@springsource.com>
+Date:   Wed Jun 22 06:29:49 2005 +0000
+
+    Remove Hibernate Annotations.
+
+commit 2e518806086029611b930c3079084e0566ce20af
+Author: Ben Alex <ben.alex@springsource.com>
+Date:   Thu May 26 01:47:29 2005 +0000
+
+    Remove annotations after discussion with Matthew Porter.
+

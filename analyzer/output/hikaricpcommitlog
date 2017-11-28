@@ -1,0 +1,22 @@
+commit ccd4ddd3eeb6f219ed2e7a184fceeb4e11df7f80
+Merge: 1bca94a d415ba8
+Author: Brett Wooldridge <brett.wooldridge@gmail.com>
+Date:   Mon Mar 17 21:16:53 2014 +0900
+
+    Merge branch 'openwide-java-add-override-annotations-where-needed-dev' into dev.  However, some of the methods marked @Override are in fact not present in Java6 and so produce errors in the IDE and were therefore removed.
+
+commit d415ba8353f502ff61e4a6d11c96ce3124067584
+Author: Guillaume Smet <guillaume.smet@gmail.com>
+Date:   Mon Mar 17 11:07:34 2014 +0100
+
+    Add @Override annotation where needed.
+    
+    Starting with Java 6, we can annotate with @Override a class method implementing
+    a method from an interface.
+
+commit 362be9d29d453649845316a2cf56a9d934f08364
+Author: Brett Wooldridge <brett.wooldridge@gmail.com>
+Date:   Mon Mar 17 11:30:43 2014 +0900
+
+    Javadoc and annotations.
+

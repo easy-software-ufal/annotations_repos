@@ -1,0 +1,1065 @@
+commit 102f65c81e7eb2d8831b8d9ceb157ac20ce3329b
+Author: cnsun <cnsun@google.com>
+Date:   Tue Nov 28 10:30:58 2017 -0800
+
+    Add missing @Nullable annotation to ForwardingSortedSet.unsafeCompare(Object, Object).
+    
+    RELNOTES=n/a.
+    GOOGLE:
+    
+    -------------
+    Created by MOE: https://github.com/google/moe
+    MOE_MIGRATED_REVID=177182100
+
+commit dc3210484abc2b817484be5c140bfa583fe3864c
+Author: cpovirk <cpovirk@google.com>
+Date:   Tue Nov 21 17:27:14 2017 -0800
+
+    Add Checker Framework to dependencies.
+    
+    This CL doesn't *use* any annotations yet, and I'm not even certain that we're going to yet. But I think we're likely to, and there's enough that can go wrong with just this step that I'd like to get it in.
+    
+    -------------
+    Created by MOE: https://github.com/google/moe
+    MOE_MIGRATED_REVID=176584793
+
+commit a1ffef8457b88c1a0ac72d128c99196169c1b0ea
+Author: cpovirk <cpovirk@google.com>
+Date:   Mon Nov 20 07:07:07 2017 -0800
+
+    Fully qualify some references to javax.annotation.Nullable in files that will likely soon refer to both that Nullable and the Checker Framework's.
+    
+    RELNOTES=n/a
+    
+    -------------
+    Created by MOE: https://github.com/google/moe
+    MOE_MIGRATED_REVID=176354876
+
+commit 27c07248101cc4828b22724aaaf56ec330c1f155
+Author: cpovirk <cpovirk@google.com>
+Date:   Thu Nov 16 14:39:49 2017 -0800
+
+    Remove @ThreadSafe and @NotThreadSafe annotations.
+    
+    They're part of jsr305, which we're looking to migrate off.
+    And they aren't checked by Error Prone or providing much other value.
+    
+    RELNOTES=n/a
+    
+    -------------
+    Created by MOE: https://github.com/google/moe
+    MOE_MIGRATED_REVID=176021729
+
+commit 328481cb8b86f97f25e051fe16ad3f2f3b988dce
+Author: cpovirk <cpovirk@google.com>
+Date:   Thu Nov 16 12:15:05 2017 -0800
+
+    Import Map.Entry almost everywhere.
+    
+    Qualified types make @Nullable annotations more complicated: If we're using a type annotation, the "@Nullable" has to come between "Map." and "Entry" rather than before the whole thing. That means diffs between the mainline, presuming that it supports type annotations, and the backport, presuming that it doesn't. It's not entirely clear that that's how things will work out, but I can't experiment until I fix the problem, and I figure I might as well submit the fix, given that I think we generally like doing this, at least with Multiset.Entry isn't in play? But it's not very hard to handle the problem as it comes up, either, if this CL is too much.
+    
+    (Naturally, the same problem will exist for other types. But this CL fixes the most common problem.)
+    
+    RELNOTES=n/a
+    
+    -------------
+    Created by MOE: https://github.com/google/moe
+    MOE_MIGRATED_REVID=175999659
+
+commit d31b6ce371d5aed395c86be7e1654061b3f0b45b
+Author: Colin Alworth <colin@colinalworth.com>
+Date:   Wed Nov 1 10:14:12 2017 -0700
+
+    Remove @GwtCompatible annotations from classes in the hash
+    package, which have no corresponding .gwt.xml file.
+    
+    Fixes #2983
+    
+    RELNOTES=n/a
+    
+    -------------
+    Created by MOE: https://github.com/google/moe
+    MOE_MIGRATED_REVID=174196722
+
+commit 3106b4ef159878972100ca5028dc3ab69fac6971
+Author: cpovirk <cpovirk@google.com>
+Date:   Fri Oct 27 10:34:46 2017 -0700
+
+    Fix links to JSR305, and start linking to JDK 9.
+    
+    The main problem with the JSR305 links is that the JDK -link argument was "claiming" the javax.annotations package. This was happening for 2 reasons:
+    - <detectJavaApiLink> defaults to true, so Maven adds its own -link (or -linkoffline, not sure) for the JDK. So I unset it.
+    - We manually specified a -link argument, and Maven's command-line order puts -link before -linkoffline (which, oh, we're now using -- see below). So I made the JDK a -linkoffline argument, too, which is still possible when we're pulling the package-list from online.
+    
+    There's an additional problem, which is that Javadoc (or Maven? I forget) tries to download http://static.javadoc.io/com.google.code.findbugs/jsr305/3.0.1/, which gives an access denied error, even though it needs only the package-list file in that directory, which downloads fine. As a fix, make our own local copy of that package-info file. I've also done that for j2objc-annotations, though currently none of its annotations are @Documented, so it's not doing us much good yet.
+    
+    Then, in the process of switching to a manual -link for the JDK, I lost JDK links. It turns out that Javadoc doesn't like the http links to the Oracle site, even though it's fine with http links from other sites. I switched to https (and did the same for the other projects while I was there), and I posted this on https://stackoverflow.com/q/29867384/28465#comment80906399_29867384 to hopefully help anyone else in this situation. (I'll also try to ask our Java platform team about fixing the javadoc man page.)
+    
+    Conveniently, the switch to a manual -link also lets us choose which version of the JDK to link to. It seems like Java 9 makes the most sense...? It's true that we promise compatibility with Java 8, but I think the normal thing would be to link to the newest version. I see in particular that we linked to Java 7 from the backport. That's defensible, but it's a bit weird: The primary target for the backport is Android, and we target a "Java-6-like" version of the Android SDK. The only "Java-7-like" thing we do is use language features like the diamond operator. The Java 7 link does make sense for actual Java 7 users, but I still think we're likely better off linking to JDK 9 Javadoc and letting users look at @since when they want. This should also help in cases in which we want to link to a newer type along the lines of "If you can use java.util.function.Function, do so."
+    
+    (Oh, and while I was there, I added a comment to explain why we *also* need JDK sources, as I'd forgotten.)
+    
+    Fixes https://github.com/google/guava/issues/2965
+    
+    -------------
+    Created by MOE: https://github.com/google/moe
+    MOE_MIGRATED_REVID=173688451
+
+commit 9b61b0f4e64f58283656d994cd68d6db7cd9bd55
+Author: cpovirk <cpovirk@google.com>
+Date:   Fri Sep 29 10:50:56 2017 -0700
+
+    For clarity, re-apply @Beta to the CharMatcher constants.
+    
+    We deprecated the CharMatcher constants back when they were @Beta. Then we removed @Beta from the class. Because these methods were never present as non-@Deprecated, non-@Beta APIs, and because they are expensive to initialize on Android, we'll still remove them.
+    
+    Since we're removing them, it makes sense to put our "We might remove this" annotation them. Doing so should make things clearer to humans, and it should allow tools to identify usages of these APIs to warn about possible breakages.
+    
+    -------------
+    Created by MOE: https://github.com/google/moe
+    MOE_MIGRATED_REVID=170502670
+
+commit 9e964b3326b56e35f459d843b48a7ced88091b6f
+Author: jrtom <jrtom@google.com>
+Date:   Thu Aug 10 10:04:39 2017 -0700
+
+    common.graph: remove j2cl annotations, as no one's using it from j2cl, it has no immediate prospective users, and it doesn't support Network-related capabilities anyway.
+    
+    Bonus cleanup: remove TODOs for adding documentation, as the indicated bug has been closed.
+    
+    -------------
+    Created by MOE: https://github.com/google/moe
+    MOE_MIGRATED_REVID=164867192
+
+commit 49e145257d6dfb36ca1dd17a144d81c635504b9e
+Author: jrtom <jrtom@google.com>
+Date:   Wed Jun 28 15:00:12 2017 -0700
+
+    hasEdge(): rename to hasEdgeConnecting(), remove @GoogleInternal annotation, and add to Network as well.
+    
+    -------------
+    Created by MOE: https://github.com/google/moe
+    MOE_MIGRATED_REVID=160455853
+
+commit 94a96d1ec0c0167a4c5b9350f125429fed3d1d4c
+Author: lukes <lukes@google.com>
+Date:   Mon Jun 12 10:43:34 2017 -0700
+
+    Mark Immutable(Int|Long|Double)Array with the errorprone @Immutable annotation
+    
+    -------------
+    Created by MOE: https://github.com/google/moe
+    MOE_MIGRATED_REVID=158732518
+
+commit fac8339c87815fb7deca0cf01d61a5146355723f
+Author: jrtom <jrtom@google.com>
+Date:   Wed May 31 15:17:39 2017 -0700
+
+    PredecessorsFunction, SuccessorsFunction: remove @GoogleInternal annotation, now that we've resolved the "what type should the method return?" question.
+    
+    -------------
+    Created by MOE: https://github.com/google/moe
+    MOE_MIGRATED_REVID=157642605
+
+commit 85849257e9e7fd27cfa517402c079d268cccd275
+Author: Brian Worth <brian.worth@addepar.com>
+Date:   Thu Mar 23 08:16:06 2017 -0700
+
+    make NullPointerTester.isNullable() use @CheckForNull too
+    
+    i.e., returns true if a parameter is annotated with @Nullable
+    *or* @CheckForNull. Both annotations mean "this can be null".
+    
+    Fixes #2731
+    
+    []
+    
+    -------------
+    Created by MOE: https://github.com/google/moe
+    MOE_MIGRATED_REVID=151005288
+
+commit eb62a02b48b4c55362aba4b98a182887f132397f
+Author: jijiang <jijiang@google.com>
+Date:   Wed Mar 15 08:56:21 2017 -0700
+
+    Apply '@ForOverride' annotation to Equivalence.doEquivalent & doHash.
+    
+    []
+    
+    https://github.com/google/guava/issues/1966
+    
+    -------------
+    Created by MOE: https://github.com/google/moe
+    MOE_MIGRATED_REVID=150196929
+
+commit 0e29934933f33379de953727171f7ca1ec616a58
+Author: cpovirk <cpovirk@google.com>
+Date:   Tue Jan 31 09:27:07 2017 -0800
+
+    Make annotation dependencies non-optional.
+    
+    Fixes https://github.com/google/guava/issues/2721
+    
+    Discussion: []
+    
+    -------------
+    Created by MOE: https://github.com/google/moe
+    MOE_MIGRATED_REVID=146128219
+
+commit d2493a9a7d20d484c508ca293b4bf10bf0cca80e
+Author: cpovirk <cpovirk@google.com>
+Date:   Tue Aug 30 08:36:01 2016 -0700
+
+    Release @Immutable annotations in common.graph.
+    We've already released them in other packages.
+    
+    This uses some of the previously unused imports that would be removed by #2697.
+    
+    -------------
+    Created by MOE: https://github.com/google/moe
+    MOE_MIGRATED_REVID=143185270
+
+commit f81aa2d4ebdd92d2594989eabce878b60327e8a4
+Author: glorioso <glorioso@google.com>
+Date:   Tue Dec 6 11:29:55 2016 -0800
+
+    Annotate Multimap with @CompatibleWith annotations to enforce type-compatibility with keys and values as appropriate.
+    
+    -------------
+    Created by MOE: https://github.com/google/moe
+    MOE_MIGRATED_REVID=141203238
+
+commit 20dbb7318d6a3da8111ce2299e840d7baded8f66
+Author: yangzhe <yangzhe@google.com>
+Date:   Mon Dec 5 16:50:42 2016 -0800
+
+    Add Reflection annotation to j.c.g.common.util.concurrent.AbstractFuture for j2objc compile, in order to strip all other transpiled java reflections.
+    
+    -------------
+    Created by MOE: https://github.com/google/moe
+    MOE_MIGRATED_REVID=141119133
+
+commit d4593835188550859a05537676d01944fa2eab01
+Author: kstanger <kstanger@google.com>
+Date:   Thu Nov 3 09:05:22 2016 -0700
+
+    Removes unnecessary (and unsafe) @Weak annotation that is causing crashes on
+    iOS.
+    
+    -------------
+    Created by MOE: https://github.com/google/moe
+    MOE_MIGRATED_REVID=138077107
+
+commit 079c5100feb1356c99e0b6642b6b84e7fbccca3a
+Author: cpovirk <cpovirk@google.com>
+Date:   Wed Oct 19 06:47:48 2016 -0700
+
+    Stop stripping @LazyInit annotations.
+    The annotation has been released in public Error Prone.
+    
+    (roll forward of CL 136160211, which was rolled back in CL 136171136 because of a problem fixed in CL 136350404)
+    
+    -------------
+    Created by MOE: https://github.com/google/moe
+    MOE_MIGRATED_REVID=136589788
+
+commit 845a2b5b046ea3de2848f27288864d3d1977ea1e
+Author: kevinb <kevinb@google.com>
+Date:   Fri Sep 30 13:03:59 2016 -0700
+
+    Remove ancient `@Beta` annotations, making these APIs "final".
+    (They can still be removed via 2-year deprecation cycle.)
+    Also touched up a bit of javadoc here and there.
+    
+    Honestly, which exact libraries I chose to debeta in this CL are somewhat
+    random (though leaning toward older things).
+    
+    -------------
+    Created by MOE: https://github.com/google/moe
+    MOE_MIGRATED_REVID=134817353
+
+commit 192c4b1c1dfbae11a3b4705f135ede409faf3426
+Author: jasexton <jasexton@google.com>
+Date:   Sun Jul 31 08:33:13 2016 -0700
+
+    Add some missing @Nullable annotations.
+    
+    -------------
+    Created by MOE: https://github.com/google/moe
+    MOE_MIGRATED_REVID=132065891
+
+commit 484e083653bef124948c449edc56195323b8d00a
+Author: cpovirk <cpovirk@google.com>
+Date:   Tue Aug 23 09:15:07 2016 -0700
+
+    Add @Nullable annotations.
+    
+    -------------
+    Created by MOE: https://github.com/google/moe
+    MOE_MIGRATED_REVID=131061728
+
+commit 828103fee56ece0dc1a613a330c995e10e553bbf
+Author: kstanger <kstanger@google.com>
+Date:   Thu Aug 4 10:21:16 2016 -0700
+
+    Use J2ObjC's @RetainedWith annotation to prevent leaks resulting from reference
+    cycles between inverse maps.
+    
+    -------------
+    Created by MOE: https://github.com/google/moe
+    MOE_MIGRATED_REVID=129344101
+
+commit c48fdcf1825a68426f205542c77aff30c49804d6
+Author: kstanger <kstanger@google.com>
+Date:   Fri Jul 29 13:45:37 2016 -0700
+
+    Update Guava's J2ObjC dependency to version 1.1. This version includes the
+    @RetainedWith annotation.
+    
+    -------------
+    Created by MOE: https://github.com/google/moe
+    MOE_MIGRATED_REVID=128842160
+
+commit d573ee9196951825eb574551322c5b9a2c23b61c
+Author: kak <kak@google.com>
+Date:   Tue Jun 7 11:31:55 2016 -0700
+
+    Add some missing @Nullable annotations to InetAddresses.
+    Use static imports for Preconditions.
+    -------------
+    Created by MOE: https://github.com/google/moe
+    MOE_MIGRATED_REVID=124267108
+
+commit a6dcca483a2dcfd36e00e5c9eaa8f2158128fa97
+Author: myok <myok@google.com>
+Date:   Wed May 4 13:54:59 2016 -0700
+
+    Annotate the GWT client copy of ImmutableList.add* with @CanIgnoreReturnValue.
+    The server copy already has this annotation.
+    -------------
+    Created by MOE: https://github.com/google/moe
+    MOE_MIGRATED_REVID=121516405
+
+commit d300191a42cbfa410c7f8c5c82ecb4383c01e119
+Author: simionato <simionato@google.com>
+Date:   Mon Apr 25 11:58:17 2016 -0700
+
+    Add spaces to annotations inside comments to prevent them from being interpreted as real code when the file is parsed by tools that behave like the checker framework (see http://types.cs.washington.edu/checker-framework/current/checker-framework-manual.html#annotations-in-comments).
+    -------------
+    Created by MOE: https://github.com/google/moe
+    MOE_MIGRATED_REVID=120731063
+
+commit 870a15766917eca534f459c3e9a089358040c020
+Author: jrtom <jrtom@google.com>
+Date:   Fri Feb 19 10:12:48 2016 -0800
+
+    AbstractPackageSanityTests.java: document that the @Test annotations are deliberate even though it's not actually a JUnit4 test, as some of its subclasses @RunWith(JUnit4).
+    -------------
+    Created by MOE: https://github.com/google/moe
+    MOE_MIGRATED_REVID=115074892
+
+commit 18c84380cb56e74d7e5c7209199624ac112f86e4
+Author: jrtom <jrtom@google.com>
+Date:   Mon Feb 1 11:28:56 2016 -0800
+
+    *GraphTest.java: Add @Test annotations to tests marked @Override.
+    (This is apparently not strictly necessary but makes for better documentation.)
+    -------------
+    Created by MOE: https://github.com/google/moe
+    MOE_MIGRATED_REVID=113549694
+
+commit dedde5b419970441726a6699a065e30bd496bf93
+Author: cpovirk <cpovirk@google.com>
+Date:   Mon Jan 4 05:55:20 2016 -0800
+
+    Add @GwtIncompatible annotations to top-level classes.
+    (redo of CL 110542265)
+    -------------
+    Created by MOE: https://github.com/google/moe
+    MOE_MIGRATED_REVID=111314988
+
+commit aa5a184e271d86809d2dcb80e90dfc7dde5ca261
+Author: cpovirk <cpovirk@google.com>
+Date:   Fri Dec 18 10:58:08 2015 -0800
+
+    Automated g4 rollback of changelist 110542265.
+    
+    *** Original change description ***
+    
+    Add @GwtIncompatible annotations to top-level classes.
+    Our previous policy was: "Look for a @GwtCompatible annotation. If it doesn't have one, then it's not GWT-compatible."
+    
+    But maybe it's better to be explicit in both cases?
+    If nothing else, it might let us write tests that everything is annotated one way or the other, so we would have to actively annotate something wrongly to get the wrong outcome.
+    But the real motivation is that this gets us a step closer to relying on the GWT compiler's @Gw...
+    
+    ***
+    -------------
+    Created by MOE: https://github.com/google/moe
+    MOE_MIGRATED_REVID=110556733
+
+commit 71643094aca01d7386f8a84609aad7fa7632086e
+Author: cpovirk <cpovirk@google.com>
+Date:   Fri Dec 18 07:29:02 2015 -0800
+
+    Add @GwtIncompatible annotations to top-level classes.
+    Our previous policy was: "Look for a @GwtCompatible annotation. If it doesn't have one, then it's not GWT-compatible."
+    
+    But maybe it's better to be explicit in both cases?
+    If nothing else, it might let us write tests that everything is annotated one way or the other, so we would have to actively annotate something wrongly to get the wrong outcome.
+    But the real motivation is that this gets us a step closer to relying on the GWT compiler's @GwtIncompatible stripping internally (as we already do externally) instead of our own.
+    
+    Do note, though, that I haven't fully annotated everything:
+    - I've skipped c.g.c.base.internal.Finalizer, where I'm not sure it's safe to depend on @GwtIncompatible or even to declare a special copy. (It has a test that forbids nested classes, but maybe I could put a copy in the internal package as a top-level class?)
+    - I might have just missed stuff that was added since I first created the first version of this CL back in, like, 2013. (This is actually part of my motivation for submitting it: I keep having to do enormous syncs with annoying merges. I want to stop carrying these changes around in a client.)
+    
+    I've left all of the reasons (that is, the annotation values) blank.
+    We decided that this was OK in API Review.
+    -------------
+    Created by MOE: https://github.com/google/moe
+    MOE_MIGRATED_REVID=110542265
+
+commit 1d651423555d8317d3b7ca299bef95a1e52a56ea
+Author: diamondm <diamondm@google.com>
+Date:   Fri Dec 4 12:03:06 2015 -0800
+
+    Add @Beta annotation to new subSet/subMap methods.
+    -------------
+    Created by MOE: https://github.com/google/moe
+    MOE_MIGRATED_REVID=109435892
+
+commit 8fafcc4cfa302f75d70d3943b26ece226c45418e
+Author: cpovirk <cpovirk@google.com>
+Date:   Tue Aug 18 14:08:18 2015 -0700
+
+    Import Animal Sniffer annotation.
+    -------------
+    Created by MOE: http://code.google.com/p/moe-java
+    MOE_MIGRATED_REVID=100960079
+
+commit 02da7eaa207b2f31080427c88291f40c872cf6da
+Author: cpovirk <cpovirk@google.com>
+Date:   Mon Aug 10 11:20:41 2015 -0700
+
+    Document why we're using a custom annotation instead of Android's built-in @Suppress.
+    -------------
+    Created by MOE: http://code.google.com/p/moe-java
+    MOE_MIGRATED_REVID=100295547
+
+commit 6ef4550c792a47b91ff7fa60a60a7a2765178eb1
+Author: cpovirk <cpovirk@google.com>
+Date:   Fri Jul 31 07:17:44 2015 -0700
+
+    - Stop manually stripping @MediumTest. MOE has stripped it automatically for a while. Remove end-of-line comments that were interfering with stripping in this particular case.
+    - Strip @Flaky with strip_line instead of begin_strip/end_strip.
+    
+    Both of these are minor simplifications, and that's nice. But also...
+    
+    I ran into a bad interaction between (I think) MOE's "strip elements with this annotation" stripper's heuristics and its comment stripper. I started stripping @MediumTest-annotated attributes from a special internal "Guava for Android." MOE's annotation heuristics appear to strip the end_strip comment but not the begin_strip comment. I guess that it's stripping everything from the first method annotation -- surely the right thing to do but a pain in this case. This causes MOE to strip everything from there to the end of the file. As it turns out, there's not much left to strip. But it strips the closing }, so that fouls everything up.
+    -------------
+    Created by MOE: http://code.google.com/p/moe-java
+    MOE_MIGRATED_REVID=99569931
+
+commit aaf8ce209dcb8cc03f1e73cf0962f876f45679ef
+Author: cpovirk <cpovirk@google.com>
+Date:   Wed Jul 29 05:07:47 2015 -0700
+
+    Remove a stray @Beta annotation on a test.
+    -------------
+    Created by MOE: http://code.google.com/p/moe-java
+    MOE_MIGRATED_REVID=99365620
+
+commit f1ffbe598cec1c91a87926fb05df4b3176c3232c
+Author: cpovirk <cpovirk@google.com>
+Date:   Fri Jul 10 06:52:00 2015 -0700
+
+    Eagerly check for an appropriate exceptionClass constructor during calls to Futures.getChecked.
+    This way, callers that pass a bad exceptionClass find out unconditionally instead of only when their Future fails.
+    
+    (Retry of CL 97776570, rolled back in CL 97787294 because of a breakage that has since been addressed. I've made two tweaks: I've improved the error message (to minimize confusion, and I've migrated to the standard J2ObCIncompatible annotation (as done elsewhere already),
+    
+    We hope for bad exceptionClass parameters to soon be caught at compile time.
+    
+    To keep performance acceptable, cache a set of classes with appropriate constructors.
+    Use ClassValue, which was introduced in JDK7.
+    Do the compatibility dance, including making Animal Sniffer happy by annotating the class that uses ClassValue.
+    That requires updating Animal Sniffer to a version that respects the annotation in more places, perhaps related to http://jira.codehaus.org/browse/MANIMALSNIFFER-29
+    I've also updated the Animal Sniffer signatures on the theory that newer is probably better, although there is no apparent no impact on Guava.
+    
+    The cost of the eager check is performance in the success case: What used to take ~1.6ns will now take ~3.2ns. This is likely to be swamped by the actual work being done and by other overhead (like threads). (This was discussed and approved in API Review.)
+    The ClassValue implementation is faster than the fallback version, particularly in the unlikely case in which users call getChecked() with many different kinds of exception types.
+    
+    Finally, take the opportunity to start on splitting up Futures.java and FuturesTest.java: https://github.com/google/guava/issues/2091
+    -------------
+    Created by MOE: http://code.google.com/p/moe-java
+    MOE_MIGRATED_REVID=97961145
+
+commit 15284f71149325e6f389512cf5ba946031ea835f
+Author: cpovirk <cpovirk@google.com>
+Date:   Wed Jul 8 08:28:41 2015 -0700
+
+    Eagerly check for an appropriate exceptionClass constructor during calls to Futures.getChecked.
+    This way, callers that pass a bad exceptionClass find out unconditionally instead of only when their Future fails.
+    
+    We hope for bad exceptionClass parameters to soon be caught at compile time: []
+    API Review: https://docs.google.com/document/d/1hUeO_1OJY_xIAHN089p5d9as1uX4M62MBlbkiLyiJbk/edit
+    
+    To keep performance acceptable, cache a set of classes with appropriate constructors.
+    Use ClassValue, which was introduced in JDK7.
+    Do the compatibility dance, including making Animal Sniffer happy by annotating the class that uses ClassValue.
+    That requires updating Animal Sniffer to a version that respects the annotation in more places, perhaps related to http://jira.codehaus.org/browse/MANIMALSNIFFER-29
+    I've also updated the Animal Sniffer signatures on the theory that newer is probably better, although there is no apparent no impact on Guava.
+    
+    The cost of the eager check is performance in the success case: What used to take ~1.6ns will now take ~3.2ns. This is likely to be swamped by the actual work being done and by other overhead (like threads). (This was discussed and approved in API Review.)
+    The ClassValue implementation is faster than the fallback version, particularly in the unlikely case in which users call getChecked() with many different kinds of exception types.
+    
+    [] run --run_under=perflab javatests/com/google/common/util/concurrent:FuturesGetCheckedBenchmark -- -i runtime -DexceptionType=CHECKED -DotherEntriesInDataStructure=0,12 -Dvalidator=NON_CACHING_WITHOUT_CONSTRUCTOR_CHECK,CLASS_VALUE,WEAK_SET
+    https://caliper.[].com/runs/1b73aa59-83d1-429d-9ff4-e40cd8f4637a#r:scenario.benchmarkSpec.parameters.otherEntriesInDataStructure,scenario.benchmarkSpec.parameters.validator&c:scenario.benchmarkSpec.parameters.result
+    
+    Finally, take the opportunity to start on splitting up Futures.java and FuturesTest.java: https://github.com/google/guava/issues/2091
+    -------------
+    Created by MOE: http://code.google.com/p/moe-java
+    MOE_MIGRATED_REVID=97776570
+
+commit 612aaa17a6cd84000779d01a03de37bcac00a1f3
+Author: cpovirk <cpovirk@google.com>
+Date:   Tue Jul 7 07:47:40 2015 -0700
+
+    Use j2objc-annotations instead of local annotations.
+    -------------
+    Created by MOE: http://code.google.com/p/moe-java
+    MOE_MIGRATED_REVID=97671363
+
+commit 63b5409df16866e5408f31fc2987dea6cfb716fa
+Author: kstanger <kstanger@google.com>
+Date:   Wed Jun 24 11:41:52 2015 -0700
+
+    Group annotation dependencies at the top.
+    -------------
+    Created by MOE: http://code.google.com/p/moe-java
+    MOE_MIGRATED_REVID=96795721
+
+commit 590036122e482c28affda893efd5e0e2e01732ee
+Author: cushon <cushon@google.com>
+Date:   Tue May 19 14:01:22 2015 -0700
+
+    Complete the migration of static analysis annotations to Error Prone
+    -------------
+    Created by MOE: http://code.google.com/p/moe-java
+    MOE_MIGRATED_REVID=94023780
+
+commit d812ccf2c25d82a23619ec6bb377d58ce8882e28
+Author: kak <kak@google.com>
+Date:   Thu Feb 26 16:42:10 2015 -0800
+
+    Add missing @Nullable annotations to Table and BiMap
+    -------------
+    Created by MOE: http://code.google.com/p/moe-java
+    MOE_MIGRATED_REVID=87297784
+
+commit af3f8d18044ae5854deaa16fd534731490b49d97
+Author: Chris Povirk <cpovirk@google.com>
+Date:   Thu Oct 16 16:28:50 2014 -0700
+
+    This CL fixes null annotations in com.google.common.primitives
+    
+    The annotations on the tryParse() methods are inconsistent. Many of them don't have @Nullable annotations. This is problematic, because: a) the method can return null; and b) the package itself is annotated with @ParametersAreNonnullByDefault. This causes Eclipse to display dead code warnings when checking the return value from these methods.
+    
+    I've included the @CheckForNull annotation, since I saw you guys using it already. Technically, this isn't required and @Nullable by itself should be fine. But it doesn't hurt to have both. Also Eclipse doesn't understand @CheckForNull.
+    
+    I also threw in a few @Nullable on equals() methods that were missing.
+    -------------
+    Created by MOE: http://code.google.com/p/moe-java
+    MOE_MIGRATED_REVID=77896210
+
+commit e7f902c768e974552f954a1a55970d6ef39dc6fb
+Author: Chris Povirk <cpovirk@google.com>
+Date:   Mon Sep 15 08:26:48 2014 -0700
+
+    Fixed a FreshValueGenerator bug that causes failure in generating fresh values recursively when there are finite number of distinct values provided by user.
+    
+    The fix is to make sure the "freshness" AtomicInteger is only incremented at the end of generating a fresh value for user code. Recursive generation of values for nested types (such as generating the K and V for a Map<K, V>) doesn't increment the freshness.
+    
+    This ensures that for finite set of distinct values, we don't ever skip distinct value.
+    
+    Along the way, the special casing for Optional had to be changed. So I just spent extra effort supporting an @Empty annotation that can be used to generate "empty" value for any arbitrary type.
+    
+    Originally, I tried to return empty collections. But some existing tests failed because the classes don't always like being injected with empty collections or maps (they may have a precondition check to reject empty collection).
+    
+    So @Empty is only applied to Optional, Range and ConcurrentMap.
+    -------------
+    Created by MOE: http://code.google.com/p/moe-java
+    MOE_MIGRATED_REVID=75542159
+
+commit 70abca0b7e5f21d4e6e8686c7a2098f28f1a58cd
+Author: Chris Povirk <cpovirk@google.com>
+Date:   Thu Sep 11 14:12:40 2014 -0700
+
+    Fix @GuardedBy annotations with invalid lock expressions.
+    
+    - fix typos
+    - qualified 'this' accesses can only be used for enclosing classes: the
+    declaring class is accessed as 'this', enclosing classes are accessed as
+    'OuterClass.this'
+    - replace annotations being used for general documentation with comments
+    -------------
+    Created by MOE: http://code.google.com/p/moe-java
+    MOE_MIGRATED_REVID=75324114
+
+commit e3ee2cb617d0381c2464dd75a28460d832e92a2a
+Author: Chris Povirk <cpovirk@google.com>
+Date:   Thu Sep 11 10:22:43 2014 -0700
+
+    Fix @GuardedBy annotations with invalid lock expressions.
+    
+    - fix typos
+    - qualified 'this' accesses can only be used for enclosing classes: the
+    declaring class is accessed as 'this', enclosing classes are accessed as
+    'OuterClass.this'
+    - replace annotations being used for general documentation with comments
+    -------------
+    Created by MOE: http://code.google.com/p/moe-java
+    MOE_MIGRATED_REVID=75302901
+
+commit 00512e5a16832c9ea983ae0894fc9f47025291d5
+Author: Colin Decker <cgdecker@google.com>
+Date:   Wed Jul 16 15:27:05 2014 -0400
+
+    Fix errors in @GuardedBy annotations.
+    
+    @GuardedBy("Segment.this") refers to an enclosing class named 'Segment';
+    @GuardedBy("this") refers to the current class.
+    -------------
+    Created by MOE: http://code.google.com/p/moe-java
+    MOE_MIGRATED_REVID=70991665
+
+commit f1e5de9761dca6f12714bd96deef2c9a634b06d3
+Author: Colin Decker <cgdecker@google.com>
+Date:   Wed Jun 18 18:30:03 2014 -0400
+
+    Disable incorrect @GuardedBy annotations.
+    
+    The @GuardedBy annotations in this CL did not follow the JCIP semantics: either
+    they referred to locks that did not exist, or they were being used for general
+    documentation.
+    -------------
+    Created by MOE: http://code.google.com/p/moe-java
+    MOE_MIGRATED_REVID=69311266
+
+commit cd997b58a6e34cb0222339bc11cc99451b0a8632
+Author: Chris Povirk <cpovirk@google.com>
+Date:   Fri Jun 13 11:10:08 2014 -0400
+
+    Disable incorrect @GuardedBy annotations.
+    
+    The @GuardedBy annotations in this CL did not follow the JCIP semantics: either
+    they referred to locks that did not exist, or they were being used for general
+    documentation.
+    
+    The annotations are being replaced with comments in preparation for enabling
+    static analysis of @GuardedBy annotations.
+    
+    Tested:
+    TAP presubmits for global presubmit queue
+    []Some tests failed; test failures are believed to be unrelated to this CL
+    -------------
+    Created by MOE: http://code.google.com/p/moe-java
+    MOE_MIGRATED_REVID=69093384
+
+commit 32d7dc732dfee93c82942e2d776adbbc02bd85ba
+Author: Chris Povirk <cpovirk@google.com>
+Date:   Wed Jun 11 12:59:02 2014 -0400
+
+    Fix EventBus to not include bridge methods when registering subscribers under Java 8. Annotations are included on bridge methods in Java 8 where they weren't before.
+    
+    (Guava issue 1549.)
+    -------------
+    Created by MOE: http://code.google.com/p/moe-java
+    MOE_MIGRATED_REVID=68654467
+
+commit 1103846afa237b6c9432259c10daa95033ec8578
+Author: Chris Povirk <cpovirk@google.com>
+Date:   Wed May 7 17:29:58 2014 -0400
+
+    Disable PackageSanityTests null-pointer testing for LongAdder, as we don't want to patch Striped64 to include @Nullable annotations.
+    Also, remove that annotation.
+    -------------
+    Created by MOE: http://code.google.com/p/moe-java
+    MOE_MIGRATED_REVID=66293925
+
+commit cdcc5397439b2e7441180a4712d7163afa451a6d
+Author: Chris Povirk <cpovirk@google.com>
+Date:   Wed May 7 16:51:59 2014 -0400
+
+    Migrate calls to Annotation.getClass() to Annotation.annotationType().
+    
+    Annotation.getClass() returns a proxy class generated at runtime that is not particularly useful -- it returns false for isAnnotation(), for example -- where annotationType() actually returns the type associated with the annotation (e.g. MyAnnotation.class for @MyAnnotation).
+    
+    Tested:
+    TAP --sample for global presubmit queue
+    []
+    -------------
+    Created by MOE: http://code.google.com/p/moe-java
+    MOE_MIGRATED_REVID=65806476
+
+commit 2ec1b12a1af770e39d7a837858097a6470c4516a
+Author: Chris Povirk <cpovirk@google.com>
+Date:   Wed Apr 9 18:51:05 2014 -0400
+
+    Make common.reflect build and pass tests against both Java 7 and Java 8.
+    
+    In particular, Java 7 had both the TypeVariable and AnnotatedElement interfaces, which were unrelated.  In Java 8, TypeVariable extends AnnotatedElement, and gained a method getAnnotatedBounds(), returning an AnnotatedType[], where AnnotatedType was an interface introduced in Java 8.
+    
+    We now have TypeVariableImpl extend a class NotAnnotatedElement, which provides an implementation for AnnotatedElement where no annotations are present, and throw UnsupportedOperationException on TypeVariableImpl.getAnnotatedBounds().
+    -------------
+    Created by MOE: http://code.google.com/p/moe-java
+    MOE_MIGRATED_REVID=64659484
+
+commit 5f0c227364a48603a4e8bb560ce407c33f090a99
+Author: Chris Povirk <cpovirk@google.com>
+Date:   Fri Jan 10 11:10:31 2014 -0500
+
+    Add @CheckReturnValue annotation to Objects.equal() so that error-prone
+    enforces that the return value is used.
+    -------------
+    Created by MOE: http://code.google.com/p/moe-java
+    MOE_MIGRATED_REVID=59280111
+
+commit b7f128cfc9bf01e1b5d62af7640927fafdd07619
+Author: Colin Decker <cgdecker@google.com>
+Date:   Fri Jan 3 11:37:53 2014 -0500
+
+    Miscellaneous cleanups:
+    - Remove unused ImmutableSortedMultiset.Builder.comparator.
+    - Change @link to @linkplain where appropriate, and fix a couple busted @link tags seen along the way (based on a search for '{@link\b[^}]*([ *]+[^ *}]*[^ *}]*[^ *},]){3}'). (Change one @link in ServiceManager to @code.) In a couple cases (TimeUtil, ServiceModule), the text ought to be *partially* code font, but I haven't taken further action
+    - Strip Converter.from implementation from Guava, since Converter.from itself is stripped.
+    - Run trivial RunnablesTest under GWT.
+    - Remove a few instances of "$inheritDoc," which should have been "@inheritDoc" and wasn't necessary anyway.
+    - Remove per-method @GwtIncompatible annotations from SmallCharMatcher, which is entirely @GwtIncompatible.
+    - Remove stray blank line in AbstractMapBasedMultimap.
+    - Insert missing space in UninterruptiblesTest failure message.
+    - Remove extra space in WrappingExecutorService.wrapTask Javadoc.
+    -------------
+    Created by MOE: http://code.google.com/p/moe-java
+    MOE_MIGRATED_REVID=59001342
+
+commit e7887ccb996ac5d36bc22714671767e80a24a5a8
+Author: Chris Povirk <cpovirk@google.com>
+Date:   Mon Dec 30 14:13:55 2013 -0500
+
+    Small Converter cleanups:
+    -move all @annotations to individual lines
+    -fix some @Nullable annotations
+    -------------
+    Created by MOE: http://code.google.com/p/moe-java
+    MOE_MIGRATED_REVID=58824450
+
+commit 8f062a880a3102d6d8f909c0754d3d2cd468c9dd
+Author: Kurt Kluever <kak@google.com>
+Date:   Mon Dec 16 18:21:29 2013 -0500
+
+    Remove DI annotations from ServiceManager.
+    
+    If this breaks your server due to a missing @Inject constructor on ServiceManager, please install a com.google.common.util.concurrent.ServiceModule in your injector to provide an identical binding.
+    
+    Tap global presubmit has been run with this change multiple times to try to identify all servers that would break when this constructor is deleted, all those injectors/servers have been fixed.  However, if your injector does not have a tap test that would expose this issue, this cl may break your server.  The fix is simple, please let me know and i can send advice/followup cls.
+    
+    This is the final step of a Large Scale Change ([]across [].  See https://docs.google.com[]document/d/1HxavPxi9152BGIhWhfpwXhrj2Roagq4rgj5f-PiBGl0/edit?usp=sharing for more information.
+    -------------
+    Created by MOE: http://code.google.com/p/moe-java
+    MOE_MIGRATED_REVID=58291439
+
+commit cff5df6b48b892574975dc045f6ed3552d4b3d1d
+Author: Christian Edward Gruber <cgruber@google.com>
+Date:   Wed Oct 30 15:38:47 2013 -0700
+
+    Remove beans.xml from Guava.
+    
+    It no longer serves any purpose now that there are no JSR-330 annotations in
+    Guava, and it was a problem to begin with.
+    -------------
+    Created by MOE: http://code.google.com/p/moe-java
+    MOE_MIGRATED_REVID=55883109
+
+commit 53a99310959a8d91420162a1116225acce5082dd
+Author: Colin Decker <cgdecker@google.com>
+Date:   Wed Oct 30 14:50:09 2013 -0400
+
+    Remove the jsr-330 annotations from ServiceManager and remove javax.inject from
+    the guava pom.xml since this was the only use.
+    
+    See https://code.google.com/p/guava-libraries/issues/detail?id=1433 for the
+    hilariously depressing rationale.
+    -------------
+    Created by MOE: http://code.google.com/p/moe-java
+    MOE_MIGRATED_REVID=55868332
+
+commit 1174bca02b652b051007b51c6a7b6ef44561e6de
+Author: Chris Povirk <cpovirk@google.com>
+Date:   Wed Aug 28 18:25:26 2013 -0400
+
+    Bring @GwtCompatible annotations into line with reality.
+    Future CL 51540044 will add tests to verify this automatically.
+    -------------
+    Created by MOE: http://code.google.com/p/moe-java
+    MOE_MIGRATED_REVID=51547670
+
+commit 71e08b2de575c87e8f51f8e0cd678f782e87eb07
+Author: Chris Povirk <cpovirk@google.com>
+Date:   Tue Jun 25 17:19:54 2013 -0400
+
+    Remove JUnit4 @Test annotations from JUnit 3 tests, where they're no-ops.
+    -------------
+    Created by MOE: http://code.google.com/p/moe-java
+    MOE_MIGRATED_REVID=48455067
+
+commit ef05341d7de489e653e4abac4294ccff409704a2
+Author: Kurt Kluever <kak@google.com>
+Date:   Wed May 29 17:33:27 2013 -0400
+
+    Migrate Caliper benchmarks from the old, superclass-based API to the new, annotation-based API.
+    
+    More information: LSC: Caliper Benchmark API migration (https://docs.google.com[]document/d/15KUhmIsTVn0EA9u2S5es4Otn5k3Lo_ZHhkDsT9LYRKc)
+    
+    ATTENTION REVIEWERS: This is a (mostly) scripted, behavior-preserving change. It should have the following effect:
+    - No longer extend c.g.caliper.legacy.Benchmark
+    - setUp method overrides are now annotated with @BeforeExperiment
+    - tearDown method overrides are now annotated with @AfterExperiment
+    - time methods are now annotated with @Benchmark and the time prefix has been removed
+    
+    Tested:
+    ran test_all_benchmarks
+    -------------
+    Created by MOE: http://code.google.com/p/moe-java
+    MOE_MIGRATED_REVID=47282574
+
+commit 7a4b20a23965944cdcf97bc67643be5672816df2
+Author: Christian Edward Gruber <cgruber@google.com>
+Date:   Mon May 13 12:07:36 2013 -0700
+
+    Use com.google.caliper.legacy.Benchmark instead of com.google.caliper.Benchmark. This CL facilitates the move from a superclass-based API to an annotation-based API. Benchmark and legacy.Benchmark are equivalent classes, so this is NOT a behavior changing CL.
+    
+    -------------
+    Created by MOE: http://code.google.com/p/moe-java
+    MOE_MIGRATED_REVID=46556497
+
+commit 9129e5e50020f84c7a859726b42ce211d2e37e5f
+Author: Kurt Kluever <kak@google.com>
+Date:   Mon Feb 4 13:05:16 2013 -0500
+
+    Miscellaneous documentation fixes and internal cleanups.
+    - Remove potentially misleading "it cannot be started/stopped more than once" from Stopwatch exception messages.
+    - Fix TreeTraverser ASCII art.
+    - Remove inaccurate @GwtCompatible annotation from FeatureUtil.
+    - Fix mistaken duplicate words ("the the," etc.).
+    - Strip *all* of benchmark running instructions from CharMatcherBenchmark, and preemptively strip instructions from internal escapers benchmarks.
+    - Remove test <echo> from ant section of pom.xml.
+    - Add @Nullable to StandardBaseEncoding's other constructor's paddingChar parameter.
+    - Remove stale comment from Futures. (UninterruptibleFuture is long dead.)
+    - Update name of Truth GWT module.
+    -------------
+    Created by MOE: http://code.google.com/p/moe-java
+    MOE_MIGRATED_REVID=42036409
+
+commit 02e459aacc3b534a580cd656b2e5d167b8b45026
+Author: Colin Decker <cgdecker@google.com>
+Date:   Mon Jan 14 17:04:55 2013 -0500
+
+    Reconcile @GwtIncompatible (and @GoogleInternal) annotations with the build-system lists of GWT-compatible (and GWT-compatible emulated) files.
+    The main effect of this is to make InternetDomainName available under GWT in Guava. (It somehow seems to have worked anyway inside Google.) http://code.google.com/p/guava-libraries/issues/detail?id=1253
+    It's also necessary to make UnsignedInteger.multiply() (which is already deprecated) unavailable under GWT, since it is a simple passthrough to the times() method, which is also unavailable under GWT.
+    -------------
+    Created by MOE: http://code.google.com/p/moe-java
+    MOE_MIGRATED_REVID=41134674
+
+commit 7002f6efa3a10d614063c8e4333c249c89425247
+Author: Chris Povirk <cpovirk@google.com>
+Date:   Tue Dec 4 17:42:49 2012 -0500
+
+    Remove @Beta annotations from definitely stable standardXXX methods from ForwardingXXX classes.
+    -------------
+    Created by MOE: http://code.google.com/p/moe-java
+    MOE_MIGRATED_REVID=39629391
+
+commit 3b9b68187965f2c16f7f3e85ae3cbbff36431dae
+Author: Kurt Kluever <kak@google.com>
+Date:   Thu Aug 23 19:42:40 2012 -0400
+
+    Added ForwardingWrapperTester to test forwarders. It lacks guava annotations. Please advise. Thanks
+    -------------
+    Created by MOE: http://code.google.com/p/moe-java
+    MOE_MIGRATED_REVID=33116315
+
+commit c399bb5be8c6b477656a31927545dbd46eafbc7d
+Author: Kurt Kluever <kak@google.com>
+Date:   Tue Aug 21 00:30:13 2012 -0400
+
+    Fix incorrect @SuppressWarnings annotations:
+    
+    @SuppressWarnings("deprecated")
+    
+    should be:
+    
+    @SuppressWarnings("deprecation")
+    
+    Tested:
+    TAP presubmits for global presubmit queue
+    []
+    -------------
+    Created by MOE: http://code.google.com/p/moe-java
+    MOE_MIGRATED_REVID=33053189
+
+commit 1161d53ad0b9da0e9fc14a97607c78f1a0b555eb
+Author: Kurt Kluever <kak@google.com>
+Date:   Tue Aug 21 00:24:13 2012 -0400
+
+    Add enough @Nullable annotations to make Findbugs happy.
+    -------------
+    Created by MOE: http://code.google.com/p/moe-java
+    MOE_MIGRATED_REVID=32971318
+
+commit 5c2ee466c3d270bf498e352c081bad27f074344b
+Author: Kurt Kluever <kak@google.com>
+Date:   Tue Jun 12 09:49:41 2012 -0400
+
+    Add @Nullable annotations to computing map/cache implementations to satisfy Findbugs.
+    -------------
+    Created by MOE: http://code.google.com/p/moe-java
+    MOE_MIGRATED_REVID=30931750
+
+commit e98dd10dee2935c433e8447a7831bc6692f9b503
+Author: Kurt Kluever <kak@google.com>
+Date:   Tue Jun 12 09:47:31 2012 -0400
+
+    Assorted cleanup:
+    
+    - Add @Nullable annotations to LinkedHashMultimap to satisfy Findbugs.
+    - Fix indentation in FunnelsTest.
+    - Remove latent references to Truth from MOE config.
+    -------------
+    Created by MOE: http://code.google.com/p/moe-java
+    MOE_MIGRATED_REVID=30925508
+
+commit a2f0856bfd7a9c3a70306c3cd91906a9ebb768d8
+Author: Chris Povirk <cpovirk@google.com>
+Date:   Mon May 21 17:28:19 2012 -0400
+
+    De-betaify c.g.c.annotations.Beta
+    De-betaify c.g.c.base.Ascii
+    -------------
+    Created by MOE: http://code.google.com/p/moe-java
+    MOE_MIGRATED_REVID=30310396
+
+commit 4e65ce73450ce04a77f6c03757de26210bf7622f
+Author: Chris Povirk <cpovirk@google.com>
+Date:   Tue May 8 11:05:05 2012 -0400
+
+    More assorted cleanup:
+    - reenable Multiset NullPointerTester tests
+    - fix @Nullable annotations and add checkNotNull as necessary to get them to pass
+    - remove email addresses from @author tags
+    - update explanation of why we can't use Arrays.copyOfRange
+    - remove completed TODO from fuzzyEquals
+    - fix out-of-date AbstractMapBasedMultiset comment
+    -------------
+    Created by MOE: http://code.google.com/p/moe-java
+    MOE_MIGRATED_REVID=29718341
+
+commit 98db310a151c40ca2b044d062a6d1ef230a8d6eb
+Author: Gregory Kick <gak@google.com>
+Date:   Tue Apr 10 13:52:44 2012 -0500
+
+    Fix Guava GWT module:
+    - Issue 961: Release java.nio.charset.Charset module to Guava.
+    - Remove bogus @GwtCompatible annotation from ForwardingDeque... and remove commented annotation from MinMaxPriorityQueue.  (IIRC, we have a hack in one of our many levels of processing that just looks for the literal string "@GwtCompatible.")
+    -------------
+    Created by MOE: http://code.google.com/p/moe-java
+    MOE_MIGRATED_REVID=29041128
+
+commit 05ba41fc65d2bad97a35cc5f368e6785d287c7fa
+Author: Kurt Kluever <kak@google.com>
+Date:   Fri Mar 16 18:15:21 2012 -0400
+
+    Dump some more blahblah into the @Beta annotation to try to clear up some persistent misconceptions.
+    -------------
+    Created by MOE: http://code.google.com/p/moe-java
+    MOE_MIGRATED_REVID=28454189
+
+commit ca8467cff1588a95df50bc8cf2ae171953e36da4
+Author: Chris Povirk <cpovirk@google.com>
+Date:   Thu Jan 19 14:14:09 2012 -0500
+
+    Eliminate unneeded Annotations dependency.
+    -------------
+    Created by MOE: http://code.google.com/p/moe-java
+    MOE_MIGRATED_REVID=26894404
+
+commit 66939aa3b89c02fb5c8a64e137689978dedf97bc
+Author: Charles Fry <fry@google.com>
+Date:   Mon Dec 12 10:01:01 2011 -0500
+
+    Remove @GuardedBy annotation from all public methods of Monitor.
+    
+    Rationale: It's arguably incorrect for leave, which gives up the lock. It doesn't make sense for the other methods either because "lock" is meaningless to users of the class. Furthermore, every one of these methods checks whether the lock is held if necessary, so there's not actually any danger in calling them incorrectly (they fail fast).
+    -------------
+    Created by MOE: http://code.google.com/p/moe-java
+    MOE_MIGRATED_REVID=26114296
+
+commit 125c1b340ad55cc3fcb30db77cadab6c152339a7
+Author: Charles Fry <fry@google.com>
+Date:   Fri Oct 21 08:13:09 2011 -0400
+
+    Add GWT tests for cache and labs.concurrent.
+    These are the last two packages that use java_and_gwt_library but not java_and_gwt_tests (excluding annotations and labs.converter, both of whose GWT-compatible classes are all annotations).
+    The newly added tests discovered that Cache.gwt.xml contains dependencies that the package doesn't declare, and I've removed them.
+    -------------
+    Created by MOE: http://code.google.com/p/moe-java
+    MOE_MIGRATED_REVID=24827412
+
+commit 055ca91078cdd419a49a2ab9d3a134d358e685fe
+Author: Charles Fry <fry@google.com>
+Date:   Wed Sep 14 16:14:10 2011 -0400
+
+    Eliminate GWT serialization warnings for HashBasedTable/TreeBasedTable and TreeMultiset.	As of <http://gwt-code-reviews.appspot.com/1544803>, GWT recognizes any annotation named @GwtTransient.
+
+commit 13525d2e9b607ec2770e90116b87472c1f9a6c70
+Author: guava.mirrorbot@gmail.com <guava.mirrorbot@gmail.com@8138a162-5c33-11de-8abc-d1c337b90d21>
+Date:   Fri Jun 17 11:37:43 2011 +0000
+
+    - add invalidateAll
+    - rename getChecked to get
+    - undeprecate (but discourage) apply
+    - maintain Nullable annotations in AbstractCache
+    - disallow null values
+    
+    Revision created by MOE tool push_codebase.
+    MOE_MIGRATION=2304
+    
+    
+    git-svn-id: https://guava-libraries.googlecode.com/svn/trunk@467 8138a162-5c33-11de-8abc-d1c337b90d21
+
+commit 434f70ba6a6e235626d929d0aa98f895e7e9230b
+Author: guava.mirrorbot@gmail.com <guava.mirrorbot@gmail.com@8138a162-5c33-11de-8abc-d1c337b90d21>
+Date:   Tue Apr 12 20:17:38 2011 +0000
+
+    - include jsr class files in gwt jar
+    - add manifest annotations to jar files
+    
+    Revision created by MOE tool push_codebase.
+    MOE_MIGRATION=1304
+    
+    
+    git-svn-id: https://guava-libraries.googlecode.com/svn/trunk@307 8138a162-5c33-11de-8abc-d1c337b90d21
+
+commit efc3bcd50ef740e3dabc0a15eabd82331242c26d
+Author: guava.mirrorbot@gmail.com <guava.mirrorbot@gmail.com@8138a162-5c33-11de-8abc-d1c337b90d21>
+Date:   Tue Mar 15 11:48:06 2011 +0000
+
+    Automatic addition of @Override annotations
+    
+    Revision created by MOE tool push_codebase.
+    MOE_MIGRATION=850
+    
+    
+    git-svn-id: https://guava-libraries.googlecode.com/svn/trunk@255 8138a162-5c33-11de-8abc-d1c337b90d21
+

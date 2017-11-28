@@ -1,0 +1,50 @@
+commit 123614539de017e88ab37bbf0c406927963df1ca
+Author: Tom Morris <tfmorris@gmail.com>
+Date:   Tue Aug 2 19:30:23 2011 +0000
+
+    Add missing @Override annotations
+    
+    git-svn-id: http://google-refine.googlecode.com/svn/trunk@2171 7d457c2a-affb-35e4-300a-418c747d4874
+
+commit b82448037a113e7300eb8c5c002c4dd59d57f14a
+Author: Tom Morris <tfmorris@gmail.com>
+Date:   Fri Jun 24 04:01:47 2011 +0000
+
+    Add @Override annotations. No functional changes.
+    
+    git-svn-id: http://google-refine.googlecode.com/svn/trunk@2124 7d457c2a-affb-35e4-300a-418c747d4874
+
+commit 2cd3ae03d0fdcc2d60a32f139faf6e01c4ad951c
+Author: Tom Morris <tfmorris@gmail.com>
+Date:   Tue Jun 7 23:51:16 2011 +0000
+
+    @Override annotations.  No functional changes.
+    
+    git-svn-id: http://google-refine.googlecode.com/svn/trunk@2092 7d457c2a-affb-35e4-300a-418c747d4874
+
+commit eebc225abc01cd2b91d3664083b49443066524e1
+Author: Tom Morris <tfmorris@gmail.com>
+Date:   Mon Jun 6 22:35:01 2011 +0000
+
+    Add missing @Override annotations (issue 316, 317, 319, 320 among others)
+    
+    git-svn-id: http://google-refine.googlecode.com/svn/trunk@2089 7d457c2a-affb-35e4-300a-418c747d4874
+
+commit b4935f576c25552bb36054dbdf04ad5a0a67757d
+Author: David Huynh <dfhuynh@gmail.com>
+Date:   Sun Feb 21 07:32:16 2010 +0000
+
+    Tweaked recon type guessing heuristic: remove "role" and "annotation" types, and rank types based on result orders rather than relevance scores.
+    
+    git-svn-id: http://google-refine.googlecode.com/svn/trunk@114 7d457c2a-affb-35e4-300a-418c747d4874
+
+commit a61f35079acbf96ada8767e62eec16191dfdbe6d
+Author: Stefano Mazzocchi <stefano@apache.org>
+Date:   Sun Feb 7 06:47:52 2010 +0000
+
+    make eclipse happier by removing @Override annotations when really it's an interface method implementation
+    (no functional changes)
+    
+    
+    git-svn-id: http://google-refine.googlecode.com/svn/trunk@62 7d457c2a-affb-35e4-300a-418c747d4874
+

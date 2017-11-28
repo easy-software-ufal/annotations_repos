@@ -1,0 +1,3339 @@
+commit eb3ead6561fbd7b6c2f89ea48978aa8e182bdb0f
+Author: Clinton Gormley <clint@traveljury.com>
+Date:   Fri Oct 6 11:56:11 2017 +0200
+
+    Update type-field.asciidoc
+    
+    Fixed asciidoc syntax on deprecated annotation
+
+commit 204df2a1991f7e5f676d43fa6986b7c02f0a6d52
+Author: Boaz Leskes <b.leskes@gmail.com>
+Date:   Fri Jan 27 23:15:51 2017 +0100
+
+    fix @TestLogging annotation
+
+commit e36e5fc9941a6ddd3816690ca6e6e04312bfd521
+Author: Nik Everett <nik9000@gmail.com>
+Date:   Fri Jan 27 12:37:35 2017 -0500
+
+    Remove annotation
+    
+    Not allowed.
+
+commit 0035f5ab95bed4434c65fa5b3c392ded4f91dc57
+Author: Yannick Welsch <yannick@welsch.lu>
+Date:   Fri Jan 6 16:46:26 2017 +0100
+
+    Fix compilation of benchmarks on JDK 9
+    
+    The JDK 9 compiler (b151) emits the warning "No processor claimed any of these annotations" for annotations that would be runtime annotation. Maybe a
+    regression from https://bugs.openjdk.java.net/browse/JDK-8039469. This is a quick fix so that compilation works again.
+
+commit ddf4a463f3f006ae8c6e899d8f5c4a52bdff06b7
+Author: Jason Tedor <jason@tedor.me>
+Date:   Fri Dec 23 06:48:50 2016 -0500
+
+    Reject invalid test logging annotations
+    
+    Today we silently ignore invalid test logging annotations. This commit
+    rejects these annotations, failing the processing of the annotation and
+    aborting the test.
+
+commit 215874aff3af36e24eb134e170a50d2990ad56d6
+Author: Boaz Leskes <b.leskes@gmail.com>
+Date:   Fri Dec 23 09:03:43 2016 +0100
+
+    process TestLogging annotation value in prefix-first order
+    
+    We have to sort the logger names so they wouldn't override each other. Processing org.elasticsearch:DEBUG after org.elasticsearch.transport:TRACE resets the setting of the later
+
+commit d6c2b4f7c578a6013dfd57806e011030d1647482
+Author: Boaz Leskes <b.leskes@gmail.com>
+Date:   Tue Nov 15 13:42:26 2016 +0000
+
+    Adapt InternalTestCluster to auto adjust `minimum_master_nodes` (#21458)
+    
+    #20960 removed `LocalDiscovery` and we now use `ZenDiscovery` in all our tests. To keep cluster forming fast, we are using a `MockZenPing` implementation which uses static maps to return instant results making master election fast. Currently, we don't set `minimum_master_nodes` causing the occasional split brain when starting multiple nodes concurrently and their pinging is so fast that it misses the fact that one of the node has elected it self master. To solve this, `InternalTestCluster` is modified to behave like a true cluster and manage and set `minimum_master_nodes` correctly with every change to the number of nodes.
+    
+    Tests that want to manage the settings themselves can opt out using a new `autoMinMasterNodes` parameter to the `ClusterScope` annotation.
+    
+    Having `min_master_nodes` set means the started node may need to wait for other nodes to be started as well. To combat this, we set `discovery.initial_state_timeout` to `0` and wait for the cluster to form once all node have been started. Also, because a node may wait and ping while other nodes are started, `MockZenPing` is adapted to wait rather than busy-ping.
+
+commit 6418f89feb55970c04474e3cced6ff1031725e39
+Author: Nik Everett <nik9000@gmail.com>
+Date:   Fri Oct 7 13:51:08 2016 -0400
+
+    Remove NodeServicesProvider
+    
+    Instead provide services where they are needed. The class worked
+    well as a temporary measure to easy removal of guice from the index
+    level but now we can remove it entirely.
+    
+    -1 @Inject annotation
+
+commit 102dac2cd9ceec3721b7f84216bdb3cc462fecdc
+Author: javanna <cavannaluca@gmail.com>
+Date:   Fri Sep 2 15:50:51 2016 +0200
+
+    JvmStats to implement Writeable rather than Streamable
+    
+    also removed null checks in toXContent for subobjects that cannot be null and added @Nullable annotation for memory pools
+
+commit e03fb602cd51988378af71a2d85b58fff839a009
+Author: Nik Everett <nik9000@gmail.com>
+Date:   Tue Sep 6 10:46:50 2016 -0400
+
+    Add CONSOLE places where it is obviously missing
+    
+    These places already have other annotations like `// TEST` and
+    `// TESTSETUP` so they are already in console format.
+
+commit c13513ed6109da2d4fb594a3bb4dd7933920e26a
+Author: Daniel Mitterdorfer <daniel.mitterdorfer@gmail.com>
+Date:   Tue Aug 23 15:15:22 2016 +0200
+
+    Allow to enable annotation processing explicitly (#20117)
+    
+    In 1e91f3b we disabled annotation processors globally. However, some
+    project like JMH need annotation processing, so we add an ability to
+    selectively enabled annotation processing for certain projects by
+    setting an external property in the corresponding Gradle build script.
+    
+    Note that `javac` would allow to set a specific annotation processor
+    with the command line option `-processor`. However, due to a bug in
+    Gradle we we cannot use this option and need to enable all annotation
+    processors.
+
+commit 1e91f3b7796a3ee0764df9393b1699e4d5f085b4
+Author: Jason Tedor <jason@tedor.me>
+Date:   Wed Aug 10 10:42:28 2016 -0400
+
+    Disable all annotation processors
+    
+    Some unused annotation processors caused build-time failures. Instead,
+    we should just be explicit about which annotation processors we will use
+    (if any) with additional command-line flags.
+    
+    Relates #19919
+
+commit 1bd0482393b5000a6d8f13703c8d8aae46302cf0
+Author: Mike McCandless <mikemccand@apache.org>
+Date:   Wed Jun 22 09:52:54 2016 -0400
+
+    don't include indexing buffer in cluster stats; randomize indexing buffer in NodeInfoStreamingTests; add @Nullable annotation
+
+commit 3cd201e67e49e1fd6cd36ab77777eb49737c8e1b
+Author: javanna <cavannaluca@gmail.com>
+Date:   Mon Jun 13 12:02:09 2016 +0200
+
+    [TEST] add comment on using animal-sniffer suppress annotation
+
+commit a5e329e5634e2b6d438c8d9b21e21153c0aabd49
+Author: javanna <cavannaluca@gmail.com>
+Date:   Fri Jun 10 10:11:21 2016 +0200
+
+    [TEST] use animalsniffer annotation @IgnoreJRERequirement (similar to @SuppressForbidden) rather than exclusion pattern
+
+commit bd773359d5b603bcb5db8a41bbbda6da5b6c8dd1
+Author: javanna <cavannaluca@gmail.com>
+Date:   Thu Jun 9 17:39:52 2016 +0200
+
+    [TEST] add SuppresForbidden annotation for client project
+
+commit 318a4e3ef6e4594619cbe3adcc41494fa23fa569
+Author: Boaz Leskes <b.leskes@gmail.com>
+Date:   Fri May 27 08:44:20 2016 +0200
+
+    Introduce dedicated master nodes in testing infrastructure (#18514)
+    
+    This PR changes the InternalTestCluster to support dedicated master nodes. The creation of dedicated master nodes can be controlled using a new `supportsMasterNodes` parameter to the ClusterScope annotation. If set to true (the default), dedicated master nodes will randomly be used. If set to false,  no master nodes will be created and data nodes will also be allowed to become masters. If active, test runs will either have 1 or 3 masternodes
+
+commit fcd6a083666d59fae04a500746d36d27b85d759f
+Author: Isabel Drost-Fromm <isabel.drostfromm@elasticsearch.com>
+Date:   Thu May 19 15:11:43 2016 +0200
+
+    Add CONSOLE annotations to request body docs
+
+commit 77c4970504040c8587d1631de3599e5755eb241d
+Merge: 6dacac4 333fe25
+Author: Isabel Drost-Fromm <isabel.drostfromm@elastic.co>
+Date:   Wed May 18 11:20:41 2016 +0200
+
+    Merge pull request #18423 from MaineC/docs/add_console_to_sort
+    
+    Add CONSOLE annotation to sort documentation
+
+commit 3ee7358fea999d930a8674fa5a784a0ddb48e972
+Merge: 5485d5c 20aafb1
+Author: Isabel Drost-Fromm <isabel.drostfromm@elastic.co>
+Date:   Tue May 17 20:56:33 2016 +0200
+
+    Merge pull request #18420 from elastic/revert-18211-docs/add_autosense_to_query_dsl
+    
+    Revert "Add Autosense annotation for query dsl testing"
+
+commit 20aafb1196192d4f9f7faea8ce9a36b278e501a1
+Author: Isabel Drost-Fromm <isabel.drostfromm@elastic.co>
+Date:   Tue May 17 20:55:56 2016 +0200
+
+    Revert "Add Autosense annotation for query dsl testing"
+
+commit 5485d5c0102d2fbd002cd2822e3f35db90f49162
+Merge: 978c1e3 2d402c7
+Author: Isabel Drost-Fromm <isabel.drostfromm@elastic.co>
+Date:   Tue May 17 20:55:45 2016 +0200
+
+    Merge pull request #18211 from MaineC/docs/add_autosense_to_query_dsl
+    
+    Add Autosense annotation for query dsl testing
+
+commit 48ea9137da01a589762cd7d9a0dce69790b3516c
+Author: Isabel Drost-Fromm <isabel.drostfromm@elasticsearch.com>
+Date:   Tue May 17 15:14:37 2016 +0200
+
+    Add CONSOLE annotation to sort documentation
+    
+    This adds CONSOLE to sort docs in order to automatically execute the doc
+    snippets. Fixes a few minor types along the way.
+    
+    Relates to #18160
+
+commit e486560ea85134c62504aa9df5a3fa485060717b
+Author: Isabel Drost-Fromm <isabel.drostfromm@elasticsearch.com>
+Date:   Mon May 9 16:13:07 2016 +0200
+
+    Add Autosense annotation for query dsl testing
+    
+    this adds the autosense annotation to a couple of query dsl
+    docs files and fixes the snippets to work in the tests along
+    the way.
+
+commit c4324f9964329c191d07e162f0d9fe4dfc42595a
+Merge: 0e5b22a 48b4f08
+Author: Jason Tedor <jason@tedor.me>
+Date:   Tue Mar 29 11:42:34 2016 -0400
+
+    Merge branch 'master' into enable_acked
+    
+    * master: (25 commits)
+      Replication operation that try to perform the primary phase on a replica should be retried
+      split long line in ConvertProcessorTests
+      add  type conversion support to ConvertProcessor
+      percolator: Make explain use the two phase iterator
+      test: make sure we don't flush during indexing the percolator queries
+      Added experimental annotation to the update-by-query and reindex docs
+      Fixed bad YAML in reindex REST test: 50_routing.yaml
+      Update-by-query rest tests: fixed bad yaml and deleted a client-dependent test
+      Prevents exception being raised when ordering by an aggregation which wasn't collected
+      The reindex body is now required, which changes the exception thrown by the REST test
+      Docs: Included Nodes Task API and tidied reindex/update-by-query
+      Rename update-by-query REST tests to update_by_query
+      REST: The body is required in the reindex API
+      The source parameter should not be defined in the delete-by-query REST spec
+      Renamed update-by-query REST spec to update_by_query
+      Fix test bug in TypeQueryBuilderTests.
+      Add comment why it is safe to check the number of nested fields in MapperService.merge.
+      Automatically add a sub keyword field to string dynamic mappings. #17188
+      Type filters should not have a performance impact when there is a single type. #17350
+      Add API to explain why a shard is or isn't assigned
+      ...
+
+commit 798e4281fa9391083a602b4e5bbbf90213bd5108
+Author: Clinton Gormley <clint@traveljury.com>
+Date:   Tue Mar 29 15:06:10 2016 +0200
+
+    Added experimental annotation to the update-by-query and reindex docs
+
+commit 4793630eb8f599f193a860d95bd7a1c80717ac70
+Merge: bd9e908 9402251
+Author: Jason Tedor <jason@tedor.me>
+Date:   Mon Mar 28 12:29:53 2016 -0400
+
+    Merge branch 'master' into enable_acked
+    
+    * master: (419 commits)
+      Remove PROTOTYPE from ShapeBuilders
+      Take filterNodeIds into consideration while sending tasks actions requests to nodes
+      test: cleanup imports and method rename
+      Remove PROTOTYPE from SortBuilders
+      percolator: Add query extract support for the blended term query and the common terms query.
+      Don't iterate over shard routing if it's null
+      [TEST] Reduce size of random shapes
+      Add some debug logging to testPrimaryRelocationWhileIndexing
+      Order methods in IndicesClusterStateService according to execution
+      Tidied up percolator doc annotations
+      In cat.snapshots, repository is required
+      Do not retrieve all indices stats when checking for cache resets
+      Enforce `discovery.zen.minimum_master_nodes` is set when bound to a public ip #17288
+      Port Primary Terms to master #17044
+      Revert "Add debug logging for Vagrant upgrade test"
+      Ownership for data, logs, and configs for packages
+      add on_failure exception metadata to ingest document for verbose simulate
+      Revert "Merge pull request #16843 from xuzha/s3-encryption"
+      Update Format, add new settings into the setting test
+      Update and rebase the init implementation.
+      ...
+
+commit 3da7393b00636e21d0ae7c99f419bddfdf0eedb4
+Author: Clinton Gormley <clint@traveljury.com>
+Date:   Fri Mar 25 15:36:51 2016 +0100
+
+    Tidied up percolator doc annotations
+
+commit 7a53a396e43341d8a8b552e17706d6e996ea7dd2
+Author: Simon Willnauer <simonw@apache.org>
+Date:   Wed Mar 9 12:10:47 2016 +0100
+
+    Remove Unneded @Inject annotations
+
+commit 72ed01c304b75aaadb17d7b1ebd6d7dc391c8be9
+Author: Ali Beyad <ali@elastic.co>
+Date:   Tue Mar 1 14:04:04 2016 -0500
+
+    Add AwaitsFix annotation to the sporadically failing test
+    DiscoveryWithServiceDisruptionIT.testIndicesDeleted pending a fix for
+    that test (see issue #16890).
+
+commit 82ae74071ec09273d61b6ae765951aa5a7a9d8fb
+Author: Boaz Leskes <b.leskes@gmail.com>
+Date:   Tue Jan 26 20:48:07 2016 +0100
+
+    logging: cleanup some old TestLogging annotations and add a few debug level by default
+
+commit 4c1e93bd89cfbf97c25e84e0cdcf9818e9cd97f6
+Author: Jason Tedor <jason@tedor.me>
+Date:   Mon Jan 25 05:39:51 2016 -0500
+
+    Reproducible randoms in SearchWhileCreatingIndexIT
+    
+    This commit removes non-reproducible randomness from
+    SearchWhileCreatingIndexIT. The cause of the non-reproducible randomness
+    is the use of a random draws for the shard preference inside of a
+    non-deterministic while loop. Because the inner while loop executed a
+    non-deterministic number of times, the draws for the next iteration of
+    the outer loop would be impacted by this making the random draws
+    non-reproducible. The solution is to move the random draws outside of
+    the while loop (just make a single draw for the prefernce and increment
+    with a counter), and remove the outer loop iteration instead using an
+    annotation to get the desired repetitions.
+    
+    Closes #16208
+
+commit 328c375970bf08af44097528d5ff223e3b4354cf
+Author: Martijn van Groningen <martijn.v.groningen@gmail.com>
+Date:   Mon Jan 18 11:59:57 2016 +0100
+
+    test: removed forgotten AwaitsFix annotations
+
+commit 21cc0b231669b973956c7fd19fe269061e2cf657
+Author: Martijn van Groningen <martijn.v.groningen@gmail.com>
+Date:   Thu Jan 14 16:30:44 2016 +0100
+
+    Cleanup ingest initialization code.
+    
+    * Folded IngestModule into NodeModule
+    * Renamed IngestBootstrapper to IngestService
+    * Let NodeService construct IngestService and removed the Guice annotations
+    * Let IngestService implement Closable
+
+commit 2f5e2c09c80cdaf2153c4aec19296b5b17fb3ce9
+Author: Simon Willnauer <simonw@apache.org>
+Date:   Sun Jan 10 21:08:51 2016 +0100
+
+    add @Override annotation
+
+commit 80ef201514764e948d2ed8b91143c205560382b1
+Author: Simon Willnauer <simonw@apache.org>
+Date:   Sun Jan 10 20:04:25 2016 +0100
+
+    Remove dead code and add missing @Override annotations
+
+commit f5a992486e62157163873e1c4114ba3a6e1893d8
+Author: Zachary Tong <zacharyjtong@gmail.com>
+Date:   Thu Dec 17 17:02:07 2015 -0500
+
+    [Docs] Add missing annotation, fix blockdef
+
+commit 9a70dbb51ab9a5140691c6822ee7002ddd366337
+Author: Zachary Tong <zacharyjtong@gmail.com>
+Date:   Thu Dec 17 12:05:43 2015 -0500
+
+    Add ability to profile query and collectors
+    
+    Provides a new flag which can be enabled on a per-request basis.
+    When `"profile": true` is set, the search request will execute in a
+    mode that collects detailed timing information for query components.
+    
+    ```
+    GET /test/test/_search
+    {
+       "profile": true,
+       "query": {
+          "match": {
+             "foo": "bar"
+          }
+       }
+    }
+    ```
+    
+    Closes #14889
+    
+    Squashed commit of the following:
+    
+    commit a92db5723d2c61b8449bd163d2f006d12f9889ad
+    Merge: 117dd99 3f87b08
+    Author: Zachary Tong <zacharyjtong@gmail.com>
+    Date:   Thu Dec 17 09:44:10 2015 -0500
+    
+        Merge remote-tracking branch 'upstream/master' into query_profiler
+    
+    commit 117dd9992e8014b70203c6110925643769d80e62
+    Merge: 9b29d68 82a64fd
+    Author: Zachary Tong <zacharyjtong@gmail.com>
+    Date:   Tue Dec 15 13:27:18 2015 -0500
+    
+        Merge remote-tracking branch 'upstream/master' into query_profiler
+    
+        Conflicts:
+        	core/src/main/java/org/elasticsearch/search/SearchService.java
+    
+    commit 9b29d6823a71140ecd872df25ff9f7478e7fe766
+    Author: Zachary Tong <zacharyjtong@gmail.com>
+    Date:   Mon Dec 14 16:13:23 2015 -0500
+    
+        [TEST] Profile flag needs to be set, ensure searches go against primary only for consistency
+    
+    commit 4d602d8ad1f8cbc7b475450921fa3bc7d395b34f
+    Merge: 8b48e87 7742c1e
+    Author: Zachary Tong <zacharyjtong@gmail.com>
+    Date:   Mon Dec 14 10:56:25 2015 -0500
+    
+        Merge remote-tracking branch 'upstream/master' into query_profiler
+    
+    commit 8b48e876348b163ab730eeca7fa35142165b05f9
+    Author: Zachary Tong <zacharyjtong@gmail.com>
+    Date:   Mon Dec 14 10:56:01 2015 -0500
+    
+        Delegate straight to in.matchCost, no need for profiling
+    
+    commit fde3b0587911f0b5f15e779c671d0510cbd568a9
+    Author: Zachary Tong <zacharyjtong@gmail.com>
+    Date:   Mon Dec 14 10:28:23 2015 -0500
+    
+        Documentation tweaks, renaming build_weight -> create_weight
+    
+    commit 46f5e011ee23fe9bb8a1f11ceb4fa9d19fe48e2e
+    Author: Zachary Tong <zacharyjtong@gmail.com>
+    Date:   Mon Dec 14 10:27:52 2015 -0500
+    
+        Profile TwoPhaseIterator should override matchCost()
+    
+    commit b59f894ddb11b2a7beebba06c4ec5583ff91a7b2
+    Merge: 9aa1a3a b4e0c87
+    Author: Zachary Tong <zacharyjtong@gmail.com>
+    Date:   Wed Dec 9 14:23:26 2015 -0500
+    
+        Merge remote-tracking branch 'upstream/master' into query_profiler
+    
+    commit 9aa1a3a25c34c9cd9fffaa6114c25a0ec791307d
+    Author: Zachary Tong <zacharyjtong@gmail.com>
+    Date:   Wed Dec 9 13:41:48 2015 -0500
+    
+        Revert "Move some of the collector wrapping logic into ProfileCollectorBuilder"
+    
+        This reverts commit 02cc31767fb76a7ecd44a302435e93a05fb4220e.
+    
+    commit 57f7c04cea66b3f98ba2bec4879b98e4fba0b3c0
+    Author: Zachary Tong <zacharyjtong@gmail.com>
+    Date:   Wed Dec 9 13:41:31 2015 -0500
+    
+        Revert "Rearrange if/else to make intent clearer"
+    
+        This reverts commit 59b63c533fcaddcdfe4656e86a6f6c4cb1bc4a00.
+    
+    commit 2874791b9c9cd807113e75e38be465f3785c154e
+    Author: Zachary Tong <zacharyjtong@gmail.com>
+    Date:   Wed Dec 9 13:38:13 2015 -0500
+    
+        Revert "Move state into ProfileCollectorBuilder"
+    
+        This reverts commit 0bb3ee0dd96170b06f07ec9e2435423d686a5ae6.
+    
+    commit 0bb3ee0dd96170b06f07ec9e2435423d686a5ae6
+    Author: Zachary Tong <zacharyjtong@gmail.com>
+    Date:   Thu Dec 3 11:21:55 2015 -0500
+    
+        Move state into ProfileCollectorBuilder
+    
+    commit 59b63c533fcaddcdfe4656e86a6f6c4cb1bc4a00
+    Author: Zachary Tong <zacharyjtong@gmail.com>
+    Date:   Wed Dec 2 17:21:12 2015 -0500
+    
+        Rearrange if/else to make intent clearer
+    
+    commit 511db0af2f3a86328028b88a6b25fa3dfbab963b
+    Author: Zachary Tong <zacharyjtong@gmail.com>
+    Date:   Wed Dec 2 17:12:06 2015 -0500
+    
+        Rename WEIGHT -> BUILD_WEIGHT
+    
+    commit 02cc31767fb76a7ecd44a302435e93a05fb4220e
+    Author: Zachary Tong <zacharyjtong@gmail.com>
+    Date:   Wed Dec 2 17:11:22 2015 -0500
+    
+        Move some of the collector wrapping logic into ProfileCollectorBuilder
+    
+    commit e69356d3cb4c60fa281dad36d84faa64f5c32bc4
+    Author: Zachary Tong <zacharyjtong@gmail.com>
+    Date:   Mon Nov 30 15:12:35 2015 -0500
+    
+        Cleanup imports
+    
+    commit c1b4f284f16712be60cd881f7e4a3e8175667d62
+    Author: Zachary Tong <zacharyjtong@gmail.com>
+    Date:   Mon Nov 30 15:11:25 2015 -0500
+    
+        Review cleanup: Make InternalProfileShardResults writeable
+    
+    commit 9e61c72f7e1787540f511777050a572b7d297636
+    Author: Zachary Tong <zacharyjtong@gmail.com>
+    Date:   Mon Nov 30 15:01:22 2015 -0500
+    
+        Review cleanup: Merge ProfileShardResult, InternalProfileShardResult.  Convert to writeable
+    
+    commit 709184e1554f567c645690250131afe8568a5799
+    Author: Zachary Tong <zacharyjtong@gmail.com>
+    Date:   Mon Nov 30 14:38:08 2015 -0500
+    
+        Review cleanup: Merge ProfileResult, InternalProfileResult.  Convert to writeable
+    
+    commit 7d72690c44f626c34e9c608754bc7843dd7fd8fe
+    Author: Zachary Tong <zacharyjtong@gmail.com>
+    Date:   Mon Nov 30 14:01:34 2015 -0500
+    
+        Review cleanup: use primitive (and default) for profile flag
+    
+    commit 97d557388541bbd3388cdcce7d9718914d88de6d
+    Author: Zachary Tong <zacharyjtong@gmail.com>
+    Date:   Mon Nov 30 13:09:12 2015 -0500
+    
+        Review cleanup: Use Collections.emptyMap() instead of building an empty one explicitly
+    
+    commit 219585b8729a8b0982e653d99eb959efd0bef84e
+    Author: Zachary Tong <zacharyjtong@gmail.com>
+    Date:   Mon Nov 30 13:08:12 2015 -0500
+    
+        Add todo to revisit profiler architecture in the future
+    
+    commit b712edb2160e032ee4b2f2630fadf131a0936886
+    Author: Zachary Tong <zacharyjtong@gmail.com>
+    Date:   Mon Nov 30 13:05:32 2015 -0500
+    
+        Split collector serialization from timing, use writeable instead of streamable
+    
+        Previously, the collector timing was done in the same class that was serialized, which required
+        leaving the collector null when serializing.  Besides being a bit gross, this made it difficult to
+        change the class to Writeable.
+    
+        This splits up the timing (InternalProfileCollector + ProfileCollector) and the serialization of
+        the times (CollectorResult).  CollectorResult is writeable, and also acts as the public interface.
+    
+    commit 6ddd77d066262d4400e3d338b11cebe7dd27ca78
+    Author: Zachary Tong <zacharyjtong@gmail.com>
+    Date:   Wed Nov 25 13:15:12 2015 -0500
+    
+        Remove dead code
+    
+    commit 06033f8a056e2121d157654a65895c82bbe93a51
+    Author: Zachary Tong <zacharyjtong@gmail.com>
+    Date:   Wed Nov 25 12:49:51 2015 -0500
+    
+        Review cleanup:  Delegate to in.getProfilers()
+    
+        Note:  Need to investigate how this is used exactly so we can add a test, it isn't touched by a
+        normal inner_hits query...
+    
+    commit a77e13da21b4bad1176ca2b5d5b76034fb12802f
+    Author: Zachary Tong <zacharyjtong@gmail.com>
+    Date:   Wed Nov 25 11:59:58 2015 -0500
+    
+        Review cleanup:  collapse to single `if` statement
+    
+    commit e97bb6215a5ebb508b0293ac3acd60d5ae479be1
+    Author: Zachary Tong <zacharyjtong@gmail.com>
+    Date:   Wed Nov 25 11:39:43 2015 -0500
+    
+        Review cleanup: Return empty map instead of null for profile results
+    
+        Note: we still need to check for nullness in SearchPhaseController, since an empty/no-hits result
+        won't have profiling instantiated (or any other component like aggs or suggest).  Therefore
+        QuerySearchResult.profileResults() is still @Nullable
+    
+    commit db8e691de2a727389378b459fa76c942572e6015
+    Author: Zachary Tong <zacharyjtong@gmail.com>
+    Date:   Wed Nov 25 10:14:47 2015 -0500
+    
+        Review cleanup: renaming, formatting fixes, assertions
+    
+    commit 9011775fe80ba22c2fd948ca64df634b4e32772d
+    Author: Zachary Tong <zacharyjtong@gmail.com>
+    Date:   Thu Nov 19 20:09:52 2015 -0500
+    
+        [DOCS] Add missing annotation
+    
+    commit 4b58560b06f08d4b99b149af20916ee839baabd7
+    Author: Zachary Tong <zacharyjtong@gmail.com>
+    Date:   Thu Nov 19 20:07:17 2015 -0500
+    
+        [DOCS] Update documentation for new format
+    
+    commit f0458c58e5538ed8ec94849d4baf3250aa9ec841
+    Author: Adrien Grand <jpountz@gmail.com>
+    Date:   Tue Nov 17 10:14:09 2015 +0100
+    
+        Reduce visibility of internal classes.
+    
+    commit d0a7d319098e60b028fa772bf8a99b2df9cf6146
+    Merge: e158070 1bdf29e
+    Author: Adrien Grand <jpountz@gmail.com>
+    Date:   Tue Nov 17 10:09:18 2015 +0100
+    
+        Merge branch 'master' into query_profiler
+    
+    commit e158070a48cb096551f3bb3ecdcf2b53bbc5e3c5
+    Author: Adrien Grand <jpountz@gmail.com>
+    Date:   Tue Nov 17 10:08:48 2015 +0100
+    
+        Fix compile error due to bad html in javadocs.
+    
+    commit a566b5d08d659daccb087a9afbe908ec3d96cd6e
+    Author: Zachary Tong <zacharyjtong@gmail.com>
+    Date:   Mon Nov 16 17:48:37 2015 -0500
+    
+        Remove unused collector
+    
+    commit 4060cd72d150cc68573dbde62ca7321c47f75703
+    Author: Zachary Tong <zacharyjtong@gmail.com>
+    Date:   Mon Nov 16 17:48:10 2015 -0500
+    
+        Comment cleanup
+    
+    commit 43137952bf74728f5f5d5a8d1bfc073e0f9fe4f9
+    Author: Zachary Tong <zacharyjtong@gmail.com>
+    Date:   Mon Nov 16 17:32:06 2015 -0500
+    
+        Fix negative formatted time
+    
+    commit 5ef3a980266326aff12d4fe380f73455ff28209f
+    Author: Adrien Grand <jpountz@gmail.com>
+    Date:   Fri Nov 13 17:10:17 2015 +0100
+    
+        Fix javadocs.
+    
+    commit 276114d29e4b17a0cc0982cfff51434f712dc59e
+    Author: Adrien Grand <jpountz@gmail.com>
+    Date:   Fri Nov 13 16:25:23 2015 +0100
+    
+        Fix: include rewrite time as well...
+    
+    commit 21d9e17d05487bf4903ae3d2ab6f429bece2ffef
+    Author: Adrien Grand <jpountz@gmail.com>
+    Date:   Fri Nov 13 15:10:15 2015 +0100
+    
+        Remove TODO about profiling explain.
+    
+    commit 105a31e8e570efb879447159c3852871f5cf7db4
+    Author: Adrien Grand <jpountz@gmail.com>
+    Date:   Fri Nov 13 14:59:30 2015 +0100
+    
+        Fix nocommit now that the global collector is a root collector.
+    
+    commit 2e8fc5cf84adb1bfaba296808c329e5f982c9635
+    Author: Adrien Grand <jpountz@gmail.com>
+    Date:   Fri Nov 13 14:53:38 2015 +0100
+    
+        Make collector wrapping more explicit/robust (and a bit less magical).
+    
+    commit 5e30b570b0835e1ce79a57933a31b6a2d0d58e2d
+    Author: Adrien Grand <jpountz@gmail.com>
+    Date:   Fri Nov 13 12:44:03 2015 +0100
+    
+        Simplify recording API a bit.
+    
+    commit 9b453afced6adc0a59ca1d67d90c28796b105185
+    Author: Adrien Grand <jpountz@gmail.com>
+    Date:   Fri Nov 13 10:54:25 2015 +0100
+    
+        Fix serialization-related nocommits.
+    
+    commit ad97b200bb123d4e9255e7c8e02f7e43804057a5
+    Author: Adrien Grand <jpountz@gmail.com>
+    Date:   Fri Nov 13 10:46:30 2015 +0100
+    
+        Fix DFS.
+    
+    commit a6de06986cd348a831bd45e4f524d2e14d9e03c3
+    Author: Adrien Grand <jpountz@gmail.com>
+    Date:   Thu Nov 12 19:29:16 2015 +0100
+    
+        Remove forbidden @Test annotation.
+    
+    commit 4991a28e19501109af98026e14756cb25a56f4f4
+    Author: Adrien Grand <jpountz@gmail.com>
+    Date:   Thu Nov 12 19:25:59 2015 +0100
+    
+        Limit the impact of query profiling on the SearchContext API.
+    
+        Rule is: we can put as much as we want in the search.profile package but should
+        aim at touching as little as possible other areas of the code base.
+    
+    commit 353d8d75a5ce04d9c3908a0a63d4ca6e884c519a
+    Author: Adrien Grand <jpountz@gmail.com>
+    Date:   Thu Nov 12 18:05:09 2015 +0100
+    
+        Remove dead code.
+    
+    commit a3ffafb5ddbb5a2acf43403c946e5ed128f47528
+    Author: Adrien Grand <jpountz@gmail.com>
+    Date:   Thu Nov 12 15:30:35 2015 +0100
+    
+        Remove call to forbidden String.toLowerCase() API.
+    
+    commit 1fa8c7a00324fa4e32bd24135ebba5ecf07606f1
+    Author: Adrien Grand <jpountz@gmail.com>
+    Date:   Thu Nov 12 15:30:27 2015 +0100
+    
+        Fix compilation.
+    
+    commit 2067f1797e53bef0e1a8c9268956bc5fb8f8ad97
+    Merge: 22e631f fac472f
+    Author: Adrien Grand <jpountz@gmail.com>
+    Date:   Thu Nov 12 15:21:12 2015 +0100
+    
+        Merge branch 'master' into query_profiler
+    
+    commit 22e631fe6471fed19236578e97c628d5cda401a9
+    Author: Zachary Tong <zacharyjtong@gmail.com>
+    Date:   Tue Nov 3 18:52:05 2015 -0500
+    
+        Fix and simplify serialization of shard profile results
+    
+    commit 461da250809451cd2b47daf647343afbb4b327f2
+    Author: Zachary Tong <zacharyjtong@gmail.com>
+    Date:   Tue Nov 3 18:32:22 2015 -0500
+    
+        Remove helper methods, simpler without them
+    
+    commit 5687aa1c93d45416d895c2eecc0e6a6b302139f2
+    Author: Zachary Tong <zacharyjtong@gmail.com>
+    Date:   Tue Nov 3 18:29:32 2015 -0500
+    
+        [TESTS] Fix tests for new rewrite format
+    
+    commit ba9e82857fc6d4c7b72ef4d962d2102459365299
+    Author: Zachary Tong <zacharyjtong@gmail.com>
+    Date:   Fri Oct 30 15:28:14 2015 -0400
+    
+        Rewrites begone! Record all rewrites as a single time metric
+    
+    commit 5f28d7cdff9ee736651d564f71f713bf45fb1d91
+    Author: Zachary Tong <zacharyjtong@gmail.com>
+    Date:   Thu Oct 29 15:36:06 2015 -0400
+    
+        Merge duplicate rewrites into one entry
+    
+        By using the Query as the key in a map, we can easily merge rewrites together.  This means
+        the preProcess(), assertion and main query rewrites all get merged together.  Downside is that
+        rewrites of the same Query (hashcode) but in different places get lumped together.  I think the
+        simplicity of the solution is better than the slight loss in output fidelity.
+    
+    commit 9a601ea46bb21052746157a45dcc6de6bc350e9c
+    Author: Zachary Tong <zacharyjtong@gmail.com>
+    Date:   Thu Oct 29 15:28:27 2015 -0400
+    
+        Allow multiple "searches" per profile (e.g. query + global agg)
+    
+    commit ee30217328381cd83f9e653d3a4d870c1d2bdfce
+    Author: Zachary Tong <zacharyjtong@gmail.com>
+    Date:   Thu Oct 29 11:29:18 2015 -0400
+    
+        Update comment, add nullable annotation
+    
+    commit 405c6463a64e118f170959827931e8c6a1661f13
+    Author: Zachary Tong <zacharyjtong@gmail.com>
+    Date:   Thu Oct 29 11:04:30 2015 -0400
+    
+        remove out-dated comment
+    
+    commit 2819ae8f4cf1bfd5670dbd1c0e06195ae457b58f
+    Author: Adrien Grand <jpountz@gmail.com>
+    Date:   Tue Oct 27 19:50:47 2015 +0100
+    
+        Don't render children in the profiles when there are no children.
+    
+    commit 7677c2ddefef321bbe74660471603d202a4ab66f
+    Author: Adrien Grand <jpountz@gmail.com>
+    Date:   Tue Oct 27 19:50:35 2015 +0100
+    
+        Set the profiler on the ContextIndexSearcher.
+    
+    commit 74a4338c35dfed779adc025ec17cfd4d1c9f66f5
+    Author: Adrien Grand <jpountz@gmail.com>
+    Date:   Tue Oct 27 19:50:01 2015 +0100
+    
+        Fix json rendering.
+    
+    commit 6674d5bebe187b0b0d8b424797606fdf2617dd27
+    Author: Adrien Grand <jpountz@gmail.com>
+    Date:   Tue Oct 27 19:20:19 2015 +0100
+    
+        Revert "nocommit - profiling never enabled because setProfile() on ContextIndexSearcher never called"
+    
+        This reverts commit d3dc10949024342055f0d4fb7e16c7a43423bfab.
+    
+    commit d3dc10949024342055f0d4fb7e16c7a43423bfab
+    Author: Zachary Tong <zacharyjtong@gmail.com>
+    Date:   Fri Oct 23 17:20:57 2015 -0400
+    
+        nocommit - profiling never enabled because setProfile() on ContextIndexSearcher never called
+    
+        Previously, it was enabled by using DefaultSearchContext as a third-party "proxy", but since
+        the refactor to make it unit testable, setProfile() needs to be called explicitly.  Unfortunately,
+        this is not possible because SearchService only has access to an IndexSearcher.  And it is not
+        cast'able to a DefaultIndexSearcher.
+    
+    commit b9ba9c5d1f93b9c45e97b0a4e35da6f472c9ea53
+    Author: Zachary Tong <zacharyjtong@gmail.com>
+    Date:   Fri Oct 23 16:27:00 2015 -0400
+    
+        [TESTS] Fix unit tests
+    
+    commit cf5d1e016b2b4a583175e07c16c7152f167695ce
+    Author: Zachary Tong <zacharyjtong@gmail.com>
+    Date:   Fri Oct 23 16:22:34 2015 -0400
+    
+        Increment token after recording a rewrite
+    
+    commit b7d08f64034e498533c4a81bff8727dd8ac2843e
+    Author: Zachary Tong <zacharyjtong@gmail.com>
+    Date:   Fri Oct 23 16:14:09 2015 -0400
+    
+        Fix NPE if a top-level root doesn't have children
+    
+    commit e4d3b514bafe2a3a9db08438c89f0ed68628f2d6
+    Author: Zachary Tong <zacharyjtong@gmail.com>
+    Date:   Fri Oct 23 16:05:47 2015 -0400
+    
+        Fix NPE when profiling is disabled
+    
+    commit 445384fe48ed62fdd01f7fc9bf3e8361796d9593
+    Author: Zachary Tong <zacharyjtong@gmail.com>
+    Date:   Fri Oct 23 16:05:37 2015 -0400
+    
+        [TESTS] Fix integration tests
+    
+    commit b478296bb04fece827a169e7522df0a5ea7840a3
+    Author: Zachary Tong <zacharyjtong@gmail.com>
+    Date:   Fri Oct 23 15:43:24 2015 -0400
+    
+        Move rewrites to their own section, remove reconciliation
+    
+        Big commit because the structural change affected a lot of the wrapping code.  Major changes:
+    
+        - Rewrites are now in their own section in the response
+        - Reconciliation is gone...we don't attempt to roll the rewrites into the query tree structure
+        - InternalProfileShardResults (plural) simply holds a Map<String, InternalProfileShardResult> and
+        helps to serialize / ToXContent
+        - InternalProfileShardResult (singular) is now the holder for all shard-level profiling details. Currently
+        this includes query, collectors and rewrite.  In the future it would hold suggest, aggs, etc
+        - When the user requests the profiled results, they get back a Map<String, ProfileShardResult>
+        instead of doing silly helper methods to convert to maps, etc
+        - Shard details are baked into a string instead of serializing the object
+    
+    commit 24819ad094b208d0e94f17ce9c3f7c92f7414124
+    Author: Zachary Tong <zacharyjtong@gmail.com>
+    Date:   Fri Oct 23 10:25:38 2015 -0400
+    
+        Make Profile results immutable by removing relative_time
+    
+    commit bfaf095f45fed74194ef78160a8e5dcae1850f9e
+    Author: Adrien Grand <jpountz@gmail.com>
+    Date:   Fri Oct 23 10:54:59 2015 +0200
+    
+        Add nocommits.
+    
+    commit e9a128d0d26d5b383b52135ca886f2c987850179
+    Author: Adrien Grand <jpountz@gmail.com>
+    Date:   Fri Oct 23 10:39:37 2015 +0200
+    
+        Move all profile-related classes to the same package.
+    
+    commit f20b7c7fdf85384ecc37701bb65310fb8c20844f
+    Author: Adrien Grand <jpountz@gmail.com>
+    Date:   Fri Oct 23 10:33:14 2015 +0200
+    
+        Reorganize code a bit to ease unit testing of ProfileCollector.
+    
+    commit 3261306edad6a0c70f59eaee8fe58560f61a75fd
+    Author: Adrien Grand <jpountz@gmail.com>
+    Date:   Thu Oct 22 18:07:28 2015 +0200
+    
+        Remove irrelevant nocommit.
+    
+    commit a6ac868dad12a2e17929878681f66dbd0948d322
+    Author: Adrien Grand <jpountz@gmail.com>
+    Date:   Thu Oct 22 18:06:45 2015 +0200
+    
+        Make CollectorResult's reason a free-text field to ease bw compat.
+    
+    commit 5d0bf170781a950d08b81871cd1e403e49f3cc12
+    Author: Adrien Grand <jpountz@gmail.com>
+    Date:   Thu Oct 22 16:50:52 2015 +0200
+    
+        Add unit tests for ProfileWeight/ProfileScorer.
+    
+    commit 2cd88c412c6e62252504ef69a59216adbb574ce4
+    Author: Adrien Grand <jpountz@gmail.com>
+    Date:   Thu Oct 22 15:55:17 2015 +0200
+    
+        Rename InternalQueryProfiler to Profiler.
+    
+    commit 84f5718fa6779f710da129d9e0e6ff914fd85e36
+    Author: Adrien Grand <jpountz@gmail.com>
+    Date:   Thu Oct 22 15:53:58 2015 +0200
+    
+        Merge InternalProfileBreakdown into ProfileBreakdown.
+    
+    commit 135168eaeb8999c8117ea25288104b0961ce9b35
+    Author: Adrien Grand <jpountz@gmail.com>
+    Date:   Thu Oct 22 13:56:57 2015 +0200
+    
+        Make it possible to instantiate a ContextIndexSearcher without SearchContext.
+    
+    commit 5493fb52376b48460c4ce2dedbe00cc5f6620499
+    Author: Adrien Grand <jpountz@gmail.com>
+    Date:   Thu Oct 22 11:53:29 2015 +0200
+    
+        Move ProfileWeight/Scorer to their own files.
+    
+    commit bf2d917b9dae3b32dfc29c35a7cac4ccb7556cce
+    Author: Adrien Grand <jpountz@gmail.com>
+    Date:   Thu Oct 22 11:38:24 2015 +0200
+    
+        Fix bug that caused phrase queries to fail.
+    
+    commit b2bb0c92c343334ec1703a221af24a1b55e36d53
+    Author: Adrien Grand <jpountz@gmail.com>
+    Date:   Thu Oct 22 11:36:17 2015 +0200
+    
+        Parsing happens on the coordinating node now.
+    
+    commit 416cabb8621acb5cd8dfa77374fd23e428f52fe9
+    Author: Adrien Grand <jpountz@gmail.com>
+    Date:   Thu Oct 22 11:22:17 2015 +0200
+    
+        Fix compilation (in particular remove guava deps).
+    
+    commit f996508645f842629d403fc2e71c1890c0e2cac9
+    Merge: 4616a25 bc3b91e
+    Author: Adrien Grand <jpountz@gmail.com>
+    Date:   Thu Oct 22 10:44:38 2015 +0200
+    
+        Merge branch 'master' into query_profiler
+    
+    commit 4616a25afffe9c24c6531028f7fccca4303d2893
+    Author: Zachary Tong <zacharyjtong@gmail.com>
+    Date:   Tue Oct 20 12:11:32 2015 -0400
+    
+        Make Java Count API compatible with profiling
+    
+    commit cbfba74e16083d719722500ac226efdb5cb2ff55
+    Author: Zachary Tong <zacharyjtong@gmail.com>
+    Date:   Tue Oct 20 12:11:19 2015 -0400
+    
+        Fix serialization of profile query param, NPE
+    
+    commit e33ffac383b03247046913da78c8a27e457fae78
+    Author: Zachary Tong <zacharyjtong@gmail.com>
+    Date:   Tue Oct 20 11:17:48 2015 -0400
+    
+        TestSearchContext should return null Profiler instead of exception
+    
+    commit 73a02d69b466dc1a5b8a5f022464d6c99e6c2ac3
+    Author: Zachary Tong <zacharyjtong@gmail.com>
+    Date:   Mon Oct 19 12:07:29 2015 -0400
+    
+        [DOCS] Update docs to reflect new ID format
+    
+    commit 36248e388c354f954349ecd498db7b66f84ce813
+    Author: Zachary Tong <zacharyjtong@gmail.com>
+    Date:   Mon Oct 19 12:03:03 2015 -0400
+    
+        Use the full [node][index][shard] string as profile result ID
+    
+    commit 5cfcc4a6a6b0bcd6ebaa7c8a2d0acc32529a80e1
+    Author: Zachary Tong <zacharyjtong@gmail.com>
+    Date:   Thu Oct 15 17:51:40 2015 -0400
+    
+        Add failing test for phrase matching
+    
+        Stack trace generated:
+    
+        [2015-10-15 17:50:54,438][ERROR][org.elasticsearch.search.profile] shard [[JNj7RX_oSJikcnX72aGBoA][test][2]], reason [RemoteTransportException[[node_s0][local[1]][indices:data/read/search[phase/query]]]; nested: QueryPhaseExecutionException[Query Failed [Failed to execute main query]]; nested: AssertionError[nextPosition() called more than freq() times!]; ], cause [java.lang.AssertionError: nextPosition() called more than freq() times!
+        	at org.apache.lucene.index.AssertingLeafReader$AssertingPostingsEnum.nextPosition(AssertingLeafReader.java:353)
+        	at org.apache.lucene.search.ExactPhraseScorer.phraseFreq(ExactPhraseScorer.java:132)
+        	at org.apache.lucene.search.ExactPhraseScorer.access$000(ExactPhraseScorer.java:27)
+        	at org.apache.lucene.search.ExactPhraseScorer$1.matches(ExactPhraseScorer.java:69)
+        	at org.elasticsearch.common.lucene.search.ProfileQuery$ProfileScorer$2.matches(ProfileQuery.java:226)
+        	at org.apache.lucene.search.ConjunctionDISI$TwoPhaseConjunctionDISI.matches(ConjunctionDISI.java:175)
+        	at org.apache.lucene.search.ConjunctionDISI$TwoPhase.matches(ConjunctionDISI.java:213)
+        	at org.apache.lucene.search.ConjunctionDISI.doNext(ConjunctionDISI.java:128)
+        	at org.apache.lucene.search.ConjunctionDISI.nextDoc(ConjunctionDISI.java:151)
+        	at org.apache.lucene.search.ConjunctionScorer.nextDoc(ConjunctionScorer.java:62)
+        	at org.elasticsearch.common.lucene.search.ProfileQuery$ProfileScorer$1.nextDoc(ProfileQuery.java:205)
+        	at org.apache.lucene.search.Weight$DefaultBulkScorer.scoreAll(Weight.java:224)
+        	at org.apache.lucene.search.Weight$DefaultBulkScorer.score(Weight.java:169)
+        	at org.apache.lucene.search.BulkScorer.score(BulkScorer.java:39)
+        	at org.apache.lucene.search.IndexSearcher.search(IndexSearcher.java:795)
+        	at org.apache.lucene.search.IndexSearcher.search(IndexSearcher.java:509)
+        	at org.elasticsearch.search.query.QueryPhase.execute(QueryPhase.java:347)
+        	at org.elasticsearch.search.query.QueryPhase.execute(QueryPhase.java:111)
+        	at org.elasticsearch.search.SearchService.loadOrExecuteQueryPhase(SearchService.java:366)
+        	at org.elasticsearch.search.SearchService.executeQueryPhase(SearchService.java:378)
+        	at org.elasticsearch.search.action.SearchServiceTransportAction$SearchQueryTransportHandler.messageReceived(SearchServiceTransportAction.java:368)
+        	at org.elasticsearch.search.action.SearchServiceTransportAction$SearchQueryTransportHandler.messageReceived(SearchServiceTransportAction.java:365)
+        	at org.elasticsearch.transport.local.LocalTransport$2.doRun(LocalTransport.java:280)
+        	at org.elasticsearch.common.util.concurrent.AbstractRunnable.run(AbstractRunnable.java:37)
+        	at java.util.concurrent.ThreadPoolExecutor.runWorker(ThreadPoolExecutor.java:1142)
+        	at java.util.concurrent.ThreadPoolExecutor$Worker.run(ThreadPoolExecutor.java:617)
+        	at java.lang.Thread.run(Thread.java:745)
+    
+    commit 889fe6383370fe919aaa9f0af398e3040209e40b
+    Author: Zachary Tong <zacharyjtong@gmail.com>
+    Date:   Thu Oct 15 17:30:38 2015 -0400
+    
+        [DOCS] More docs
+    
+    commit 89177965d031d84937753538b88ea5ebae2956b0
+    Author: Zachary Tong <zacharyjtong@gmail.com>
+    Date:   Thu Oct 15 09:59:09 2015 -0400
+    
+        Fix multi-stage rewrites to recursively find most appropriate descendant rewrite
+    
+        Previously, we chose the first rewrite that matched.  But in situations where a query may
+        rewrite several times, this won't build the tree correctly.  Instead we need to recurse
+        down all the rewrites until we find the most appropriate "leaf" rewrite
+    
+        The implementation of this is kinda gross: we recursively call getRewrittenParentToken(),
+        which does a linear scan over the rewriteMap and tries to find rewrites with a larger token
+        value (since we know child tokens are always larger).  Can almost certainly find a better
+        way to do this...
+    
+    commit 0b4d782b5348e5d03fd26f7d91bc4a3fbcb7f6a5
+    Author: Zachary Tong <zacharyjtong@gmail.com>
+    Date:   Wed Oct 14 19:30:06 2015 -0400
+    
+        [Docs] Documentation checkpoint
+    
+    commit 383636453f6610fcfef9070c21ae7ca11346793e
+    Author: Zachary Tong <zacharyjtong@gmail.com>
+    Date:   Wed Sep 16 16:02:22 2015 -0400
+    
+        Comments
+    
+    commit a81e8f31e681be16e89ceab9ba3c3e0a018f18ef
+    Author: Zachary Tong <zacharyjtong@gmail.com>
+    Date:   Wed Sep 16 15:48:49 2015 -0400
+    
+        [TESTS] Ensure all tests use QUERY_THEN_FETCH, DFS does not profile
+    
+    commit 1255c2d790d85fcb9cbb78bf2a53195138c6bc24
+    Author: Zachary Tong <zacharyjtong@gmail.com>
+    Date:   Tue Sep 15 16:43:46 2015 -0400
+    
+        Refactor rewrite handling to handle identical rewrites
+    
+    commit 85b7ec82eb0b26a6fe87266b38f5f86f9ac0c44f
+    Author: Zachary Tong <zacharyjtong@gmail.com>
+    Date:   Tue Sep 15 08:51:14 2015 -0400
+    
+        Don't update parent when a token is added as root -- Fixes NPE
+    
+    commit 109d02bdbc49741a3b61e8624521669b0968b839
+    Author: Zachary Tong <zacharyjtong@gmail.com>
+    Date:   Tue Sep 15 08:50:40 2015 -0400
+    
+        Don't set the rewritten query if not profiling -- Fixes NPE
+    
+    commit 233cf5e85f6f2c39ed0a2a33d7edd3bbd40856e8
+    Author: Zachary Tong <zacharyjtong@gmail.com>
+    Date:   Mon Sep 14 18:04:51 2015 -0400
+    
+        Update tests to new response format
+    
+    commit a930b1fc19de3a329abc8ffddc6711c1246a4b15
+    Author: Zachary Tong <zacharyjtong@gmail.com>
+    Date:   Mon Sep 14 18:03:58 2015 -0400
+    
+        Fix serialization
+    
+    commit 69afdd303660510c597df9bada5531b19d134f3d
+    Author: Zachary Tong <zacharyjtong@gmail.com>
+    Date:   Mon Sep 14 15:11:31 2015 -0400
+    
+        Comments and cleanup
+    
+    commit 64e7ca7f78187875378382ec5d5aa2462ff71df5
+    Author: Zachary Tong <zacharyjtong@gmail.com>
+    Date:   Mon Sep 14 14:40:21 2015 -0400
+    
+        Move timing into dedicated class, add proper rewrite integration
+    
+    commit b44ff85ddbba0a080e65f2e7cc8c50d30e95df8e
+    Author: Zachary Tong <zacharyjtong@gmail.com>
+    Date:   Mon Sep 14 12:00:38 2015 -0400
+    
+        Checkpoint - Refactoring to use a token-based dependency tree
+    
+    commit 52cedd5266d6a87445c6a4cff3be8ff2087cd1b7
+    Author: Zachary Tong <zacharyjtong@gmail.com>
+    Date:   Fri Sep 4 19:18:19 2015 -0400
+    
+        Need to set context profiling flag before calling queryPhase.preProcess
+    
+    commit c524670cb1ce29b4b3a531fa2bff0c403b756f46
+    Author: Adrien Grand <jpountz@gmail.com>
+    Date:   Fri Sep 4 18:00:37 2015 +0200
+    
+        Reduce profiling overhead a bit.
+    
+        This removes hash-table lookups everytime we start/stop a profiling clock.
+    
+    commit 111444ff8418737082236492b37321fc96041e09
+    Author: Adrien Grand <jpountz@gmail.com>
+    Date:   Fri Sep 4 16:18:59 2015 +0200
+    
+        Add profiling of two-phase iterators.
+    
+        This is useful for eg. phrase queries or script filters, since they are
+        typically consumed through their two-phase iterator instead of the scorer.
+    
+    commit f275e690459e73211bc8494c6de595c0320f4c0b
+    Author: Adrien Grand <jpountz@gmail.com>
+    Date:   Fri Sep 4 16:03:21 2015 +0200
+    
+        Some more improvements.
+    
+        I changed profiling to disable bulk scoring, since it makes it impossible to
+        know where time is spent. Also I removed profiling of operations that are
+        always fast (eg. normalization) and added nextDoc/advance.
+    
+    commit 3c8dcd872744de8fd76ce13b6f18f36f8de44068
+    Author: Adrien Grand <jpountz@gmail.com>
+    Date:   Fri Sep 4 14:39:50 2015 +0200
+    
+        Remove println.
+    
+    commit d68304862fb38a3823aebed35a263bd9e2176c2f
+    Author: Adrien Grand <jpountz@gmail.com>
+    Date:   Fri Sep 4 14:36:03 2015 +0200
+    
+        Fix some test failures introduced by the rebase...
+    
+    commit 04d53ca89fb34b7a21515d770c32aaffcc513b90
+    Author: Adrien Grand <jpountz@gmail.com>
+    Date:   Fri Sep 4 13:57:35 2015 +0200
+    
+        Reconcile conflicting changes after rebase
+    
+    commit fed03ec8e2989a0678685cd6c50a566cec42ea4f
+    Author: Zachary Tong <zacharyjtong@gmail.com>
+    Date:   Thu Aug 20 22:40:39 2015 -0400
+    
+        Add Collectors to profile results
+    
+        Profile response element has now been re-arranged so that everything is listed per-shard to
+        facilitate grouping elements together.  The new `collector` element looks like this:
+    
+        ```
+        "profile": {
+          "shards": [
+             {
+                "shard_id": "keP4YFywSXWALCl4m4k24Q",
+                "query": [...],
+                "collector": [
+                   {
+                      "name": "MultiCollector",
+                      "purpose": "search_multi",
+                      "time": "16.44504400ms",
+                      "relative_time": "100.0000000%",
+                      "children": [
+                         {
+                            "name": "FilteredCollector",
+                            "purpose": "search_post_filter",
+                            "time": "4.556013000ms",
+                            "relative_time": "27.70447437%",
+                            "children": [
+                               {
+                                  "name": "SimpleTopScoreDocCollector",
+                                  "purpose": "search_sorted",
+                                  "time": "1.352166000ms",
+                                  "relative_time": "8.222331299%",
+                                  "children": []
+                               }
+                            ]
+                         },
+                         {
+                            "name": "BucketCollector: [[non_global_term, another_agg]]",
+                            "purpose": "aggregation",
+                            "time": "10.40379400ms",
+                            "relative_time": "63.26400829%",
+                            "children": []
+                         },
+               ...
+        ```
+    
+    commit 1368b495c934be642c00f6cbf9fc875d7e6c07ff
+    Author: Zachary Tong <zacharyjtong@gmail.com>
+    Date:   Wed Aug 19 12:43:03 2015 -0400
+    
+        Move InternalProfiler to profile package
+    
+    commit 53584de910db6d4a6bb374c9ebb954f204882996
+    Author: Zachary Tong <zacharyjtong@gmail.com>
+    Date:   Tue Aug 18 18:34:58 2015 -0400
+    
+        Only reconcile rewrite timing when rewritten query is different from original
+    
+    commit 9804c3b29d2107cd97f1c7e34d77171b62cb33d0
+    Author: Zachary Tong <zacharyjtong@gmail.com>
+    Date:   Tue Aug 18 16:40:15 2015 -0400
+    
+        Comments and cleanup
+    
+    commit 8e898cc7c59c0c1cc5ed576dfed8e3034ca0967f
+    Author: Zachary Tong <zacharyjtong@gmail.com>
+    Date:   Tue Aug 18 14:19:07 2015 -0400
+    
+        [TESTS] Fix comparison test to ensure results sort identically
+    
+    commit f402a29001933eef29d5a62e81c8563f1c8d0969
+    Author: Zachary Tong <zacharyjtong@gmail.com>
+    Date:   Tue Aug 18 14:17:59 2015 -0400
+    
+        Add note about DFS being unable to profile
+    
+    commit d446e08d3bc91cd85b24fc908e2d82fc5739d598
+    Author: Zachary Tong <zacharyjtong@gmail.com>
+    Date:   Tue Aug 18 14:17:23 2015 -0400
+    
+        Implement some missing methods
+    
+    commit 13ca94fb86fb037a30d181b73d9296153a63d6e4
+    Author: Zachary Tong <zacharyjtong@gmail.com>
+    Date:   Tue Aug 18 13:10:54 2015 -0400
+    
+        [TESTS] Comments & cleanup
+    
+    commit c76c8c771fdeee807761c25938a642612a6ed8e7
+    Author: Zachary Tong <zacharyjtong@gmail.com>
+    Date:   Tue Aug 18 13:06:08 2015 -0400
+    
+        [TESTS] Fix profileMatchesRegular to handle NaN scores and nearlyEqual floats
+    
+    commit 7e7a10ecd26677b2239149468e24938ce5cc18e1
+    Author: Zachary Tong <zacharyjtong@gmail.com>
+    Date:   Tue Aug 18 12:22:16 2015 -0400
+    
+        Move nearlyEquals() utility function to shared location
+    
+    commit 842222900095df4b27ff3593dbb55a42549f2697
+    Author: Zachary Tong <zacharyjtong@gmail.com>
+    Date:   Tue Aug 18 12:04:35 2015 -0400
+    
+        Fixup rebase conflicts
+    
+    commit 674f162d7704dd2034b8361358decdefce1f76ce
+    Author: Zachary Tong <zacharyjtong@gmail.com>
+    Date:   Mon Aug 17 15:29:35 2015 -0400
+    
+        [TESTS] Update match and bool tests
+    
+    commit 520380a85456d7137734aed0b06a740e18c9cdec
+    Author: Zachary Tong <zacharyjtong@gmail.com>
+    Date:   Mon Aug 17 15:28:09 2015 -0400
+    
+        Make naming consistent re: plural
+    
+    commit b9221501d839bb24d6db575d08e9bee34043fc65
+    Author: Zachary Tong <zacharyjtong@gmail.com>
+    Date:   Mon Aug 17 15:27:39 2015 -0400
+    
+        Children need to be added to list after serialization
+    
+    commit 05fa51df940c332fbc140517ee56e849f2d40a72
+    Author: Zachary Tong <zacharyjtong@gmail.com>
+    Date:   Mon Aug 17 15:22:41 2015 -0400
+    
+        Re-enable bypass for non-profiled queries
+    
+    commit f132204d264af77a75bd26a02d4e251a19eb411d
+    Author: Zachary Tong <zacharyjtong@gmail.com>
+    Date:   Mon Aug 17 15:21:14 2015 -0400
+    
+        Fix serialization of QuerySearchResult, InternalProfileResult
+    
+    commit 27b98fd475fc2e9508c91436ef30624bdbee54ba
+    Author: Zachary Tong <zacharyjtong@gmail.com>
+    Date:   Mon Aug 10 17:39:17 2015 -0400
+    
+        Start to add back tests, refactor Java api
+    
+    commit bcfc9fefd49307045108408dc160774666510e85
+    Author: Zachary Tong <zacharyjtong@gmail.com>
+    Date:   Tue Aug 4 17:08:10 2015 -0400
+    
+        Checkpoint
+    
+    commit 26a530e0101ce252450eb23e746e48c2fd1bfcae
+    Author: Zachary Tong <zacharyjtong@gmail.com>
+    Date:   Tue Jul 14 13:30:32 2015 -0400
+    
+        Add createWeight() checkpoint
+    
+    commit f0dd61de809c5c13682aa213c0be65972537a0df
+    Author: Zachary Tong <zacharyjtong@gmail.com>
+    Date:   Mon Jul 13 12:36:27 2015 -0400
+    
+        checkpoint
+    
+    commit 377ee8ce5729b8d388c4719913b48fae77a16686
+    Author: Zachary Tong <zacharyjtong@gmail.com>
+    Date:   Wed Mar 18 10:45:01 2015 -0400
+    
+        checkpoint
+
+commit 3978508a2995451fadd1187734200d44d5781c34
+Merge: 0ce88b5 07044e0
+Author: Boaz Leskes <b.leskes@gmail.com>
+Date:   Tue Dec 15 15:33:50 2015 +0100
+
+    Merge pull request #15443 from bleskes/inject_remove
+    
+    IndexService: remove unneed inject annotation
+
+commit 07044e02b99a8453b099ca690337e19a771f232f
+Author: Boaz Leskes <b.leskes@gmail.com>
+Date:   Tue Dec 15 15:25:17 2015 +0100
+
+    IndexService: remove unneed inject annotation from
+
+commit beac4b17bee1002d605e7c70064121f9fdaabee4
+Merge: e2be57f df9432f
+Author: Simon Willnauer <simon.willnauer@elasticsearch.com>
+Date:   Sat Oct 24 15:38:46 2015 +0200
+
+    Merge pull request #14251 from s1monw/trash_index_settings
+    
+    Replace IndexSettings annotation with a full-fledged class
+
+commit 66d5d0c4f2de78371ccb5447e503d9d30b6b51c4
+Author: Simon Willnauer <simonw@apache.org>
+Date:   Wed Oct 21 14:02:10 2015 +0200
+
+    Replace IndexSettings annotation with a full-fledged class
+    
+    The @IndexSettings annoationat has been used to differentiate between node-level
+    and index level settings. It was also decoupled from realtime-updates such that
+    the settings object that a class got injected when it was created was static and
+    not subject to change when an update was applied. This change removes the annoation
+    and replaces it with a full-fledged class that adds type-safety and encapsulates additional
+    functionality as well as checks on the settings.
+
+commit 6e81b0dd7025fe10d49ade35b5852697ef39355e
+Merge: a5f4e46 2cc97a0
+Author: Nik Everett <nik9000@gmail.com>
+Date:   Tue Oct 20 18:33:46 2015 -0400
+
+    Merge pull request #14069 from nik9000/no_test_annotation
+    
+    Remove @Test
+
+commit 2cc97a0d3ed2a9276378e2a6462942deab04a1fb
+Author: Nik Everett <nik9000@gmail.com>
+Date:   Fri Oct 9 13:15:22 2015 -0400
+
+    Remove and ban @Test
+    
+    There are three ways `@Test` was used. Way one:
+    
+    ```java
+    @Test
+    public void flubTheBlort() {
+    ```
+    
+    This way was always replaced with:
+    
+    ```java
+    public void testFlubTheBlort() {
+    ```
+    
+    Or, maybe with a better method name if I was feeling generous.
+    
+    Way two:
+    
+    ```java
+    @Test(throws=IllegalArgumentException.class)
+    public void testFoo() {
+        methodThatThrows();
+    }
+    ```
+    
+    This way of using `@Test` is actually pretty OK, but to get the tools to ban
+    `@Test` entirely it can't be used. Instead:
+    
+    ```java
+    public void testFoo() {
+        try {
+            methodThatThrows();
+            fail("Expected IllegalArgumentException");
+        } catch (IllegalArgumentException e ) {
+            assertThat(e.getMessage(), containsString("something"));
+        }
+    }
+    ```
+    
+    This is longer but tests more than the old ways and is much more precise.
+    Compare:
+    
+    ```java
+    @Test(throws=IllegalArgumentException.class)
+    public void testFoo() {
+        some();
+        copy();
+        and();
+        pasted();
+        methodThatThrows();
+        code();  // <---- This was left here by mistake and is never called
+    }
+    ```
+    
+    to:
+    
+    ```java
+    @Test(throws=IllegalArgumentException.class)
+    public void testFoo() {
+        some();
+        copy();
+        and();
+        pasted();
+        try {
+            methodThatThrows();
+            fail("Expected IllegalArgumentException");
+        } catch (IllegalArgumentException e ) {
+            assertThat(e.getMessage(), containsString("something"));
+        }
+    }
+    ```
+    
+    The final use of test is:
+    
+    ```java
+    @Test(timeout=1000)
+    public void testFoo() {
+        methodThatWasSlow();
+    }
+    ```
+    
+    This is the most insidious use of `@Test` because its tempting but tragically
+    flawed. Its flaws are:
+    1. Hard and fast timeouts can look like they are asserting that something is
+    faster and even do an ok job of it when you compare the timings on the same
+    machine but as soon as you take them to another machine they start to be
+    invalid. On a slow VM both the new and old methods fail. On a super-fast
+    machine the slower and faster ways succeed.
+    2. Tests often contain slow `assert` calls so the performance of tests isn't
+    sure to predict the performance of non-test code.
+    3. These timeouts are rude to debuggers because the test just drops out from
+    under it after the timeout.
+    
+    Confusingly, timeouts are useful in tests because it'd be rude for a broken
+    test to cause CI to abort the whole build after it hits a global timeout. But
+    those timeouts should be very very long "backstop" timeouts and aren't useful
+    assertions about speed.
+    
+    For all its flaws `@Test(timeout=1000)` doesn't have a good replacement __in__
+    __tests__. Nightly benchmarks like http://benchmarks.elasticsearch.org/ are
+    useful here because they run on the same machine but they aren't quick to check
+    and it takes lots of time to figure out the regressions. Sometimes its useful
+    to compare dueling implementations but that requires keeping both
+    implementations around. All and all we don't have a satisfactory answer to the
+    question "what do you replace `@Test(timeout=1000)`" with. So we handle each
+    occurrence on a case by case basis.
+    
+    For files with `@Test` this also:
+    1. Removes excess blank lines. They don't help anything.
+    2. Removes underscores from method names. Those would fail any code style
+    checks we ever care to run and don't add to readability. Since I did this manually
+    I didn't do it consistently.
+    3. Make sure all test method names start with `test`. Some used to end in `Test` or start
+    with `verify` or `check` and they were picked up using the annotation. Without the
+    annotation they always need to start with `test`.
+    4. Organizes imports using the rules we generate for Eclipse. For the most part
+    this just removes `*` imports which is a win all on its own. It was "required"
+    to quickly remove `@Test`.
+    5. Removes unneeded casts. This is just a setting I have enabled in Eclipse and
+    forgot to turn off before I did this work. It probably isn't hurting anything.
+    6. Removes trailing whitespace. Again, another Eclipse setting I forgot to turn
+    off that doesn't hurt anything. Hopefully.
+    7. Swaps some tests override superclass tests to make them empty with
+    `assumeTrue` so that the reasoning for the skips is logged in the test run and
+    it doesn't "look like" that thing is being tested when it isn't.
+    8. Adds an oxford comma to an error message.
+    
+    The total test count doesn't change. I know. I counted.
+    ```bash
+    git checkout master && mvn clean && mvn install | tee with_test
+    git no_test_annotation master && mvn clean && mvn install | tee not_test
+    grep 'Tests summary' with_test > with_test_summary
+    grep 'Tests summary' not_test > not_test_summary
+    diff with_test_summary not_test_summary
+    ```
+    
+    These differ somewhat because some tests are skipped based on the random seed.
+    The total shouldn't differ. But it does!
+    ```
+    1c1
+    < [INFO] Tests summary: 564 suites (1 ignored), 3171 tests, 31 ignored (31 assumptions)
+    ---
+    > [INFO] Tests summary: 564 suites (1 ignored), 3167 tests, 17 ignored (17 assumptions)
+    ```
+    
+    These are the core unit tests. So we dig further:
+    ```bash
+    cat with_test | perl -pe 's/\n// if /^Suite/;s/.*\n// if /IGNOR/;s/.*\n// if /Assumption #/;s/.*\n// if /HEARTBEAT/;s/Completed .+?,//' | grep Suite > with_test_suites
+    cat not_test | perl -pe 's/\n// if /^Suite/;s/.*\n// if /IGNOR/;s/.*\n// if /Assumption #/;s/.*\n// if /HEARTBEAT/;s/Completed .+?,//' | grep Suite > not_test_suites
+    diff <(sort with_test_suites) <(sort not_test_suites)
+    ```
+    
+    The four tests with lower test numbers are all extend `AbstractQueryTestCase`
+    and all have a method that looks like this:
+    
+    ```java
+    @Override
+    public void testToQuery() throws IOException {
+        assumeTrue("test runs only when at least a type is registered", getCurrentTypes().length > 0);
+        super.testToQuery();
+    }
+    ```
+    
+    It looks like this method was being double counted on master and isn't anymore.
+    
+    Closes #14028
+
+commit 226d47d43053fd16272fa3b465dad28647da2b73
+Author: Nik Everett <nik9000@gmail.com>
+Date:   Mon Sep 21 12:50:39 2015 -0400
+
+    [build] Fix eclipse
+    
+    Eclipse was blowing up because it couldn't find javax.annotations.Nonnull
+    so this turns off nullability annotation checking.
+
+commit 3fa3b1597f590bce6dfeb632e3ea7bf961e70399
+Author: Nik Everett <nik9000@gmail.com>
+Date:   Mon Sep 14 11:32:33 2015 -0400
+
+    [test] PluginManager plugin info printing
+    
+    Also removes @Test in keeping with Elasticsearch's slow migration away from
+    the annotation in favor of test methods named testSomeThing.
+
+commit d49a744b7eceaf85191778f4d074b3607508a07d
+Author: Colin Goodheart-Smithe <colings86@users.noreply.github.com>
+Date:   Fri Sep 11 09:36:25 2015 +0100
+
+    [TEST] Removed @Repeat Annotation
+
+commit fe46227db871b6d1af6333c21f4bc684d350dd97
+Author: Jason Tedor <jason@tedor.me>
+Date:   Wed Sep 2 17:29:46 2015 -0400
+
+    Remove sole usgae of com.google.common.annotations.Beta
+
+commit e2ab62596f956c0a16b1899f3bfabd4c65a88552
+Author: Robert Muir <rmuir@apache.org>
+Date:   Thu Aug 20 14:26:40 2015 -0400
+
+    Default to unicast discovery, with default host list of 127.0.0.1, [::1]
+    Fix unicast discovery to work when a host has multiple addresses.
+    Ban dangerous methods in java.net with forbidden APIs.
+    Fix ipv6 bugs and formatting of network addresses everywhere.
+    
+    Closes #12999
+    Closes #12993
+    
+    Squashed commit of the following:
+    
+    commit 6c1aa001d091c5cf25212a53dc701fb704337f1e
+    Author: Robert Muir <rmuir@apache.org>
+    Date:   Thu Aug 20 14:25:43 2015 -0400
+    
+        Fix these to be correct with addresses just in case
+    
+    commit 648215627e84abf58a71400e7dc9ae775efb71d6
+    Merge: d00561b 41d8fbe
+    Author: Robert Muir <rmuir@apache.org>
+    Date:   Thu Aug 20 13:23:09 2015 -0400
+    
+        Merge branch 'master' into unicast_all_the_way_down
+    
+    commit d00561b76fd1aa5850699f7901f3dae3d4d402b7
+    Author: Simon Willnauer <simonw@apache.org>
+    Date:   Thu Aug 20 16:38:50 2015 +0200
+    
+        limit local ports to 5 in UnicastZenPing
+    
+    commit e2e15c594006746cbe24432694294a71cc99deb8
+    Author: Robert Muir <rmuir@apache.org>
+    Date:   Thu Aug 20 10:32:47 2015 -0400
+    
+        fix port limiting
+    
+    commit 10153cb7adadda81a1f482445e703836b65cf5e2
+    Author: Robert Muir <rmuir@apache.org>
+    Date:   Thu Aug 20 10:18:37 2015 -0400
+    
+        don't serialize scopeids: that's broken
+    
+    commit 2aa63d43db2baec68a2e9bc227cfeb85dfeb4f83
+    Author: Simon Willnauer <simonw@apache.org>
+    Date:   Thu Aug 20 16:06:51 2015 +0200
+    
+        restore @Network
+    
+    commit c840f1d1ef438826ae1ecfd5e45942a0e30dc9c0
+    Author: Simon Willnauer <simonw@apache.org>
+    Date:   Thu Aug 20 16:02:30 2015 +0200
+    
+         Use NetworkAddress.formatAddress where applicable in plugins
+    
+    commit 374ce878852b35d626b7a29c8c4773545b0e9ddd
+    Author: Simon Willnauer <simonw@apache.org>
+    Date:   Thu Aug 20 15:34:06 2015 +0200
+    
+        Use NetworkAddress.formatAddress where applicable
+    
+    commit e7a606d63f1bc43c1b62b6e17adf707c76d43a15
+    Author: Simon Willnauer <simonw@apache.org>
+    Date:   Thu Aug 20 10:17:57 2015 +0200
+    
+        Add @Multicast annotation to disable multicast tests by default.
+    
+        We only run multicast tests now when we explicitly state it. A working
+        multicast env is required which is not always the case.
+    
+    commit 2d7d2d0347179696ab41f71f048b13305014c85b
+    Author: Simon Willnauer <simonw@apache.org>
+    Date:   Thu Aug 20 09:51:28 2015 +0200
+    
+        Remove extra check for local mode in InternalTestCluster
+    
+    commit dda59ac39aa136d4687b9274c2692cd77f8b8f66
+    Author: Simon Willnauer <simonw@apache.org>
+    Date:   Thu Aug 20 09:37:03 2015 +0200
+    
+        Handle node mode across entire test cluster
+    
+        We used static methods reading sys properties to define the node mode
+        per cluster. this had lots of problems when tests couldn't cope with
+        mixed or only local mode. Now we are passing it down to the cluster from the test
+        which allows to @SuppressNetworkMode / @SupressLocalMode on the test to force
+        consistent node configurations.
+    
+    commit 058197b7a408318995c88ce7f6762e32348de0de
+    Author: Robert Muir <rmuir@apache.org>
+    Date:   Thu Aug 20 03:19:14 2015 -0400
+    
+        really ban InetSocketAddress's trappy method and break build and go to sleep, sorry
+    
+    commit ac8779185aee1e17e6f5a81766290fdfc9c603ba
+    Author: Robert Muir <rmuir@apache.org>
+    Date:   Thu Aug 20 03:16:52 2015 -0400
+    
+        Ban methods that might surprisingly cause DNS lookups
+    
+    commit e64fe3dff2b11503e5f2831eb9863d64f56c5538
+    Author: Robert Muir <rmuir@apache.org>
+    Date:   Thu Aug 20 02:59:05 2015 -0400
+    
+        Add unit test
+    
+    commit f15434f20fb1a3691b1cc16028597d8fae937e05
+    Author: Robert Muir <rmuir@apache.org>
+    Date:   Thu Aug 20 02:39:02 2015 -0400
+    
+        fix ipv6 formatting bugs
+    
+    commit 05c2c74098052c75fbb79ea1818a295ef2e03e30
+    Author: Robert Muir <rmuir@apache.org>
+    Date:   Thu Aug 20 02:12:05 2015 -0400
+    
+        format addresses correctly so I can actually read what comes out of our logs and stats apis
+    
+    commit 4f9389dcf1e8925f23153c5eb271b4ce2294dbaf
+    Author: Robert Muir <rmuir@apache.org>
+    Date:   Wed Aug 19 21:26:52 2015 -0400
+    
+        ban dangerous methods in java.net
+    
+    commit 6aacd4d9925f324903d1d099a6cf5f862aeaf677
+    Author: Robert Muir <rmuir@apache.org>
+    Date:   Wed Aug 19 20:59:24 2015 -0400
+    
+        ban lenient method
+    
+    commit f466a842c60163d1f4554bdce8a4163edb534c2c
+    Author: Simon Willnauer <simonw@apache.org>
+    Date:   Thu Aug 20 00:29:00 2015 +0200
+    
+        fix tests to not mix local transport and zen unicast disco
+    
+    commit 0de007a33b33fb68cf85cd86db4ca4f8ce10bbc9
+    Author: Simon Willnauer <simonw@apache.org>
+    Date:   Thu Aug 20 00:10:07 2015 +0200
+    
+        fix tests to not mix local transport and zen unicast disco
+    
+    commit 539f6ca6e5137e0d496239adc8684688dedcc824
+    Author: Simon Willnauer <simonw@apache.org>
+    Date:   Thu Aug 20 00:02:01 2015 +0200
+    
+        fix tests to not mix local transport and zen unicast disco
+    
+    commit 004c2881b25467f332acc8c9f9e92b1f0f9d314e
+    Author: Robert Muir <rmuir@apache.org>
+    Date:   Wed Aug 19 17:51:45 2015 -0400
+    
+        Fix multinode
+    
+    commit 54113af325ce31571811c49fdaae89d5687be4ba
+    Author: Robert Muir <rmuir@apache.org>
+    Date:   Wed Aug 19 17:36:45 2015 -0400
+    
+        fix integration tests
+    
+    commit 0156a77a56319d6b9737ec6a531992052e50bd59
+    Author: Simon Willnauer <simonw@apache.org>
+    Date:   Wed Aug 19 23:32:18 2015 +0200
+    
+        enable multicast in MulticastZenPingIT.java
+    
+    commit 1791caa35da853ce0122485fa3fd4674c671ec6e
+    Author: Robert Muir <rmuir@apache.org>
+    Date:   Wed Aug 19 17:23:16 2015 -0400
+    
+        Fix constant
+    
+    commit 22820b53e0b2dc9fd47145c2bc29ce912a8fd484
+    Author: Simon Willnauer <simonw@apache.org>
+    Date:   Wed Aug 19 22:59:09 2015 +0200
+    
+        give it some extra ids for local transport crazyness
+    
+    commit b2138fafa94a8a085813fd48356df63e57ade5b3
+    Author: Simon Willnauer <simonw@apache.org>
+    Date:   Wed Aug 19 22:51:42 2015 +0200
+    
+        pass on local addresses from configured transport rather than hard code IP addresses
+    
+    commit 1bf5de1f457b081e0ce262b57d2b55d39c434156
+    Author: Simon Willnauer <simonw@apache.org>
+    Date:   Wed Aug 19 22:04:31 2015 +0200
+    
+        fix PluggableTransportModuleIT.java to use local disco and detach port limit for node local disco
+    
+    commit b6706eddfa04c43947c16551359ae98a463d34aa
+    Author: Robert Muir <rmuir@apache.org>
+    Date:   Wed Aug 19 14:16:03 2015 -0400
+    
+        Default to unicast discovery, with default host list of 127.0.0.1, [::1]
+
+commit c6c3a40cb6b9f3ed21e27f5d1a32d40fda5b0de3
+Author: Clinton Gormley <clint@traveljury.com>
+Date:   Fri Aug 14 10:51:09 2015 +0200
+
+    Docs: Updated annotations for 2.0.0-beta1
+
+commit da31fbe702fd2b0d3d3daada82af19796e528c89
+Author: Alexander Reelsen <alexander@reelsen.net>
+Date:   Wed Aug 5 13:47:28 2015 +0200
+
+    Testing: Removing leftover @AwaitsFix annotation
+    
+    Since the update to HDRHistogram 2.1.6 this test was
+    forgotten to get the annotation removed in #12554.
+
+commit 3c5b43a5bd426e4e1b041de31a0f7051081b3921
+Merge: ae701e4 32a5c20
+Author: Ryan Ernst <ryan@iernst.net>
+Date:   Mon Aug 3 16:46:05 2015 -0700
+
+    Merge pull request #12618 from rjernst/remove/forbid-slow-annotation
+    
+    Forbid @Slow
+
+commit 32a5c20b33434ff4da1ab464fa98cc937f706460
+Author: Ryan Ernst <ryan@iernst.net>
+Date:   Mon Aug 3 16:43:09 2015 -0700
+
+    Tests: Forbid @Slow
+    
+    Now that all uses of @Slow are gone, we can forbid this annotations use
+    so tests are not confusing. Follow up to #12617.
+
+commit ae701e4f6e879d0bd3e19fdf92bbb032e167f1aa
+Merge: bfd2a39 6d0c106
+Author: Ryan Ernst <ryan@iernst.net>
+Date:   Mon Aug 3 16:35:03 2015 -0700
+
+    Merge pull request #12617 from rjernst/remove/test-annotations
+    
+    Remove uses of @Slow and @Integration
+
+commit 0af70614acc29b6dd3238dbd3ed408a2225c4802
+Author: Martijn van Groningen <martijn.v.groningen@gmail.com>
+Date:   Tue Jul 14 22:50:28 2015 +0200
+
+    test: removed AwaitsFix annotation as the associated issue is fixed and the failures don't reproduce any more
+
+commit f5e351aaf1aacf29eb7f37b284000fe948a6075d
+Author: Martijn van Groningen <martijn.v.groningen@gmail.com>
+Date:   Tue Jul 14 20:05:20 2015 +0200
+
+    parent/child: Removed AwaitsFix annotation
+    
+    Closes #9461
+
+commit 295f1971d2e4bf5d65cfe1aa10ac0e15557dba9b
+Author: Simon Willnauer <simonw@apache.org>
+Date:   Tue Jul 14 12:04:16 2015 +0200
+
+    Add a release profile to the parent pom.xml
+    
+    This commit adds a release profile that runs additional checks like:
+      * check for `norelease` in the source
+      * check for `AwaitsFix` annotations
+      * deploys only if all reactor builds where successful
+      * signs all artifacts with the GPG key provided (required for release)
+      * builds the RPM together with the zip, tar.gz and .deb during package phase
+    
+    Note this is WIP of replacing major functionality of the release pythong script but
+    won't work by itself.
+
+commit e429b8d19053674f3739121aac79b56745ab4084
+Author: David Pilato <david@pilato.fr>
+Date:   Fri Jun 12 18:57:21 2015 +0200
+
+    [build] include in plugins only needed jars
+    
+    Follow up for https://github.com/elastic/elasticsearch-analysis-kuromoji/issues/61
+    
+    We don't shade anymore elasticsearch dependencies, so plugins might include jars in the distribution ZIP file which might not be needed anymore.
+    
+    For example, `elasticsearch-cloud-aws` comes with:
+    
+    ```
+    Archive:  cloud-aws/target/releases/elasticsearch-cloud-aws-2.0.0-SNAPSHOT.zip
+      Length     Date   Time    Name
+     --------    ----   ----    ----
+      1920788  05-18-15 09:42   aws-java-sdk-ec2-1.9.34.jar
+       503963  05-18-15 09:42   aws-java-sdk-core-1.9.34.jar
+       232771  01-19-15 09:24   commons-codec-1.6.jar
+       915096  01-19-15 09:24   jackson-databind-2.3.2.jar
+       252288  05-18-15 09:42   aws-java-sdk-kms-1.9.34.jar
+        62050  01-19-15 09:24   commons-logging-1.1.3.jar
+       282269  10-31-14 13:19   httpcore-4.3.2.jar
+        35058  01-19-15 09:24   jackson-annotations-2.3.0.jar
+       229998  05-29-15 12:28   jackson-core-2.5.3.jar
+       589289  01-19-15 09:24   joda-time-2.7.jar
+       562858  05-18-15 09:42   aws-java-sdk-s3-1.9.34.jar
+       590533  10-31-14 13:19   httpclient-4.3.5.jar
+        44854  06-12-15 19:22   elasticsearch-cloud-aws-2.0.0-SNAPSHOT.jar
+     --------                   -------
+      6221815                   13 files
+    ```
+    
+    A lot of those files are already distributed with elasticsearch itself so classes are available within the classloader.
+    
+    We mark all es core dependencies as provided in plugins.
+    We also remove `groupId` as already defined in parent pom.
+    And we remove non needed licenses files as some jars are not included anymore in plugins.
+    
+    Closes #11647.
+
+commit 631e03c872ce30f6597216467bc68070f8aee862
+Author: Clinton Gormley <clint@traveljury.com>
+Date:   Fri May 22 17:19:03 2015 +0200
+
+    Docs: Tidied up term vectors docs
+    
+    Moved annotations out of titles
+    Made the example titles into example blocks
+
+commit e5ceabf734e10b2261a53436eb3a29c12dbf4a99
+Author: Robert Muir <rmuir@apache.org>
+Date:   Wed May 13 22:59:35 2015 -0400
+
+    Use ThirdParty annotation and remove duplicate test config.
+    
+    See elastic/elasticsearch-parent#41
+
+commit e2675c36165d13e16612389a14562a4fbec39b70
+Author: Robert Muir <rmuir@apache.org>
+Date:   Wed May 13 22:46:49 2015 -0400
+
+    Use ThirdParty annotation and remove duplicate test config.
+    
+    See elastic/elasticsearch-parent#41
+
+commit 2f00ebbabcf93d31dd1cb681aee96589af6891d8
+Author: Robert Muir <rmuir@apache.org>
+Date:   Wed May 13 22:33:38 2015 -0400
+
+    Use ThirdParty annotation and remove duplicate test config.
+    
+    See https://github.com/elastic/elasticsearch-parent/issues/41
+
+commit b92bd345114903e7481eb4bde49636df1725aaa4
+Author: javanna <cavannaluca@gmail.com>
+Date:   Tue May 12 09:36:48 2015 +0200
+
+    [TEST] added missing @Override annotations to query builder tests
+
+commit bfcdc4082af6aead5f9333476d1ffd4614ebc4bf
+Author: javanna <cavannaluca@gmail.com>
+Date:   Tue May 12 09:36:11 2015 +0200
+
+    [TEST] replace for loops to repeat tests with @Repeat annotation in BaseQueryTestCase
+
+commit d2844e0210450aa9eec4a9f588f10c5f2bae35b8
+Author: Igor Motov <igor@motovs.org>
+Date:   Thu Apr 23 20:37:38 2015 -0400
+
+    Internal: prevent injection of unannotated dynamic settings
+    
+    Dynamic settings has to be injected into constructor with either @ClusterDynamicSettings or @IndexDynamicSettings. If annotations are not specified an empty instance of Dynamic Settings is injected that can lead to difficult to discover errors such as #10614. This commit will make any attempt to inject unannotated dynamic settings to generate a giuce error.
+
+commit 1cbc7c619f6d8918c8b4e50624c62173a8dd7197
+Author: javanna <cavannaluca@gmail.com>
+Date:   Fri May 1 18:43:40 2015 +0200
+
+    Query refactoring: updated javadocs for new methods and added missing @Overrides annotations
+
+commit 37ed61807f5310ccd8a7e72ec7b5a117148f3acc
+Author: Clinton Gormley <clint@traveljury.com>
+Date:   Sun Apr 26 18:49:15 2015 +0200
+
+    Docs: Updated the experimental annotations in the docs as follows:
+    
+    * Removed the docs for `index.compound_format` and `index.compound_on_flush` - these are expert settings which should probably be removed (see https://github.com/elastic/elasticsearch/issues/10778)
+    * Removed the docs for `index.index_concurrency` - another expert setting
+    * Labelled the segments verbose output as experimental
+    * Marked the `compression`, `precision_threshold` and `rehash` options as experimental in the cardinality and percentile aggs
+    * Improved the experimental text on `significant_terms`, `execution_hint` in the terms agg, and `terminate_after` param on count and search
+    * Removed the experimental flag on the `geobounds` agg
+    * Marked the settings in the `merge` and `store` modules as experimental, rather than the modules themselves
+    
+    Closes #10782
+
+commit e91a7de9f761b6c662277ace47da81ceb73037d2
+Author: Ryan Ernst <ryan@iernst.net>
+Date:   Sat Apr 18 00:50:05 2015 -0700
+
+    move rest and integration test annotations and sysprops to their respective tests
+
+commit d2854d72677d2f1e345ef40ffb5501a44eb6bc2e
+Author: Robert Muir <rmuir@apache.org>
+Date:   Sat Apr 18 02:22:44 2015 -0400
+
+    mark slow tests with @Slow annotation
+
+commit d738b3d1e20c658f4bcd6d77321d3225bdbb6c5d
+Author: Simon Willnauer <simonw@apache.org>
+Date:   Mon Apr 13 10:03:50 2015 +0200
+
+    [BUILD] Use SuppressFrobidden annotation instead of class level excludes
+    
+    Forbidden APIs 1.8 allows excludes based on annotations which can now be on methods etc. for more find grained control.
+    
+    Closes #10560
+
+commit abc7de96ae80cf9dbacb565fb71e79383b3029ef
+Author: Clinton Gormley <clint@traveljury.com>
+Date:   Thu Apr 9 14:50:11 2015 +0200
+
+    Docs: Updated version annotations in master
+
+commit b05f5ebee8df6e2cf83f7646253976867a0ff7ca
+Author: Nicholas Knize <nknize@gmail.com>
+Date:   Thu Feb 26 12:09:53 2015 -0600
+
+    [TEST] Adding 'AwaitsFix' annotation to randomGeoCollection test
+    
+    Random geo shape testing periodically fails on a known issue within Spatial4j core. A simple patch in ES will fix the issue.  For now this random test will be disabled until the patch can be applied.
+
+commit 0fa5b87fddc10ce487299c10fd3a833962058959
+Author: Robert Muir <rmuir@apache.org>
+Date:   Mon Feb 23 17:07:46 2015 -0500
+
+    Add missing @Override annotations.
+    
+    These help a lot when refactoring, upgrading lucene, etc, and
+    can prevent code duplication (as you get a compile error for outdated stuff).
+    
+    Closes #9832.
+
+commit 6fadeeca566b07b86f1de26f449fab6a96541037
+Author: Clinton Gormley <clint@traveljury.com>
+Date:   Wed Feb 11 15:40:57 2015 +0100
+
+    Updated doc annotations for 1.4.3
+
+commit 95f46f1212273c1be4426840c6a8a198d26d5b7e
+Author: Adrien Grand <jpountz@gmail.com>
+Date:   Wed Feb 4 15:43:22 2015 +0100
+
+    Docs: Use the new experimental annotation.
+    
+    We now have a very useful annotation to mark features or parameters as
+    experimental. Let's use it! This commit replaces some custom text warnings with
+    this annotation and adds this annotation to some existing features/parameters:
+     - inner_hits (unreleased yet)
+     - terminate_after (released in 1.4)
+     - per-bucket doc count errors in the terms agg (released in 1.4)
+    
+    I also tagged with this annotation settings which should either be not needed
+    (like the ability to evict entries from the filter cache based on time) or that
+    are too deep into the way that Elasticsearch works like the Directory
+    implementation or merge settings.
+    
+    Close #9563
+
+commit 338766fd4defef708ec3b306f6bded814f1b8a89
+Author: javanna <cavannaluca@gmail.com>
+Date:   Tue Feb 3 15:45:52 2015 +0100
+
+    [TEST] Remove needless ClusterScope annotation from NettyTransportMultiPortTests
+    
+    NettyTransportMultiPortTests is not an integration test, it doesn't rely on the test cluster thus the ClusterScope annotation doesn't have any effect.
+
+commit 84066128ed57bee11330371db9a1a52d07c9626e
+Author: Simon Willnauer <simonw@apache.org>
+Date:   Mon Dec 8 12:25:45 2014 +0100
+
+    [TEST] Pass class level test logging to external nodes
+    
+    This commit passes the test logging annotation from the class
+    level to the external nodes as well.
+    
+    Closes #8552
+
+commit c524e469ec4ac47413155c6761688045a32ab239
+Author: Simon Willnauer <simonw@apache.org>
+Date:   Fri Nov 28 10:40:38 2014 +0100
+
+    [TEST] remove outdated TestLogging annotation
+    
+    Conflicts:
+    	src/test/java/org/elasticsearch/bwcompat/UnicastBackwardsCompatibilityTest.java
+    	src/test/java/org/elasticsearch/recovery/RelocationTests.java
+
+commit bf0387e0bc2080dd4140f5d1ff40bc8839ac2e8e
+Author: javanna <cavannaluca@gmail.com>
+Date:   Thu Nov 27 10:19:44 2014 +0100
+
+    [TEST] make sure rest tests info is printed for any @Rest annotated test
+    
+    We introduced the @Rest annotation a while ago for REST tests (see #7795), we have then to make sure that relevant info to reproduce failures gets printed out for any test that is marked with such annotation, not only for ElasticsearchRestTests
+    
+    Closes #8680
+
+commit 06e907d99e646b8496c9ac5feaccb8e6df11f75f
+Author: Britta Weber <britta.weber@elasticsearch.com>
+Date:   Thu Nov 20 15:29:44 2014 +0100
+
+    Revert "[TEST] use logger level from test class annotation also in external nodes"
+    
+    This reverts commit 4604a68bef9c54f5db812609157b18788279012d.
+
+commit 4604a68bef9c54f5db812609157b18788279012d
+Author: Britta Weber <britta.weber@elasticsearch.com>
+Date:   Wed Nov 19 16:00:17 2014 +0100
+
+    [TEST] use logger level from test class annotation also in external nodes
+    
+    closes #8552
+
+commit 9956e7721d04cbbf54890928974b1086f055135d
+Author: Alexander Reelsen <alexander@reelsen.net>
+Date:   Thu Nov 13 15:42:52 2014 +0100
+
+    Tests: Improve netty test behaviour
+    
+    Based on some test failures, this commit fixes two minor things
+    
+    * Bind ports only on so called ephemeral ports to prevent try to
+      bind to ports where elasticsearch already runs on
+    * Remove @Network annotation as it was used in a wrong scope
+
+commit 610ce078fb3c84c47d6d32aff7d77ba850e28f9d
+Author: Robert Muir <rmuir@apache.org>
+Date:   Wed Nov 5 15:48:51 2014 -0500
+
+    Upgrade master to lucene 5.0 snapshot
+    
+    This has a lot of improvements in lucene, particularly around memory usage, merging, safety, compressed bitsets, etc.
+    
+    On the elasticsearch side, summary of the larger changes:
+    
+        API changes: postings API became a "pull" rather than "push", collector API became per-segment, etc.
+        packaging changes: add lucene-backwards-codecs.jar as a dependency.
+        improvements to boolean filtering: especially ensuring it will not be slow for SparseBitSet.
+        use generic BitSet api in plumbing so that concrete bitset type is an implementation detail.
+        use generic BitDocIdSetFilter api for dedicated bitset cache, so there is type safety.
+        changes to support atomic commits
+        implement Accountable.getChildResources (detailed memory usage API) for fielddata, etc
+        change handling of IndexFormatTooOld/New, since they no longer extends CorruptIndexException
+    
+    Closes #8347.
+    
+    Squashed commit of the following:
+    
+    commit d90d53f5f21b876efc1e09cbd6d63c538a16cd89
+    Author: Simon Willnauer <simonw@apache.org>
+    Date:   Wed Nov 5 21:35:28 2014 +0100
+    
+        Make default codec/postings/docvalues format constants
+    
+    commit cb66c22c71cd304a36e7371b199a8c279908ae37
+    Merge: d4e2f6d ad4ff43
+    Author: Robert Muir <rmuir@apache.org>
+    Date:   Wed Nov 5 11:41:13 2014 -0500
+    
+        Merge branch 'master' into enhancement/lucene_5_0_upgrade
+    
+    commit d4e2f6dfe767a5128c9b9ae9e75036378de08f47
+    Merge: 4e5445c 4111d93
+    Author: Robert Muir <rmuir@apache.org>
+    Date:   Wed Nov 5 06:26:32 2014 -0500
+    
+        Merge branch 'master' into enhancement/lucene_5_0_upgrade
+    
+    commit 4e5445c775f580730eb01360244e9330c0dc3958
+    Author: Robert Muir <rmuir@apache.org>
+    Date:   Tue Nov 4 16:19:19 2014 -0500
+    
+        FixedBitSet -> BitSet
+    
+    commit 9887ea73e8b857eeda7f851ef3722ef580c92acf
+    Merge: 1bf8894 fc84666
+    Author: Robert Muir <rmuir@apache.org>
+    Date:   Tue Nov 4 15:26:25 2014 -0500
+    
+        Merge branch 'master' into enhancement/lucene_5_0_upgrade
+    
+    commit 1bf8894430de3e566d0dc5623b0cc28b0d674ebb
+    Author: Robert Muir <rmuir@apache.org>
+    Date:   Tue Nov 4 15:22:51 2014 -0500
+    
+        remove nocommit
+    
+    commit a9c2a2259ff79c69bae7806b64e92d5f472c18c8
+    Author: Robert Muir <rmuir@apache.org>
+    Date:   Tue Nov 4 13:48:43 2014 -0500
+    
+        turn jenkins red again
+    
+    commit 067baaaa4d52fce772c81654dcdb5051ea79139f
+    Author: Robert Muir <rmuir@apache.org>
+    Date:   Tue Nov 4 13:18:21 2014 -0500
+    
+        unzip from stream
+    
+    commit 82b6fba33d362aca2313cc0ca495f28f5ebb9260
+    Merge: b2214bb 6523cd9
+    Author: Robert Muir <rmuir@apache.org>
+    Date:   Tue Nov 4 13:10:59 2014 -0500
+    
+        Merge branch 'master' into enhancement/lucene_5_0_upgrade
+    
+    commit b2214bb093ec2f759003c488c3c403c8931db914
+    Author: Robert Muir <rmuir@apache.org>
+    Date:   Tue Nov 4 13:09:53 2014 -0500
+    
+        go back to my URL until we can figure out what is up with jenkins
+    
+    commit e7d614172240175a51f580aeaefb6460d21cede9
+    Author: Robert Muir <rmuir@apache.org>
+    Date:   Tue Nov 4 10:52:54 2014 -0500
+    
+        try this jenkins
+    
+    commit 337a3c7704efa7c9809bf373152d711ee55f876c
+    Author: Simon Willnauer <simonw@apache.org>
+    Date:   Tue Nov 4 16:17:49 2014 +0100
+    
+        Rename temp-files under lock to prevent metadata reads while renaming
+    
+    commit 77d5ba80d0a76efa549dd753b9f114b2f2d2d29c
+    Author: Robert Muir <rmuir@apache.org>
+    Date:   Tue Nov 4 10:07:11 2014 -0500
+    
+        continue to treat too-old/too-new as corruption for now
+    
+    commit 98d0fd2f4851bc50e505a94ca592a694d502c51c
+    Author: Robert Muir <rmuir@apache.org>
+    Date:   Tue Nov 4 09:24:21 2014 -0500
+    
+        fix last nocommit
+    
+    commit 643fceed66c8caf22b97fc489d67b4a2a90a1a1c
+    Author: Simon Willnauer <simonw@apache.org>
+    Date:   Tue Nov 4 14:46:17 2014 +0100
+    
+        remove NoSuchDirectoryException
+    
+    commit 2e43c4feba05cfaf451df70f946c0930cbcc4557
+    Merge: 93826e4 8163107
+    Author: Simon Willnauer <simonw@apache.org>
+    Date:   Tue Nov 4 14:38:00 2014 +0100
+    
+        Merge branch 'master' into enhancement/lucene_5_0_upgrade
+    
+    commit 93826e4d56a6a97c2074669014af77ff519bde63
+    Merge: 7f10129 44e24d3
+    Author: Simon Willnauer <simonw@apache.org>
+    Date:   Tue Nov 4 12:54:27 2014 +0100
+    
+        Merge branch 'master' into enhancement/lucene_5_0_upgrade
+    
+        Conflicts:
+        	src/main/java/org/elasticsearch/index/store/DistributorDirectory.java
+        	src/main/java/org/elasticsearch/index/store/Store.java
+        	src/main/java/org/elasticsearch/indices/recovery/RecoveryStatus.java
+        	src/test/java/org/elasticsearch/index/store/DistributorDirectoryTest.java
+        	src/test/java/org/elasticsearch/index/store/StoreTest.java
+        	src/test/java/org/elasticsearch/indices/recovery/RecoveryStatusTests.java
+    
+    commit 7f10129364623620575c109df725cf54488b3abb
+    Author: Adrien Grand <jpountz@gmail.com>
+    Date:   Tue Nov 4 11:32:24 2014 +0100
+    
+        Fix TopHitsAggregator to not ignore the top-level/leaf collector split.
+    
+    commit 042fadc8603b997bdfdc45ca44fec70dc86774a6
+    Author: Adrien Grand <jpountz@gmail.com>
+    Date:   Tue Nov 4 11:31:20 2014 +0100
+    
+        Remove MatchDocIdSet in favor of DocValuesDocIdSet.
+    
+    commit 7d877581ff5db585a674c95ac391ac78a0282826
+    Author: Adrien Grand <jpountz@gmail.com>
+    Date:   Tue Nov 4 11:10:08 2014 +0100
+    
+        Make the and filter use the cost API.
+    
+        Lucene 5 ensured that cost() can safely be used, and this will have the benefit
+        that the order in which filters are specified is not important anymore (only
+        for slow random-access filters in practice).
+    
+    commit 78f1718aa2cd82184db7c3a8393e6215f43eb4a8
+    Author: Robert Muir <rmuir@apache.org>
+    Date:   Mon Nov 3 23:55:17 2014 -0500
+    
+        fix previous eclipse import braindamage
+    
+    commit 186c40e9258ce32f22a9a714ab442a310b6376e0
+    Author: Robert Muir <rmuir@apache.org>
+    Date:   Mon Nov 3 22:32:34 2014 -0500
+    
+        allow child queries to exhaust iterators again
+    
+    commit b0b1271305e1b6d0c4c4da51a3c54df1aa5c0605
+    Author: Ryan Ernst <ryan@iernst.net>
+    Date:   Mon Nov 3 14:50:44 2014 -0800
+    
+        Fix nocommit for mapping output.  index_options will not be printed if
+        the field is not indexed.
+    
+    commit ba223eb85e399c9620a347a983e29bf703953e7a
+    Author: Ryan Ernst <ryan@iernst.net>
+    Date:   Mon Nov 3 14:07:26 2014 -0800
+    
+        Remove no commit for chinese analyzer provider.  We should have a
+        separate issue to address not using this provider on new indexes.
+    
+    commit ca554b03c4471797682b2fb724f25205cf040c4a
+    Author: Ryan Ernst <ryan@iernst.net>
+    Date:   Mon Nov 3 13:41:59 2014 -0800
+    
+        Fix stop tests
+    
+    commit de67c4653ec47dee9c671390536110749d2bb05f
+    Author: Ryan Ernst <ryan@iernst.net>
+    Date:   Mon Nov 3 12:51:17 2014 -0800
+    
+        Remove analysis nocommits, switching over to Lucene43*Filters for
+        backcompat
+    
+    commit 50cae9bec72c25c33a1ab8a8931bccb3355171e2
+    Author: Robert Muir <rmuir@apache.org>
+    Date:   Mon Nov 3 15:32:25 2014 -0500
+    
+        add ram accounting and TODO lazy-loading (its no worse than master, can be a followup improvement) for suggesters
+    
+    commit 7a7f0122f138684b312d0f0b03dc2a9c16c15f9c
+    Author: Robert Muir <rmuir@apache.org>
+    Date:   Mon Nov 3 15:11:26 2014 -0500
+    
+        bump lucene version
+    
+    commit cd0cae5c35e7a9e049f49ae45431f658fb86676b
+    Merge: 446bc09 3c72073
+    Author: Robert Muir <rmuir@apache.org>
+    Date:   Mon Nov 3 14:49:05 2014 -0500
+    
+        Merge branch 'master' into enhancement/lucene_5_0_upgrade
+    
+    commit 446bc09b4e8bf4602d3c252b53ddaa0da65cce2f
+    Author: Robert Muir <rmuir@apache.org>
+    Date:   Mon Nov 3 14:46:30 2014 -0500
+    
+        remove hack
+    
+    commit a19d85a968d82e6d00292b49630ef6ff2dbf2f32
+    Author: Robert Muir <rmuir@apache.org>
+    Date:   Mon Nov 3 12:53:11 2014 -0500
+    
+        dont create exceptions with circular references on corruption (will open a PR for this)
+    
+    commit 0beefb9e821d97c37e90ec556d81ac7b00369b8a
+    Author: Robert Muir <rmuir@apache.org>
+    Date:   Mon Nov 3 11:47:14 2014 -0500
+    
+        temporarily add craptastic detector for this horrible bug
+    
+    commit e9f2d298bff75f3d1591f8622441e459c3ce7ac3
+    Author: Robert Muir <rmuir@apache.org>
+    Date:   Mon Nov 3 10:56:01 2014 -0500
+    
+        add nocommit
+    
+    commit e97f1d50a91a7129650b8effc7a9ecf74ca0569a
+    Merge: c57a3c8 f1f50ac
+    Author: Robert Muir <rmuir@apache.org>
+    Date:   Mon Nov 3 10:12:12 2014 -0500
+    
+        Merge branch 'master' into enhancement/lucene_5_0_upgrade
+    
+    commit c57a3c8341ed61dca62eaf77fad6b8b48aeb6940
+    Author: Robert Muir <rmuir@apache.org>
+    Date:   Mon Nov 3 10:11:46 2014 -0500
+    
+        fix nocommit
+    
+    commit dd0e77e4ec07c7011ab5f6b60b2ead33dc2333d2
+    Author: Robert Muir <rmuir@apache.org>
+    Date:   Mon Nov 3 09:54:09 2014 -0500
+    
+        nocommit -> TODO, this is in much more places in the codebase, bigger issue
+    
+    commit 3cc3bf56d72d642059f8fe220d6f2fed608363e9
+    Author: Ryan Ernst <ryan@iernst.net>
+    Date:   Sat Nov 1 23:59:17 2014 -0700
+    
+        Remove nocommit and awaitsfix for edge ngram filter test.
+    
+    commit 89f115245155511c0fbc0d5ee62e63141c3700c1
+    Author: Ryan Ernst <ryan@iernst.net>
+    Date:   Sat Nov 1 23:57:44 2014 -0700
+    
+        Fix EdgeNGramTokenFilter logic for version <= 4.3, and fixed instanceof
+        checks in corresponding tests to correctly check for reverse filter when
+        applicable.
+    
+    commit 112df869cd199e36aab0e1a7a288bb1fdb2ebf1c
+    Author: Robert Muir <rmuir@apache.org>
+    Date:   Sun Nov 2 00:08:30 2014 -0400
+    
+        execute geo disjoint query/filter as intersects
+    
+    commit e5061273cc685f1252e9a3a9ae4877ec9bce7752
+    Author: Robert Muir <rmuir@apache.org>
+    Date:   Sat Nov 1 22:58:59 2014 -0400
+    
+        remove chinese analyzer from docs
+    
+    commit ea1af11b8978fcc551f198e24fe21d52806993ef
+    Author: Robert Muir <rmuir@apache.org>
+    Date:   Sat Nov 1 22:29:00 2014 -0400
+    
+        fix ram accounting bug
+    
+    commit 53c0a42c6aa81aa6bf81d3aa77b95efd513e0f81
+    Merge: e3bcd3c 6011a18
+    Author: Robert Muir <rmuir@apache.org>
+    Date:   Sat Nov 1 22:16:29 2014 -0400
+    
+        Merge branch 'master' into enhancement/lucene_5_0_upgrade
+    
+    commit e3bcd3cc07a4957e12c7b3affc462c31290a9186
+    Author: Robert Muir <rmuir@apache.org>
+    Date:   Sat Nov 1 22:15:01 2014 -0400
+    
+        fix url-email back compat (thanks ryan)
+    
+    commit 91d6b096a96c357755abee167098607223be1aad
+    Author: Robert Muir <rmuir@apache.org>
+    Date:   Sat Nov 1 22:11:26 2014 -0400
+    
+        bump lucene version
+    
+    commit d2bb9568df72b37ec7050d25940160b8517394bc
+    Author: Robert Muir <rmuir@apache.org>
+    Date:   Sat Nov 1 20:33:07 2014 -0400
+    
+        remove nocommit
+    
+    commit 1d049c471e19e5c457262c7399c5bad9e023b2e3
+    Author: Robert Muir <rmuir@apache.org>
+    Date:   Sat Nov 1 20:28:58 2014 -0400
+    
+        fix eclipse to group org/com imports together: without this, its madness
+    
+    commit 09d8c1585ee99b6e63be032732c04ef6fed84ed2
+    Author: Robert Muir <rmuir@apache.org>
+    Date:   Sat Nov 1 14:27:41 2014 -0400
+    
+        remove nocommit, if you dont liek it, print assembly and tell me how it can be better
+    
+    commit 8a6a294313fdf33b50c7126ec20c07867ecd637c
+    Author: Adrien Grand <jpountz@gmail.com>
+    Date:   Fri Oct 31 20:01:55 2014 +0100
+    
+        Remove deprecated usage of DocIdSets.newDocIDSet.
+    
+    commit 601bee60543610558403298124a84b1b3bbd1045
+    Author: Robert Muir <rmuir@apache.org>
+    Date:   Fri Oct 31 14:13:18 2014 -0400
+    
+        maybe one of these zillions of annotations will stop thread leaks
+    
+    commit 9d3f69abc7267c5e455aefa26db95cb554b02d62
+    Author: Robert Muir <rmuir@apache.org>
+    Date:   Fri Oct 31 14:05:39 2014 -0400
+    
+        fix some analysis nocommits
+    
+    commit 312e3a29c77214b8142d21c33a6b2c2b151acf9a
+    Author: Adrien Grand <jpountz@gmail.com>
+    Date:   Fri Oct 31 18:28:45 2014 +0100
+    
+        Remove XConstantScoreQuery/XFilteredQuery/ApplyAcceptedDocsFilter.
+    
+    commit 5a0cb9f8e167215df7f1b1fad11eec6e6c74940f
+    Author: Adrien Grand <jpountz@gmail.com>
+    Date:   Fri Oct 31 17:06:45 2014 +0100
+    
+        Fix misleading documentation of DocIdSets.toCacheable.
+    
+    commit 8b4ef2b5b476fff4c79c0c2a0e4769ead26cf82b
+    Author: Adrien Grand <jpountz@gmail.com>
+    Date:   Fri Oct 31 17:05:59 2014 +0100
+    
+        Fix CustomRandomAccessFilterStrategy to override the right method.
+    
+    commit d7a9a407a615987cfffc651f724fbd8795c9c671
+    Author: Adrien Grand <jpountz@gmail.com>
+    Date:   Fri Oct 31 16:21:35 2014 +0100
+    
+        Better handle the special case when there is a single SHOULD clause.
+    
+    commit 648ad389f07e92dfc451f345549c9841ba5e4c9a
+    Author: Adrien Grand <jpountz@gmail.com>
+    Date:   Fri Oct 31 15:53:38 2014 +0100
+    
+        Cut over XBooleanFilter to BitDocIdSet.Builder.
+    
+        The idea is similar to what happened to Lucene's BooleanFilter.
+    
+        Yet XBooleanFilter is a bit more sophisticated and I had to slightly
+        change the way it is implemented in order to make it work. The main difference
+        with before is that slow filters are now applied lazily, so eg. if you have 3
+        MUST clauses, two with a fast iterator and the third with a slow iterator, the
+        previous implementation used to apply the fast iterators first and then only
+        check the slow filter for bits which were set in the bit set. Now we are
+        computing a bit set based on the fast must clauses and then basically returning
+        a BitsFilteredDocIdSet.wrap(bitset, slowClause).
+    
+        Other than that, BooleanFilter still uses the bitset optimizations when or-ing
+        and and-ind filters.
+    
+        Another improvement is that BooleanFilter is now aware of the cost API.
+    
+    commit b2dad312b4bc9f931dc3a25415dd81c0d9deee08
+    Author: Robert Muir <rmuir@apache.org>
+    Date:   Fri Oct 31 10:18:53 2014 -0400
+    
+        clear nocommit
+    
+    commit 4851d2091e744294336dfade33906c75fbe695cd
+    Author: Simon Willnauer <simonw@apache.org>
+    Date:   Fri Oct 31 15:15:16 2014 +0100
+    
+        cut over to RoaringDocIdSet
+    
+    commit ca6aec24a901073e65ce4dd6b70964fd3612409e
+    Author: Simon Willnauer <simonw@apache.org>
+    Date:   Fri Oct 31 14:57:30 2014 +0100
+    
+        make nocommit more explicit
+    
+    commit d0742ee2cb7a6c48b0bbb31580b7fbcebdb6ec40
+    Author: Robert Muir <rmuir@apache.org>
+    Date:   Fri Oct 31 09:55:24 2014 -0400
+    
+        fix standardtokenizer nocommit
+    
+    commit 7d6faccafff22a86af62af0384838391d46695ca
+    Author: Simon Willnauer <simonw@apache.org>
+    Date:   Fri Oct 31 14:54:08 2014 +0100
+    
+        fix compilation
+    
+    commit a038a405c1ff6458ad294e6b5bc469e622f699d0
+    Author: Simon Willnauer <simonw@apache.org>
+    Date:   Fri Oct 31 14:53:43 2014 +0100
+    
+        fix compilation
+    
+    commit 30c9e307b1f5d80e2deca3392c0298682241207f
+    Author: Simon Willnauer <simonw@apache.org>
+    Date:   Fri Oct 31 14:52:35 2014 +0100
+    
+        fix compilation
+    
+    commit e5139bc5a0a9abd2bdc6ba0dfbcb7e3c2e7b8481
+    Author: Robert Muir <rmuir@apache.org>
+    Date:   Fri Oct 31 09:52:16 2014 -0400
+    
+        clear nocommit here
+    
+    commit 85dd2cedf7a7994bed871ac421cfda06aaf5c0a5
+    Author: Simon Willnauer <simonw@apache.org>
+    Date:   Fri Oct 31 14:46:17 2014 +0100
+    
+        fix CompletionPostingsFormatTest
+    
+    commit c0f3781f616c9b0ee3b5c4d0998810f595868649
+    Author: Robert Muir <rmuir@apache.org>
+    Date:   Fri Oct 31 09:38:00 2014 -0400
+    
+        add tests for these analyzers
+    
+    commit 51f9999b4ad079c283ae762c862fd0e22d00445f
+    Author: Simon Willnauer <simonw@apache.org>
+    Date:   Fri Oct 31 14:10:26 2014 +0100
+    
+        remove nocommit - this is not an issue
+    
+    commit fd1388fa03e622b0738601c8aeb2dbf7949a6dd2
+    Author: Martijn van Groningen <martijn.v.groningen@gmail.com>
+    Date:   Fri Oct 31 14:07:01 2014 +0100
+    
+        Remove redundant null check
+    
+    commit 3d6dd51b0927337ba941a235446b22e8cd500dc3
+    Author: Martijn van Groningen <martijn.v.groningen@gmail.com>
+    Date:   Fri Oct 31 14:01:37 2014 +0100
+    
+        Removed the work around to prevent p/c error when invoking #iterator() twice, because the custom query filter wrapper now doesn't transform the result to a cache doc id set any more.
+    
+        I think the transforming to a cachable doc id set in CustomQueryWrappingFilter isn't needed at all, because we use the DocIdSet only once and because of that is just slowed things down.
+    
+    commit 821832a537e00cd1216064b379df3e01d2911d3a
+    Author: Simon Willnauer <simonw@apache.org>
+    Date:   Fri Oct 31 13:54:33 2014 +0100
+    
+        one more nocommit
+    
+    commit 77eb9ea4c4ea50afb2680c29682ddcb3851a9d4f
+    Author: Martijn van Groningen <martijn.v.groningen@gmail.com>
+    Date:   Fri Oct 31 13:52:29 2014 +0100
+    
+        Remove cast
+    
+    commit a400573c034ed602221f801b20a58a9186a06eae
+    Author: Simon Willnauer <simonw@apache.org>
+    Date:   Fri Oct 31 13:49:24 2014 +0100
+    
+        fix stop filter
+    
+    commit 51746087cf8ec34c4d20aa05ba8dbff7b3b43eec
+    Author: Simon Willnauer <simonw@apache.org>
+    Date:   Fri Oct 31 13:21:36 2014 +0100
+    
+        fix changed semantics of FBS.nextSetBit to check for NO_MORE_DOCS
+    
+    commit 8d0a4e2511310f1293860823fe3ba80ac771bbe3
+    Author: Robert Muir <rmuir@apache.org>
+    Date:   Fri Oct 31 08:13:44 2014 -0400
+    
+        do the bogus cast differently
+    
+    commit 46a5cc5732dea096c0c80ae5ce42911c9c51e44e
+    Author: Simon Willnauer <simonw@apache.org>
+    Date:   Fri Oct 31 13:00:16 2014 +0100
+    
+        I hate it but P/C now passes
+    
+    commit 580c0c2f82bbeacf217e594f22312b11d1bdb839
+    Merge: a9d3c00 1645434
+    Author: Robert Muir <rmuir@apache.org>
+    Date:   Fri Oct 31 06:54:31 2014 -0400
+    
+        fix nocommit/classcast
+    
+    commit a9d3c004d62fe04989f49a897e6ff84973c06eb9
+    Author: Adrien Grand <jpountz@gmail.com>
+    Date:   Fri Oct 31 08:49:31 2014 +0100
+    
+        Update TODO.
+    
+    commit aa75af0b407792aeef32017f03a6f442ed970baa
+    Author: Robert Muir <rmuir@apache.org>
+    Date:   Thu Oct 30 19:18:25 2014 -0400
+    
+        clear obselete nocommits from lucene bump
+    
+    commit d438534cf41fcbe2d88070e2f27c994625e082c2
+    Author: Robert Muir <rmuir@apache.org>
+    Date:   Thu Oct 30 18:53:20 2014 -0400
+    
+        throw classcastexception when ES abuses regular filtercache for nested docs
+    
+    commit 2c751f3a8feda43ec127c34769b069de21f3d16f
+    Author: Robert Muir <rmuir@apache.org>
+    Date:   Thu Oct 30 18:31:34 2014 -0400
+    
+        bump lucene revision, fix tests
+    
+    commit d6ef7f6304ae262bf6228a7d661b2a452df332be
+    Author: Simon Willnauer <simonw@apache.org>
+    Date:   Thu Oct 30 22:37:58 2014 +0100
+    
+        fix merge problems
+    
+    commit de9d361f88a9ce6bb3fba85285de41f223c95767
+    Merge: 41f6aab f6b37a3
+    Author: Simon Willnauer <simonw@apache.org>
+    Date:   Thu Oct 30 22:28:59 2014 +0100
+    
+        Merge branch 'master' into enhancement/lucene_5_0_upgrade
+    
+        Conflicts:
+        	pom.xml
+        	src/main/java/org/elasticsearch/Version.java
+        	src/main/java/org/elasticsearch/gateway/local/state/meta/MetaDataStateFormat.java
+    
+    commit 41f6aab388aa80c40b08a2facab2617576203a0d
+    Author: Simon Willnauer <simonw@apache.org>
+    Date:   Thu Oct 30 17:48:46 2014 +0100
+    
+        fix potiential NPE
+    
+    commit c4428b12e1ae838b91e847df8b4a8be7f49e10f4
+    Author: Simon Willnauer <simonw@apache.org>
+    Date:   Thu Oct 30 17:38:46 2014 +0100
+    
+        don't advance iterator in a match(doc) method
+    
+    commit 28ab948e99e3ea4497c9b1e468384806ba7e1790
+    Author: Simon Willnauer <simonw@apache.org>
+    Date:   Thu Oct 30 17:34:58 2014 +0100
+    
+        don't advance iterator in a match(doc) method
+    
+    commit eb0f33f6634fadfcf4b2bf7327400e568f0427bb
+    Author: Simon Willnauer <simonw@apache.org>
+    Date:   Thu Oct 30 16:55:54 2014 +0100
+    
+        fix GeoUtilsTest
+    
+    commit 7f711fe3eaf73b6c2268cf42d5a41132a61ad831
+    Author: Simon Willnauer <simonw@apache.org>
+    Date:   Thu Oct 30 16:43:16 2014 +0100
+    
+        Use a dedicated default index option if field type is not indexed by default
+    
+    commit 78e3f37ab779e3e1b25b45a742cc86ab5f975149
+    Author: Robert Muir <rmuir@apache.org>
+    Date:   Thu Oct 30 10:56:14 2014 -0400
+    
+        disable this test with AwaitsFix to reduce noise
+    
+    commit 9a590f563c8e03a99ecf0505c92d12d7ab20d11d
+    Author: Simon Willnauer <simonw@apache.org>
+    Date:   Thu Oct 30 09:38:49 2014 +0100
+    
+        fix lucene version
+    
+    commit abe3ca1d8bb6b5101b545198f59aec44bacfa741
+    Author: Simon Willnauer <simonw@apache.org>
+    Date:   Thu Oct 30 09:35:05 2014 +0100
+    
+        fix AnalyzingCompletionLookupProvider to wrok with new codec API
+    
+    commit 464293b245852d60bde050c6d3feb5907dcfbf5f
+    Author: Robert Muir <rmuir@apache.org>
+    Date:   Thu Oct 30 00:26:00 2014 -0400
+    
+        don't try to write stuff to tests class directory
+    
+    commit 031cc6c19f4fe4423a034b515f77e5a0e282a124
+    Author: Robert Muir <rmuir@apache.org>
+    Date:   Thu Oct 30 00:12:36 2014 -0400
+    
+        AwaitsFix these known issues to reduce noise
+    
+    commit 4600d51891e35847f2d344247d6f915a0605c0d1
+    Author: Robert Muir <rmuir@apache.org>
+    Date:   Thu Oct 30 00:06:53 2014 -0400
+    
+        openbitset lives on
+    
+    commit 8492bae056249e2555d24acd55f1046b66a667c4
+    Author: Robert Muir <rmuir@apache.org>
+    Date:   Wed Oct 29 23:42:54 2014 -0400
+    
+        fixes for filter tests
+    
+    commit 31f24ce4efeda31f97eafdb122346c7047a53bf2
+    Author: Robert Muir <rmuir@apache.org>
+    Date:   Wed Oct 29 23:12:38 2014 -0400
+    
+        don't use fieldcache
+    
+    commit 8480789942fdff14a6d2b2cd8134502fe62f20c8
+    Author: Robert Muir <rmuir@apache.org>
+    Date:   Wed Oct 29 23:04:29 2014 -0400
+    
+        ancient index no longer supported
+    
+    commit 02e78dc7ebdd827533009f542582e8db44309c57
+    Author: Simon Willnauer <simonw@apache.org>
+    Date:   Wed Oct 29 23:37:02 2014 +0100
+    
+        fix more tests
+    
+    commit ff746c6df23c50b3f3ec24922413b962c8983080
+    Author: Simon Willnauer <simonw@apache.org>
+    Date:   Wed Oct 29 23:08:19 2014 +0100
+    
+        fix all mapper
+    
+    commit e4fb84b517107b25cb064c66f83c9aa814a311b2
+    Author: Simon Willnauer <simonw@apache.org>
+    Date:   Wed Oct 29 22:55:54 2014 +0100
+    
+        fix distributor tests and cut over to FileStore API
+    
+    commit 20c850e2cfe3210cd1fb9e232afed8d4ac045857
+    Author: Simon Willnauer <simonw@apache.org>
+    Date:   Wed Oct 29 22:42:18 2014 +0100
+    
+        use DOCS_ONLY if index=true and current options == null
+    
+    commit 44169c108418413cfe51f5ce23ab82047463e4c2
+    Author: Simon Willnauer <simonw@apache.org>
+    Date:   Wed Oct 29 22:33:36 2014 +0100
+    
+        Fix index=yes|no settings in mappers
+    
+    commit a3c5f77987461a18121156ed345d42ded301c566
+    Author: Simon Willnauer <simonw@apache.org>
+    Date:   Wed Oct 29 21:51:41 2014 +0100
+    
+        fix several field mappers conversion from setIndexed to indexOptions
+    
+    commit df84d736908e88a031d710f98e222be68ae96af1
+    Author: Simon Willnauer <simonw@apache.org>
+    Date:   Wed Oct 29 21:33:35 2014 +0100
+    
+        fix SourceFieldMapper to be not indexed
+    
+    commit b2bf01d12a8271a31fb2df601162d0e89924c8f5
+    Author: Simon Willnauer <simonw@apache.org>
+    Date:   Wed Oct 29 21:23:08 2014 +0100
+    
+        Cut over to .liv files in store and corruption tests
+    
+    commit 619004df436f9ef05d24bef1b6a7f084c6b0ad75
+    Author: Simon Willnauer <simonw@apache.org>
+    Date:   Wed Oct 29 17:05:52 2014 +0100
+    
+        fix more tests
+    
+    commit b7ed653a8b464de446e00456bce0a89e47627c38
+    Author: Simon Willnauer <simonw@apache.org>
+    Date:   Wed Oct 29 16:19:08 2014 +0100
+    
+        [STORE] Add dedicated method to write temporary files
+    
+        Recovery writes temporary files which might not end up in the
+        right distributor directories today. This commit adds a dedicated
+        API that allows specifying the target file name in order to create the
+        tempoary file in the correct directory.
+    
+    commit 7d574659f6ae04adc2b857146ad0d8d56ca66f12
+    Author: Robert Muir <rmuir@apache.org>
+    Date:   Wed Oct 29 10:28:49 2014 -0400
+    
+        add some leniency to temporary bogus method
+    
+    commit f97022ea7c2259f7a5cf97d924c59ed75ab65b32
+    Author: Robert Muir <rmuir@apache.org>
+    Date:   Wed Oct 29 10:24:17 2014 -0400
+    
+        fix MultiCollector bug
+    
+    commit b760533128c2b4eb10ad76e9689ef714293dd819
+    Author: Simon Willnauer <simonw@apache.org>
+    Date:   Wed Oct 29 14:56:08 2014 +0100
+    
+        CheckIndex is now closeable we need to close it
+    
+    commit 9dae9fb6d63546a6c2427be2a2d5c8358f5b1934
+    Author: Simon Willnauer <simonw@apache.org>
+    Date:   Wed Oct 29 14:45:11 2014 +0100
+    
+        s/Lucene51/Lucene50
+    
+    commit 7aea9b86856a8c1b06a08e7c312ede1168af1287
+    Author: Simon Willnauer <simonw@apache.org>
+    Date:   Wed Oct 29 14:42:30 2014 +0100
+    
+        fix BloomFilterPostingsFormat
+    
+    commit 16fea6fe842e88665d59cc091e8224e8dc6ce08c
+    Author: Simon Willnauer <simonw@apache.org>
+    Date:   Wed Oct 29 14:41:16 2014 +0100
+    
+        fix some codec format issues
+    
+    commit 3d77aa97dd2c4012b63befef3f2ba2525965e8a6
+    Author: Simon Willnauer <simonw@apache.org>
+    Date:   Wed Oct 29 14:30:43 2014 +0100
+    
+        fix CodecTests
+    
+    commit 6ef823b1fde25657438ace1aabd9d552d6ae215e
+    Author: Simon Willnauer <simonw@apache.org>
+    Date:   Wed Oct 29 14:26:47 2014 +0100
+    
+        make it compile
+    
+    commit 9991eee1fe99435118d4dd42b297ffc83fce5ec5
+    Author: Robert Muir <rmuir@apache.org>
+    Date:   Wed Oct 29 09:12:43 2014 -0400
+    
+        add an ugly hack for TopHitsAggregator for now
+    
+    commit 03e768a01fcae6b1f4cb50bcceec7d42977ac3e6
+    Author: Simon Willnauer <simonw@apache.org>
+    Date:   Wed Oct 29 14:01:02 2014 +0100
+    
+        cut over ES090PostingsFormat
+    
+    commit 463d281faadb794fdde3b469326bdaada25af048
+    Merge: 0f8740a 8eac79c
+    Author: Robert Muir <rmuir@apache.org>
+    Date:   Wed Oct 29 08:30:36 2014 -0400
+    
+        Merge branch 'master' into enhancement/lucene_5_0_upgrade
+    
+    commit 0f8740a782455a63524a5a82169f6bbbfc613518
+    Author: Robert Muir <rmuir@apache.org>
+    Date:   Wed Oct 29 01:00:15 2014 -0400
+    
+        fix/hack remaining filter and analysis issues
+    
+    commit df534488569da13b31d66e581456dfd4b55156b9
+    Author: Robert Muir <rmuir@apache.org>
+    Date:   Tue Oct 28 23:11:47 2014 -0400
+    
+        fix ngrams / openbitset usage
+    
+    commit 11f5dc3b9887f4da80a0fa1818e1350b30599329
+    Author: Robert Muir <rmuir@apache.org>
+    Date:   Tue Oct 28 22:42:44 2014 -0400
+    
+        hack over sort comparators
+    
+    commit 4ebdc754350f512596f6a02770d223e9f5f7975a
+    Author: Robert Muir <rmuir@apache.org>
+    Date:   Tue Oct 28 21:27:07 2014 -0400
+    
+        compiler errors < 100
+    
+    commit 2d60c9e29de48ccb0347dd87f7201f47b67b83a0
+    Author: Robert Muir <rmuir@apache.org>
+    Date:   Tue Oct 28 03:13:08 2014 -0400
+    
+        clear some nocommits around ram usage
+    
+    commit aaf47fe6c0aabcfb2581dd456fc50edf871da758
+    Author: Robert Muir <rmuir@apache.org>
+    Date:   Mon Oct 27 12:27:34 2014 -0400
+    
+        migrate fieldinfo handling
+    
+    commit ef6ed6d15d8def71cd880d97249678136cd29fe3
+    Author: Robert Muir <rmuir@apache.org>
+    Date:   Mon Oct 27 12:07:13 2014 -0400
+    
+        more simple fixes
+    
+    commit f475e1048ae697dd9da5bd9da445102b0b7bc5b3
+    Author: Robert Muir <rmuir@apache.org>
+    Date:   Mon Oct 27 11:58:21 2014 -0400
+    
+        more fielddata ram accounting fixes
+    
+    commit 16b4239eaa9b4262df258257df4f31d39f28a3a2
+    Author: Simon Willnauer <simonw@apache.org>
+    Date:   Mon Oct 27 16:47:32 2014 +0100
+    
+        add missing file
+    
+    commit 5b542fa2a6da81e36a0c35b8e891a1d8bc58f663
+    Author: Simon Willnauer <simonw@apache.org>
+    Date:   Mon Oct 27 16:43:29 2014 +0100
+    
+        cut over completion posting formats - still some nocommits
+    
+    commit ecdea49404c4ec4e1b78fb54575825f21b4e096e
+    Author: Robert Muir <rmuir@apache.org>
+    Date:   Mon Oct 27 11:21:09 2014 -0400
+    
+        fielddata accountable fixes
+    
+    commit d43da265718917e20c8264abd43342069198fe9c
+    Author: Simon Willnauer <simonw@apache.org>
+    Date:   Mon Oct 27 16:19:53 2014 +0100
+    
+        cut over BloomFilterPostings to new API
+    
+    commit 29b192ba621c14820175775d01242162b88bd364
+    Author: Robert Muir <rmuir@apache.org>
+    Date:   Mon Oct 27 10:22:51 2014 -0400
+    
+        fix more analyzers
+    
+    commit 74b4a0c5283e323a7d02490df469497c722780d2
+    Author: Robert Muir <rmuir@apache.org>
+    Date:   Mon Oct 27 09:54:25 2014 -0400
+    
+        fix tests
+    
+    commit 554084ccb4779dd6b1c65fa7212ad1f64f3a6968
+    Author: Simon Willnauer <simonw@apache.org>
+    Date:   Mon Oct 27 14:51:48 2014 +0100
+    
+        maintain supressed exceptions on CorruptIndexException
+    
+    commit cf882d9112c5e8ef1e9f2b0f800f7aa59001a4f2
+    Author: Simon Willnauer <simonw@apache.org>
+    Date:   Mon Oct 27 14:47:17 2014 +0100
+    
+        commitOnClose=false
+    
+    commit ebb2a9189ab2f459b7c6c9985be610fd90dfe410
+    Author: Simon Willnauer <simonw@apache.org>
+    Date:   Mon Oct 27 14:46:06 2014 +0100
+    
+        cut over indexwriter closeing in InternalEngine
+    
+    commit cd21b3d4706f0b562bd37792d077d60832aff65f
+    Author: Simon Willnauer <simonw@apache.org>
+    Date:   Mon Oct 27 14:38:10 2014 +0100
+    
+        fix constant
+    
+    commit f93f900c4a1c90af3a21a4af5735a7536423fe28
+    Author: Robert Muir <rmuir@apache.org>
+    Date:   Mon Oct 27 09:50:49 2014 -0400
+    
+        fix test
+    
+    commit a9a752940b1ab4699a6a08ba8b34afca82b843fe
+    Author: Martijn van Groningen <martijn.v.groningen@gmail.com>
+    Date:   Mon Oct 27 09:26:18 2014 +0100
+    
+        Be explicit about the index options
+    
+    commit d9ee815babd030fa2ceaec9f467c105ee755bf6b
+    Author: Simon Willnauer <simonw@apache.org>
+    Date:   Sun Oct 26 20:03:44 2014 +0100
+    
+        cut over store and directory
+    
+    commit b3f5c8e39039dd8f5caac0c4dd1fc3b1116e64ca
+    Author: Robert Muir <rmuir@apache.org>
+    Date:   Sun Oct 26 13:08:39 2014 -0400
+    
+        more test fixes
+    
+    commit 8842f2684e3606aae0860c27f7a4c53e273d47fb
+    Author: Robert Muir <rmuir@apache.org>
+    Date:   Sun Oct 26 12:14:52 2014 -0400
+    
+        tests manual labor
+    
+    commit c43de5aec337919a3fdc3638406dff17fc80bc98
+    Author: Robert Muir <rmuir@apache.org>
+    Date:   Sun Oct 26 11:04:13 2014 -0400
+    
+        BytesRef -> BytesRefBuilder
+    
+    commit 020c0d087a2f37566a1db390b0e044ebab030138
+    Author: Martijn van Groningen <martijn.v.groningen@gmail.com>
+    Date:   Sun Oct 26 15:53:37 2014 +0100
+    
+        Moved over to BitSetFilter
+    
+    commit 48dd1b909e6c52cef733961c9ecebfe4f67109fe
+    Author: Martijn van Groningen <martijn.v.groningen@gmail.com>
+    Date:   Sun Oct 26 15:53:11 2014 +0100
+    
+        Left over Collector api change in ScanContext
+    
+    commit 6ec248ef63f262bcda400181b838fd9244752625
+    Author: Martijn van Groningen <martijn.v.groningen@gmail.com>
+    Date:   Sun Oct 26 15:47:40 2014 +0100
+    
+        Moved indexed() over to indexOptions != null or indexOptions == null
+    
+    commit 9937aebfd8546ae4bb652cd976b3b43ac5ab7a63
+    Author: Martijn van Groningen <martijn.v.groningen@gmail.com>
+    Date:   Sun Oct 26 13:26:31 2014 +0100
+    
+        Fixed many compile errors. Mainly around the breaking Collector api change in 5.0.
+    
+    commit fec32c4abc0e3309cf34260c8816305a6f820c9e
+    Author: Robert Muir <rmuir@apache.org>
+    Date:   Sat Oct 25 11:22:17 2014 -0400
+    
+        more easy fixes
+    
+    commit dab22531d801800d17a65dc7c9464148ce8ebffd
+    Author: Robert Muir <rmuir@apache.org>
+    Date:   Sat Oct 25 09:33:41 2014 -0400
+    
+        more progress
+    
+    commit 414767e9a955010076b0497cc4f6d0c1850b48d3
+    Author: Robert Muir <rmuir@apache.org>
+    Date:   Sat Oct 25 06:33:17 2014 -0400
+    
+        more progress
+    
+    commit ad9d969fddf139a8830254d3eb36a908ba87cc12
+    Author: Robert Muir <rmuir@apache.org>
+    Date:   Fri Oct 24 14:28:01 2014 -0400
+    
+        current state of fun
+    
+    commit 464475eecb0be15d7d084135ed16051f76a7e521
+    Author: Robert Muir <rmuir@apache.org>
+    Date:   Fri Oct 24 11:42:41 2014 -0400
+    
+        bump to 5.0 snapshot
+
+commit 437c5d0d3bf8b7e5088c15a50901d1f28a5318d9
+Author: Alex Ksikes <alex.ksikes@gmail.com>
+Date:   Fri Oct 24 13:49:42 2014 +0200
+
+    Term Vectors: removed Nullable annotation on a primitive type
+
+commit a4f974dcaacf656b3062c89a9050f9e67873021f
+Author: Adrien Grand <jpountz@gmail.com>
+Date:   Wed Aug 13 10:58:59 2014 +0200
+
+    Internal: Add some @Nullable annotations and fix related compilation warnings.
+    
+    Added @Nullable to:
+     - IndicesService.indexService
+     - IndexService.shard
+     - IndexService.shardInjector
+    
+    This change doesn't try to do anything smart but just makes sure that a
+    *MissingException is thrown instead of a NullPointerException when the requested
+    object doesn't exist.
+    
+    Close #7251
+
+commit e61e21ef4d92e7ce13668aeb7748ffc328971e26
+Author: Adrien Grand <jpountz@gmail.com>
+Date:   Mon Aug 11 15:18:28 2014 +0200
+
+    [Build] Make Eclipse aware of Elasticsearch's Nullable annotation for null pointer dereference analysis.
+
+commit bc41190dba087938406168d72709dc276a062a11
+Author: Adrien Grand <jpountz@gmail.com>
+Date:   Mon Aug 11 15:17:29 2014 +0200
+
+    [Build] @Nullable annotation is not applied to primitive types.
+
+commit 9ddfaf3aaf1a4b0334b4020d221d6662c3e8bf78
+Author: Simon Willnauer <simonw@apache.org>
+Date:   Thu Jul 3 10:52:29 2014 +0200
+
+    [TEST] Expose `tests.filter` for elasticsearch tests.
+    
+    `-Dtests.filter` allows to pass filter expressions to the elasticsearch
+    tests. This allows to filter test annotaged with TestGroup annotations
+    like @Slow, @Nightly, @Backwards, @Integration with a boolean expresssion like:
+    
+     * to run only backwards tests run:
+         `mvn -Dtests.bwc.version=X.Y.Z -Dtests.filter="@backwards"`
+     * to run all integration tests but skip slow tests run:
+         `mvn -Dtests.filter="@integration and not @slow"
+     * to take defaults into account ie run all test as well as backwards:
+         `mvn -Dtests.filter="default and @backwards"
+    
+    This feature is a more powerful alternative to flags like
+    `-Dtests.nighly=true|false` etc.
+    
+    Closes #6703
+
+commit 157d511061bfa6f902e80aada08e59d70775cb1f
+Author: Martijn van Groningen <martijn.v.groningen@gmail.com>
+Date:   Wed May 21 22:08:28 2014 +0200
+
+    [TEST] Use SuiteScopeTest annotation instead of ClusterScope(scope = ElasticsearchIntegrationTest.Scope.SUITE, numDataNodes = 1)
+
+commit 7980911d9621c737927cd26b48bb578b55a65be5
+Author: javanna <cavannaluca@gmail.com>
+Date:   Mon May 12 12:52:35 2014 +0200
+
+    restored @Test annotation in SimpleValidateQueryTests
+
+commit eaf04fc828aadec206d0e9ee32ebfcd37180c009
+Author: Simon Willnauer <simonw@apache.org>
+Date:   Wed Apr 16 21:51:53 2014 +0200
+
+    [BUILD] Fail release if test have AwaitsFix annotations
+    
+    Note this commit upgrades Forbidden APIs to version 1.5
+    
+    Closes #5807
+
+commit 7bf3ffe73c44f1208d1f7a78b0629eb48836e726
+Author: Martijn van Groningen <martijn.v.groningen@gmail.com>
+Date:   Tue Apr 1 17:07:22 2014 +0700
+
+    Added test with AwaitsFix annotation that simulates a split brain.
+
+commit 68989843071809eea3d49baf4e536180e14c2928
+Author: Simon Willnauer <simonw@apache.org>
+Date:   Fri Mar 28 12:15:05 2014 +0100
+
+    [Test] Speeup FieldData tests and remove unnecessary @Repeat annotations
+
+commit bd003fe5b6828ca8743afd4ae28646affab22de8
+Author: Simon Willnauer <simonw@apache.org>
+Date:   Thu Mar 20 12:58:28 2014 +0100
+
+    [TEST] add @Slow annotations to bad apples
+
+commit 744eabad030f8f8c5705beeea7ab7eeb47f84969
+Author: Bill Hwang <bill.hwang@elasticsearch.com>
+Date:   Fri Mar 14 14:50:39 2014 -0700
+
+    Findbug warning supression
+    
+    Added logic to enable findbug warnings supression via annotations
+
+commit 4754a83571c24a9843bef5cdf42c987c7cb60dd4
+Author: Martijn van Groningen <martijn.v.groningen@gmail.com>
+Date:   Mon Jan 13 16:29:13 2014 +0100
+
+    Added test with awaits annotation that exposes a merge mapping issue.
+    
+     If the path_type is set to `just_name` in a multi_field typed field and that field is updated (for example another multi field is added) then if the path isn't specified again the path_type isn't taken into account and full path names are generated.
+
+commit 0eaed0da26fb2055085749be8c0aeb625436d2d7
+Author: Shay Banon <kimchy@gmail.com>
+Date:   Wed Jan 8 22:14:24 2014 +0100
+
+    add joda-convert so missing annotations in joda-time will not cause failures when used as dependency
+    fixes #4660
+
+commit a1e4258b2145bae9bde65ee8648c3b239f08ba2a
+Author: Simon Willnauer <simonw@apache.org>
+Date:   Sun Dec 29 00:03:14 2013 +0100
+
+    Add @Slow annotation to bad apples
+
+commit ef26df4f42e639dab54081c29d532c1c93dd42bb
+Author: David Pilato <david@pilato.fr>
+Date:   Wed Sep 4 19:00:43 2013 +0200
+
+    Add integration test for PluginManager
+    
+    We want to make sure that Plugin Manager still downloading plugins from internet.
+    New tests requires internet access (`@Network` annotation has been added).
+    
+    By default, tests annotated with `@Network` are not launched.
+    
+    If you need to run these tests, use `-Dtests.network=true` option.
+    
+    Closes #3894.
+
+commit a03013ea25db12573f94edc0593c24107291c722
+Author: Alexander Reelsen <alexander@reelsen.net>
+Date:   Mon Oct 7 10:35:34 2013 +0200
+
+    Remove @Required annotation
+    
+    The @Required annotation is used for documentation purposes only anyway.
+
+commit 7ea21c75db38c65c76b15c31e2b6a1c6c2b19e69
+Author: Martijn van Groningen <martijn.v.groningen@gmail.com>
+Date:   Fri Sep 20 19:25:50 2013 +0200
+
+    Removed ClusterScope annotation
+
+commit 575d6b0321a4b1a9dd8e7e5e38d321dc217fb323
+Author: Simon Willnauer <simonw@apache.org>
+Date:   Tue Sep 17 22:22:48 2013 +0200
+
+    Cleanup test classes and add Scope support for TestCluster
+    
+    TestCluster can currently only be used in a globally shared scope.
+    This commit adds the ability to use the TestCluster in 3 different
+    scopes per test-suite. The scopes are 'Global', 'Suite' and 'Test'
+    where the cluster is shared across all tests, across all test methods or
+    not at all respectivly.
+    Subclasses of AbstractIntegrationTest (formerly AbstractSharedClusterTest)
+    can add an annotation if they need a different scope than Global (default):
+    
+    ```
+      @ClusterScope(scope=Scope.Suite, numNodes=1)
+    ```
+    This also allows to specify the number of shared nodes in that TestCluster
+    that are available when a test starts.
+    
+    The cleanups in this commit include:
+    
+     - s/Elasticsearch/ElasticSearch/g on test classes
+     - Move test classes in org.elasticsearch.test
+
+commit c2675bac507cd63ab26540cb8e86f74a8e6f1cfa
+Author: Simon Willnauer <simonw@apache.org>
+Date:   Wed Sep 11 22:12:38 2013 +0200
+
+    Added 'IntegrationTests' annotation to filter integration tests
+    
+    Tests now support ignoring integartion tests by passing
+    '-Dtests.integration=false' to the test runner either via IDE or
+    maven to only run fast unittests.
+
+commit 012797a82c7ee448c12ae45b63e349b610494d6d
+Author: Luca Cavanna <cavannaluca@gmail.com>
+Date:   Wed Sep 11 16:04:08 2013 +0200
+
+    Loggers#getLogger static method to take into account the logger prefix
+    
+    Improved LoggingListener (which reads and applies @TestLogging annotation) to take into account the logger prefix. We can now use the @TestLogging annotation and specify either the whole package name (e.g. o.e.action.metadata) or only the package name without the logger prefix (action.metadata), the custom log level will be properly applied in both cases
+
+commit daedf853a010a882f99cfe9605264adac6746a42
+Author: Luca Cavanna <cavannaluca@gmail.com>
+Date:   Wed Sep 11 11:19:38 2013 +0200
+
+    Removed logger prefixes when using @TestLogging annotation
+
+commit 9e72683ba452d74df42d359c2a979442ffce3ea6
+Author: Luca Cavanna <cavannaluca@gmail.com>
+Date:   Sun Sep 8 10:13:26 2013 +0200
+
+    Added @TestLogging annotation to set a specific level per test method
+    
+     It supports multiple logger:level comma separated key value pairs
+     Use the _root keyword to set the root logger level
+     e.g. @Logging("_root:DEBUG,org.elasticsearch.cluster.metadata:TRACE")
+     or just @TestLogging("_root:DEBUG,cluster.metadata:TRACE") since we start the test with -Des.logger.prefix=
+
+commit e6dcd137a6c61f6090e752bd5c3e6c38400278fd
+Author: Simon Willnauer <simonw@apache.org>
+Date:   Tue Aug 27 19:27:33 2013 +0200
+
+    AwarenessAllocationTests must extend ESTestCase in order to respect AwaitsFix annotations
+
+commit 6d49170509aa9944b12adc9685ecd85e4371f0ca
+Author: Simon Willnauer <simonw@apache.org>
+Date:   Fri Aug 23 10:15:17 2013 +0200
+
+    Introduce base test classes to share thread scope annotations
+    
+    Currently we run unittests with clusters running in the background
+    that can potentiallly spawn threads causeing the thread leak control
+    to fire off in tests that don't use the test cluster. This commit
+    introduces some base classes for that purpose shadowning lucene test
+    framework classes adding the approriate ThreadScope.
+
+commit 2f8a397aa5b09bb5a6146ea5909d8e3c8d96a13f
+Author: Luca Cavanna <cavannaluca@gmail.com>
+Date:   Tue Jul 30 16:42:21 2013 +0200
+
+    Improved test
+    
+    - checking routing table taken from same (up-to-date) cluster state
+    - added @Slow annotation
+    - forced cluster reroute when needed
+    - changed order of assertions so that if it fails again it's easier to understand why
+
+commit 82072fc47fd37b9c1fff457b66f2112d88e4a396
+Author: Shay Banon <kimchy@gmail.com>
+Date:   Mon Mar 18 01:33:09 2013 +0100
+
+    make ES compile with java 8
+    - that isAnnotationPresent bug is known, and probably will be fixed in later versions, but it costs us nothing to not use it now
+    - some tests fail, mainly due to consistent ordering expected from Map (within versions) which does not seem to be preserved, need to fix those tests to be agnostic to it
+
+commit 1baee8e40fb6673271a0049c4cabb226f005b8b0
+Author: Lukáš Vlček <lukas.vlcek@gmail.com>
+Date:   Wed May 25 16:41:15 2011 +0200
+
+    add missing @Override annotation
+
+commit 4750ccdc1cda8790c5b1c4e8251bbce8959648fb
+Author: kimchy <kimchy@gmail.com>
+Date:   Mon Jan 17 19:45:37 2011 +0200
+
+    move nullable annotation to the common package, and move javax inject (from guice 3) to internal common as well
+
+commit d997389444fd820c7ecde4714abfca3c8d1969a0
+Author: kimchy <kimchy@gmail.com>
+Date:   Sat Apr 17 22:09:16 2010 +0300
+
+    add annotation documentation for memcached handlers
+
+commit 7ed9435a3a7243e767cce6217784d54eef70f42c
+Author: kimchy <kimchy@gmail.com>
+Date:   Wed Apr 7 17:25:35 2010 +0300
+
+    more index and shard lifecycle annotations, in any case, one should extend the respective base classes
+

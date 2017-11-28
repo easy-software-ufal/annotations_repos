@@ -1,0 +1,3745 @@
+commit cbaf0fa68608cbd9efa334edcb4642f96100a875
+Author: Phillip Webb <pwebb@pivotal.io>
+Date:   Sun Nov 19 21:03:22 2017 -0800
+
+    Support Duration in generated meta-data
+    
+    Update the configuration properties annotation processor to deal
+    with `Duration` based default values. For example a field that
+    defaults to `Duration.ofSeconds(10)` will have a meta-data default
+    value of `10s`.
+    
+    See gh-11080
+
+commit fa191d8c73364f0983e37f2c6d21654d863ee857
+Author: Phillip Webb <pwebb@pivotal.io>
+Date:   Fri Nov 3 15:56:34 2017 -0700
+
+    Align ReactiveWebApplicationContext with framework
+    
+    Refactor `ReactiveWebApplicationContext` implementations to align closer
+    with the `WebApplicationContext` implementations defined in
+    Spring Framework.
+    
+    The following classes are now provided:
+    
+      - `AnnotationConfigReactiveWebApplicationContext` -- A refreshable
+        reactive web context with support for `@Configuration` classes.
+    
+      - `GenericReactiveWebApplicationContext` -- A non-refreshable reactive
+        GenericApplicationContext.
+    
+      - `ReactiveWebServerApplicationContext` --  A non-refreshable reactive
+        GenericApplicationContext with support for server discovery.
+    
+      - `AnnotationConfigReactiveWebServerApplicationContext` -- A
+        non-refreshable reactive `GenericApplicationContext` with support
+        for `@Configuration` classes and server discovery.
+    
+    These classes roughly align to the following Servlet equivalents:
+    
+      - `AnnotationConfigWebApplicationContext` (Spring Framework)
+      - `GenericWebApplicationContext` (Spring Framework)
+      - `ServletWebServerApplicationContext` (Spring Boot)
+      - `AnnotationConfigServletWebServerApplicationContext` (Spring Boot)
+    
+    An additional `ConfigurableReactiveWebEnvironment` interface as also
+    been introduced, primarily for `@ConditionalOnWebApplication` to use.
+    
+    Fixes gh-10852
+
+commit 6f55b5785594dabb3fbd7c394dd85ae3f6ad0dc3
+Author: Andy Wilkinson <awilkinson@pivotal.io>
+Date:   Mon Oct 30 22:04:39 2017 +0000
+
+    Make discovery of additional config metdata more robust with Gradle
+    
+    Previously, the configuration metadata annotation processor relied
+    upon an additional metadata file have been copied to an output
+    location. When building with Gradle, it's the processResources task
+    that performs this copy and there is no guarantee that it will have
+    run before the compileJava task unless an explicit dependency betwee
+    the two tasks has been configured. If a project is built using
+    Gradle's parallel build support, the likelihood of this required
+    ordering not occurring increases.
+    
+    This commit updates the configuration metadata annotation processor to
+    consider a new annotation processor option when looking for the
+    additional config metadata file. The Gradle plugin has been updated
+    to provide this option as a compiler argument. The option is only
+    provided when the annotation processor is found on the compilation
+    classpath to avoid a warning from javac's annotation processing about
+    the use of an option that is not supported by any of the available
+    annotation processors.
+    
+    Closes gh-9755
+
+commit 3959e81a79cd3df41699c14e1b1bea648daec89a
+Author: Andy Wilkinson <awilkinson@pivotal.io>
+Date:   Sun Sep 24 09:44:05 2017 +0100
+
+    Upgrade to Javax Annotation 1.3.1
+    
+    Closes gh-10403
+
+commit 7c1bc68fbe4e805191ea38a1d14aa7dfea99e253
+Author: Andy Wilkinson <awilkinson@pivotal.io>
+Date:   Thu Sep 21 11:19:41 2017 +0100
+
+    Consider JUnit Jupiter test classes in TestTypeExcludeFilter
+    
+    Previously, TestTypeExcludeFilter only looked for JUnit 4 class
+    and method annotations when determining if a class was a test class.
+    As a result, if an application was using JUnit Jupiter, its test
+    classes would not be exluded during component scanning.
+    
+    This commit expands TestTypeExcludeFilter to also identify classes
+    using JUnit Jupiter. This includes classes (meta-)annotated with
+    @ExtendWith and methods (meta-)annotated with @Testable. The later
+    provides detection of Jupiter's @Test, @TestFactory, and @RepeatedTest
+    annotations all of which are meta-annotated with @Testable.
+    
+    Closes gh-6898
+
+commit 8ab12d909e7723fa96eb890f353030bac24462e9
+Author: Andy Wilkinson <awilkinson@pivotal.io>
+Date:   Wed Sep 20 12:05:03 2017 +0100
+
+    Use standard bean validation annotations that are new in 2.0
+    
+    See gh-9969
+
+commit 5d67ae4d819e1a7bcc9ad13711d904c55882318c
+Author: Andy Wilkinson <awilkinson@pivotal.io>
+Date:   Fri Sep 8 13:57:04 2017 +0100
+
+    Ignore duplicate javax.annotation classes from tomcat-embed-core
+    
+    See gh-9366
+
+commit c082e31d10a582d1655aba50d64698a7a2f0d51f
+Author: Andy Wilkinson <awilkinson@pivotal.io>
+Date:   Fri Sep 8 13:56:31 2017 +0100
+
+    Add javax.annotation-api dependency to spring-boot-starter
+    
+    Closes gh-9366
+
+commit 27c1b5eb4c1310fd11c3865394747d3a769abe4d
+Author: Brian Clozel <bclozel@pivotal.io>
+Date:   Tue Sep 5 11:51:11 2017 +0200
+
+    Add "onClass" condition on web server auto-configurations
+    
+    This commit adds new Conditional annotations on auto-configurations
+    creating the Servlet/Reactive web servers. These conditions only depend
+    on request primitives used by the servers themselves and aren't
+    framework specific.
+    
+    Closes gh-10163
+
+commit 5111b03aa3e7510c8d321070702a0fa0d0a515c0
+Author: Stephane Nicoll <snicoll@pivotal.io>
+Date:   Tue Sep 5 09:51:33 2017 +0200
+
+    Remove duplicated method
+    
+    This commit removes the beanNamesForAnnotationIncludingAncestors
+    method as it is now part of Spring Framework's BeanFactoryUtils.
+    
+    Closes gh-10150
+
+commit 4c7088981faedf5074d054db68bfefa242ae5616
+Author: Stephane Nicoll <snicoll@pivotal.io>
+Date:   Thu Aug 24 15:06:05 2017 +0200
+
+    Add support for delete operations
+    
+    This commit adds a `@DeleteOperation` annotation that can be used to
+    indicate that an endpoint's operation is meant to delete a resource.
+    
+    Such operation is mapped to a DELETE http method.
+    
+    Closes gh-10023
+
+commit 83e81e13f2ed262dc7304a36615549f38cd97fe2
+Author: Stephane Nicoll <snicoll@pivotal.io>
+Date:   Fri Jul 7 15:51:44 2017 +0100
+
+    Add support of metadata generation for Endpoints
+    
+    This commit improves the configuration metadata annotation processor to
+    explicitly handle `@Endpoint` annotated class. Adding a new endpoint on
+    a project potentially creates the following keys:
+    
+    * `endpoints.<id>.enabled`
+    * `endpoints.<id>.cache.time-to-live`
+    * `endpoints.<id>.jmx.enabled`
+    * `endpoints.<id>.web.enabled`
+    
+    Default values are extracted from the annotation type. If an endpoint
+    is restricted to a given tech, properties from unrelated techs are not
+    generated.
+    
+    Closes gh-9692
+
+commit cf2bf0c2b9cccd5a41db743077369835e142a3f8
+Author: Andy Wilkinson <awilkinson@pivotal.io>
+Date:   Fri Aug 11 17:45:17 2017 +0100
+
+    Work around javadoc bug when linking to annotation attributes
+    
+    If an annotation attribute is linked to in javadoc before the
+    javadoc processor encounters a usage of the annotation, the javadoc
+    tool fails with a class cast exception. This is a known issue [1]
+    but it has been closed as won't fix so we need to work around it.
+    Sadly, the only reasonable way to do so appears to be to remove
+    the links to the annotation attributes and only link to the annotation
+    itself.
+    
+    [1] https://bugs.openjdk.java.net/browse/JDK-8170447
+
+commit dc33ec1ad90ee8d3723ebfcff9a334bf820316e6
+Merge: 3cc22ec 7967c64
+Author: Andy Wilkinson <awilkinson@pivotal.io>
+Date:   Wed Aug 9 11:44:19 2017 +0100
+
+    Merge pull request #9914 from Dennis Kieselhorst
+    
+    * gh-9914:
+      Avoid NPE in AnnotationsPropertySource if getAnnotations returns null
+      Polish "Avoid NPE in PropertyMappingContextCustomizer"
+      Avoid NPE in PropertyMappingContextCustomizer
+
+commit 7967c64d65b643812afd332d1d389d85008630d9
+Author: Andy Wilkinson <awilkinson@pivotal.io>
+Date:   Wed Aug 9 11:42:38 2017 +0100
+
+    Avoid NPE in AnnotationsPropertySource if getAnnotations returns null
+    
+    Closes gh-9914
+
+commit 9687a5041ed658da3ef9994d001b602e6de08a6c
+Author: Andy Wilkinson <awilkinson@pivotal.io>
+Date:   Thu Jul 20 16:35:44 2017 +0100
+
+    Add support for making endpoints accessible via HTTP
+    
+    This commit adds support for exposing endpoint operations over HTTP.
+    Jersey, Spring MVC, and WebFlux are all supported but the programming
+    model remains web framework agnostic. When using WebFlux, blocking
+    operations are automatically performed on a separate thread using
+    Reactor's scheduler support. Support for web-specific extensions is
+    provided via a new `@WebEndpointExtension` annotation.
+    
+    Closes gh-7970
+    Closes gh-9946
+    Closes gh-9947
+
+commit 4592e071db411dcc1bed5511f7df52fcf3879eef
+Author: Stephane Nicoll <snicoll@pivotal.io>
+Date:   Thu Jul 20 16:33:19 2017 +0100
+
+    Add support for making endpoints accessible via JMX
+    
+    This commit adds support to the new endpoint infrastructure for
+    exposing endpoint operations via JMX. It also introduces support for
+    JMX-specific extensions to a general-purpose endpoint. Such an
+    extension is identified by the `@JmxEndpointExtension` annotation.
+    
+    See gh-9946
+
+commit 4f2e4ada4550ca7698e4bce278e2dc221c7e3ef4
+Author: Andy Wilkinson <awilkinson@pivotal.io>
+Date:   Thu Jul 20 16:30:24 2017 +0100
+
+    Introduce the foundations of the new endpoint infrastructure
+    
+    This commit introduces a new annotation-based programming model for
+    implementing endpoints. An endpoint is identified by a type-level
+    `@Endpoint` annotation. Method-level `@ReadOperation` and
+    `@WriteOperation` are used to identify methods on an endpoint class
+    that implement an operation and should be exposed (via JMX for
+    exmaple) to remote clients.
+    
+    See gh-9946
+
+commit 2f0f25f5adab3acb95e9c4b9c5bfd02d8aac7588
+Author: Phillip Webb <pwebb@pivotal.io>
+Date:   Wed Jul 19 08:51:21 2017 -0700
+
+    Add Configurations class
+    
+    Add a general purpose `Configurations` class that encapsulates the
+    sorting and merging rules that are usually apply. The class is
+    particularly useful in tests where configuration classes often need
+    to be specified, but an `@Import` or `ImportSelector` cannot be easily
+    used.
+    
+    Two `Configurations` subclasses have been initially added. The
+    `UserConfigurations` class can be used to represent user defined
+    configuration and the `AutoConfigurations` class can be used to
+    represent a subset of auto-configurations. Auto configurations are
+    sorted using the same `@AutoConfiguraionBefore`/`@AutoConfiguraionAfter`
+    logic as the `@EnableAutoConfiguration` annotation.
+    
+    Fixes gh-9795
+
+commit 85c76436384903c6e441201b9f2f62b3510b8caa
+Author: Stephane Nicoll <snicoll@pivotal.io>
+Date:   Mon Jun 26 17:46:46 2017 +0200
+
+    Remove use of 'javax.annotation.Resource'
+    
+    This commit removes the only use of the `javax.annotation.Resource`
+    annotation from the codebase. This ensures that injection point are
+    only defined with Spring's annotation model.
+    
+    Closes gh-9441
+
+commit de7b7ac55be4a01c6031fe416dd431b4731f2fb2
+Merge: 3a63241 dd53ed0
+Author: Stephane Nicoll <snicoll@pivotal.io>
+Date:   Thu Jun 15 11:40:36 2017 +0200
+
+    Merge pull request #9224 from jayarampradhan:master
+    
+    * pr/9224:
+      Polish "Add Slice test annotation for Redis"
+      Add Slice test annotation for Redis
+
+commit dd53ed0aecc5e986ab758490ff160fc8b858318d
+Author: Stephane Nicoll <snicoll@pivotal.io>
+Date:   Mon Jun 5 10:55:40 2017 +0200
+
+    Polish "Add Slice test annotation for Redis"
+    
+    Closes gh-9224
+
+commit 2d36d2a7e4541bfbb16534a048f0aa78c2a81636
+Author: Jayaram Pradhan <jayaramimca@gmail.com>
+Date:   Sun May 14 07:51:20 2017 +0530
+
+    Add Slice test annotation for Redis
+    
+    This commit adds new annotation `@DataRedisTest` which provides test
+    infrastructure for redis.
+    
+    See gh-9224
+
+commit 9fc90a809f0564c79f5244f08d7bdf9c15756355
+Author: Stephane Nicoll <snicoll@pivotal.io>
+Date:   Thu Jun 1 13:37:05 2017 +0200
+
+    Add missing @Test annotations
+
+commit 643dea18eed8e5ef5f6636a3995d3dd866e663b1
+Author: Stephane Nicoll <snicoll@pivotal.io>
+Date:   Fri May 12 16:48:31 2017 +0200
+
+    Accommodate with Lombok generation ordering
+    
+    Previously, if lombok was running before the configuration metadata
+    annotation processor, duplicated keys were created as both the
+    getter/setter and the special lombok handling applied.
+    
+    This commit makes sure to be lenient by removing duplicate metadata
+    entries. This commit also makes sure to identify the getter of a
+    nested group if present. That way, the sourceMethod is set consistently
+    and avoid the creation of a duplicate group.
+    
+    Closes gh-8886
+
+commit 703a6dc056324266b4a87c6f2c8a38f7af0d1c5f
+Author: Stephane Nicoll <snicoll@pivotal.io>
+Date:   Thu Apr 27 14:26:50 2017 +0200
+
+    Prevents BasicErrorControllerIntegrationTest to start another server
+    
+    `BasicErrorControllerIntegrationTest` is handling the context in each test
+    and yet it starts a useless test via `@SpringBootTest`. This commit
+    removes the useless runner and associated annotations.
+
+commit 9981ae687499e13449a6447a4a9c170af218f93c
+Author: Phillip Webb <pwebb@pivotal.io>
+Date:   Thu Apr 20 15:58:23 2017 -0700
+
+    Rename WebFluxAnnotationAutoConfiguration
+    
+    Rename WebFluxAnnotationAutoConfiguration to WebFluxAutoConfiguration
+    to better align with Spring MVC.
+
+commit 393c17b68b751ec44fe6fbf7d7c4d2cdc2bb5ece
+Author: Phillip Webb <pwebb@pivotal.io>
+Date:   Tue Apr 18 13:47:59 2017 -0700
+
+    Support @SpringBootTest with @ContextHierarchy
+    
+    Update SpringBootTestContextBootstrapper to detect `@ContextHierarchy`
+    annotations so that only the last child creates a
+    `WebApplicationContext`.
+    
+    Prior to this commit a context hierarchy would start two embedded web
+    servers which is inconsistent with the `SpringApplicationBuilder`
+    behavior.
+    
+    Fixes gh-8311
+
+commit c2b2be99403efc73c3c21b448021422b79811e14
+Merge: 209ecf9 04ee374
+Author: Stephane Nicoll <snicoll@pivotal.io>
+Date:   Fri Apr 14 10:52:01 2017 +0200
+
+    Merge pull request #8536 from eddumelendez:dataldaptest
+    
+    * pr/8536:
+      Polish "Add slice test annotation for LDAP"
+      Add slice test annotation for LDAP
+
+commit 04ee374e7f3049284b1a9c1cf06884b8c9573103
+Author: Stephane Nicoll <snicoll@pivotal.io>
+Date:   Fri Apr 14 10:51:43 2017 +0200
+
+    Polish "Add slice test annotation for LDAP"
+    
+    Closes gh-8536
+
+commit 2830bef95cd51be2e2ba00158a182ce643e918a6
+Author: Eddú Meléndez <eddu.melendez@gmail.com>
+Date:   Wed Mar 8 02:32:08 2017 -0500
+
+    Add slice test annotation for LDAP
+    
+    This commit adds new annotation `@DataLdapTest` which provides test
+    infrastructure for LDAP. By default, embedded ldap server is initialized
+    if available.
+    
+    See gh-8536
+
+commit 08f8219248eb2cc9b256970d7ad3633c264b88c1
+Author: Phillip Verheyden <pverheyden@gmail.com>
+Date:   Thu Feb 2 16:19:31 2017 -0600
+
+    Clarify edge case docs on ConditionalOnClass
+    
+    When used as a meta-annotation the value() attribute of
+    @ConditionalOnClass will fail silently resulting in the @Conditional
+    nature of the annotation being ignored.
+    
+    See gh-8185
+
+commit db33a75484c33b298463afe81fab2e92555f3557
+Author: Stephane Nicoll <snicoll@pivotal.io>
+Date:   Sun Apr 2 16:52:58 2017 +0200
+
+    Enable transaction management consistently
+    
+    Previously to this commit, transaction management was only enabled when
+    a `DataSource` is configured. The processing of `@Transactional`
+    annotations are now enabled as long as a `PlatformTransactionManager` is
+    present.
+    
+    Also, the `spring.aop.proxy-target-class` is now honoured if set, still
+    defaulting to CGLIB mode.
+    
+    Closes gh-8434
+
+commit 356b78b77f14a59b39eef3c484702346c805c93c
+Author: Madhura Bhave <mbhave@pivotal.io>
+Date:   Fri Mar 17 10:29:35 2017 -0700
+
+    Stop autoconfiguration from being scanned in tests
+    These tests used to pass even without explicitly adding the autoconfigure
+    annotation. Moving them to a subpackage prevents scanning of the
+    autoconfiguration by component scanning.
+    
+    Closes gh-8645
+
+commit 13db69bf41a7dfda2900165200836f02da932ab5
+Author: Phillip Webb <pwebb@pivotal.io>
+Date:   Tue Mar 14 13:49:18 2017 -0700
+
+    Drop superfluous `@Order` annotation
+    
+    Remove `@Order` which has no effect on `ImportBeanDefinitionRegistrar`.
+    
+    Fixes gh-8603
+
+commit 59d3a79c82762b1d32684cbee664257f3004ea47
+Author: Andy Wilkinson <awilkinson@pivotal.io>
+Date:   Tue Feb 28 19:59:33 2017 +0000
+
+    Avoid eager initialization when finding beans by annotation
+    
+    Closes gh-8269
+
+commit 51e7c2eec9023e84ea62bbbf0e470014f42d978b
+Merge: 47a59a9 98cf35d
+Author: Andy Wilkinson <awilkinson@pivotal.io>
+Date:   Tue Feb 28 15:57:54 2017 +0000
+
+    Merge pull request #8252 from Erling Holmqvist
+    
+    * gh-8252:
+      Polish "Ignore spock.lang annotations when creating test context cache key"
+      Ignore spock.lang annotations when creating test context cache key
+
+commit 98cf35d48e25f834e2bae012047511e1c59759fa
+Author: Andy Wilkinson <awilkinson@pivotal.io>
+Date:   Tue Feb 28 15:55:55 2017 +0000
+
+    Polish "Ignore spock.lang annotations when creating test context cache key"
+    
+    See gh-8252
+
+commit 8f18df8a9c4484e8dcd00ec925dbc752deaf21a5
+Author: erlholmq <erling.holmqvist@finn.no>
+Date:   Thu Feb 9 23:00:47 2017 +0100
+
+    Ignore spock.lang annotations when creating test context cache key
+    
+    See gh-7524
+    Closes gh-8252
+
+commit c1e93d8991516229771ab123b9ad1409396f5e25
+Author: Brian Clozel <bclozel@pivotal.io>
+Date:   Thu Feb 23 11:33:56 2017 +0100
+
+    Add WebFlux application sample
+    
+    This commit adds a sample application for the
+    annotation variant of Spring WebFlux.
+
+commit 8317977e1bf7430c95c9b42b39006f35b6454960
+Author: Brian Clozel <bclozel@pivotal.io>
+Date:   Wed Feb 22 17:17:14 2017 +0100
+
+    Add WebFlux auto-configuration
+    
+    This commit creates auto-configuration classes for both the
+    annotation and functional variants of the WebFlux framework.
+    
+    They provide the basic support to get started with those, by
+    creating the required `HttpHandler` using the provided application
+    context (for annotation) or `RouterFunction`s (for functional).
+    
+    They do support `WebFilter` registration and a few advanced
+    features such as resource handling, `messageReaders|Writers`
+    and `ViewResolver` auto-registration.
+    
+    Closes gh-8386
+
+commit b034a505a5e256463a88fcbc38b5e55575a0fe82
+Author: Andy Wilkinson <awilkinson@pivotal.io>
+Date:   Wed Feb 22 12:12:44 2017 +0000
+
+    Polish 0f42c5dd
+    
+    - Apply standard code formatting
+    - Add class javadoc to MultipleResourceServerConfigurationTests
+    - Add missing @Override annotations
+    - Remove unused ExpectedException field
+    - Remove use of SpringApplicationBuilder from the tests
+    - Use @ImportAutoConfiguration to import auto-configuration
+    - Add assertions to verify that the orders haven't been changed
+    - Remove unnecessary mocking of EmbeddedServletContainerFactory
+    
+    See gh-8347
+
+commit 457d0414ea419dbe9044343d9aa69009743a0548
+Author: Andy Wilkinson <awilkinson@pivotal.io>
+Date:   Mon Feb 6 12:54:11 2017 +0000
+
+    Make ConditionalOnBean a logical AND rather than an OR
+    
+    Previously ConditionalOnBean was the inverse of
+    ConditionalOnMissingBean. This meant that the former was a logical OR
+    while the latter was a logical AND of the requiremnts declared via the
+    annotation's attributes.
+    
+    This commit changes the logic for ConditionalOnBean so that it is now
+    a logical AND. A side-effect of this change is that more information
+    about what has and has not matched must be tracked during the
+    evaluation. This extra information is now used to provide more
+    informative messages in the condition evaluation report that indicate
+    exactly why @ConditionalOnBean or @ConditionalOnMissingBean did not
+    match.
+    
+    Closes gh-5279
+
+commit eccefd13438641b9d9d0086f35c4e4b7a92e1d77
+Author: Artem Bilan <abilan@pivotal.io>
+Date:   Fri Dec 23 16:23:20 2016 -0500
+
+    Make use of new extensions point in IntegrationComponentScanRegistrar
+    
+    SI 5 has made IntegrationComponentScanRegistrar more extensible by
+    offering a method for getting the back packages that can be
+    overridden.
+    
+    This commit takes advantage of that change by removing our creation
+    of "fake" annotation metadata and overriding getBackPackages to return
+    the auto-configuration packages instead.
+    
+    Closes gh-7744
+
+commit fa6a13859871b418d1e01fe3f8579b1bf8c5825e
+Author: Phillip Webb <pwebb@pivotal.io>
+Date:   Thu Jan 26 20:42:51 2017 -0800
+
+    Refine ImportsContextCustomizer cache logic
+    
+    Update `ImportsContextCustomizer` so that whenever possible a more
+    specific cache key is used.
+    
+    Prior to this commit the customizer would generate a key based on *all*
+    annotations on the test class. This has repeatedly caused issues where
+    test classes that should have the same cache key did not due to
+    unrelated annotations.
+    
+    A new `DeterminableImports` interface has been added that can be
+    implemented by `ImportSelector` and `ImportBeanDefinitionRegistrar`
+    implementations that are able to determine their imports early. The
+    existing `ImportAutoConfigurationImportSelector` and
+    `AutoConfigurationPackages` classes have been retrofitted with
+    this interface.
+    
+    Fixes gh-7953
+
+commit f3b9b14b8ed414d864977d8ce7ca0108cb2086a4
+Author: Andy Wilkinson <awilkinson@pivotal.io>
+Date:   Thu Jan 26 19:48:10 2017 +0000
+
+    Order ManagementContextConfiguration classes without loading them
+    
+    Previously, ManagementContextConfiguration classes were loaded to
+    allow them to be ordered based on either @Order or implementing
+    Ordered. This had the unwanted side-effect of possibly logging
+    unwanted INFO messages if the reflection-based annotation
+    introspection failed. One cause of this was @ConditionalOnClass when
+    the referenced class was not on the classpath.
+    
+    This commit uses the ASM-based annotation metadata reading to
+    determine the order of a management context configuration class based
+    on the @Order annotation. The classes are then sorted using a standard
+    OrderComparator. Note that Ordering via implemented Ordered is not
+    supported as it cannot be determine without loading the class.
+
+commit 02641a820759f157b24594e3167f23a9f388f79c
+Author: Phillip Webb <pwebb@pivotal.io>
+Date:   Sun Jan 22 22:51:15 2017 -0800
+
+    Optimize AutoConfigurationSorter
+    
+    Optimize `AutoConfigurationSorter` by used properties generated by the
+    annotation processor whenever possible. The removes the need for each
+    candidate class to be ASM parsed just to access the order annotations.
+    
+    See gh-7573
+
+commit ca435512c0493a8c811c30d41890ba033c6c3558
+Author: Madhura Bhave <mbhave@pivotal.io>
+Date:   Fri Jan 20 14:02:51 2017 -0800
+
+    Introduce spring-boot-autoconfigure-processor
+    
+    Add an annotation processor that generates properties files for certain
+    auto-configuration class annotations. Currently attribute values from
+    @AutoConfigureOrder, @AutoConfigureBefore, @AutoConfigureAfter and
+    @ConditionalOnClass annotations are stored.
+    
+    The properties file will allow optimizations to be added in the
+    `spring-boot-autoconfigure` project. Primarily by removing the need
+    to ASM parse as many `.class` files.
+    
+    See gh-7573
+
+commit b225b7f33a7db95cd5623de941c6f0fe3a2035af
+Author: Phillip Webb <pwebb@pivotal.io>
+Date:   Thu Jan 19 14:08:59 2017 -0800
+
+    Rename EnableAutoConfigurationImportSelector
+    
+    Rename EnableAutoConfigurationImportSelector to the more general
+    AutoConfigurationImportSelector since it's now used for more than
+    just the enable annotation.
+    
+    The existing EnableAutoConfigurationImportSelector class remains in
+    a deprecated form so that it can be made package-private again in
+    Spring Boot 2.0.
+    
+    Fixes gh-8072
+
+commit fbae14da5d7c62bceb1217b697708b241a91d9ff
+Merge: b19d31e 915c959
+Author: Stephane Nicoll <snicoll@pivotal.io>
+Date:   Fri Jan 20 16:41:08 2017 +0100
+
+    Merge pull request #7600 from michael-simons:DataMongoTest
+    
+    * pr/7600:
+      Polish contribution
+      Add slide test annotation for MongoDB
+
+commit 8648520876425a37f6983dbeb63135e0d2770e99
+Author: Michael J. Simons <michael@simons.ac>
+Date:   Thu Dec 8 12:13:54 2016 +0100
+
+    Add slide test annotation for MongoDB
+    
+    This commits adds a slice test infrastructure for MongoDB, similar to
+    what `@DataJpaTest` does with JPA.
+    
+    By default, an embedded Mongod process is used if available.
+    
+    See gh-7600
+
+commit c41ff17dd789df50f2b7afbffad00a1c07757c7b
+Author: Stephane Nicoll <snicoll@pivotal.io>
+Date:   Mon Jan 16 15:21:05 2017 +0100
+
+    Provide relevant default values for Enums
+    
+    This commits adds manual metadata for enums that have a default value
+    since the annotation processor is not able to detect that yet.
+    
+    Closes gh-7890
+
+commit 10dbf3c571258bcc788d4fd091aeb42b3c011da6
+Author: Phillip Webb <pwebb@pivotal.io>
+Date:   Wed Jan 18 20:29:31 2017 -0800
+
+    Use `@Validated` as trigger for JSR-330 validation
+    
+    Update `ConfigurationPropertiesBindingPostProcessor` so that
+    `@Validated` is expected to be used to trigger JSR-330 validation.
+    
+    Any existing configuration classes that use JSR-330 annotations but
+    don't have `@Validated` will currently still be validated, but will
+    now log a warning. This should give users a chance to add the requested
+    annotations before the next Spring Boot release where we will use them
+    as the exclusive signal that validation is required.
+    
+    Closes gh-7579
+
+commit f42ebe428cfc570b98b5663122c1bc2470aad10b
+Author: Phillip Webb <pwebb@pivotal.io>
+Date:   Wed Jan 18 20:32:46 2017 -0800
+
+    Remove JSR-330 configuration annotations
+    
+    Replace JSR-330 validation annotations from all internal
+    `@ConfigurationProperties` classes with standard Asserts.
+    
+    Prior to this commit validation of our own configuration properties
+    would only occur when the user happens to have compliant JSR-330
+    implementation on their classpath.
+    
+    See gh-7579
+
+commit 0a6456a7481b1d1c6f42e12a4837938c2e8ee526
+Author: Phillip Webb <pwebb@pivotal.io>
+Date:   Wed Jan 18 20:27:55 2017 -0800
+
+    Always use `prefix` config annotation attribute
+    
+    Update use of `@ConfigurationProperties` to prefer the more explicit
+    `prefix` attribute, rather than `value`.
+    
+    See gh-7579
+
+commit 7a75fb0f385fac863abf5b58290bba440f908d08
+Author: Stephane Nicoll <snicoll@pivotal.io>
+Date:   Fri Jan 6 10:12:57 2017 +0100
+
+    Fix test-specific configuration metadata
+    
+    Most of the config keys defined by the `spring-boot-test-autoconfigure`
+    module can't be overridden because they are mapped with `@PropertyMapping`
+    on an annotation. It is confusing that such keys are exposed in content
+    assistance as using them will have no effect.
+    
+    This commit removes the annotation processor from the build so that the
+    `@ConfigurationProperties` beans aren't processed anymore. Instead, manual
+    metadata is written for the two only keys that are effectively used in
+    regular configuration.
+    
+    As a result, the `additional-spring-configuration-metadata` file has been
+    renamed to `spring-configuration-metadata` since nothing is processing it
+    anymore.
+    
+    Closes gh-7887
+
+commit 6bc37c05898be797da4312e66c899491b4bb1965
+Author: Phillip Webb <pwebb@pivotal.io>
+Date:   Wed Jan 4 22:54:39 2017 -0800
+
+    Drop annotation processor spring-core dependency
+    
+    Remove the spring-core dependency from the annotation processor.
+    (cherry-picked from 4cb7d86aec5)
+    
+    Fixes gh-7882
+
+commit c06ff7061f90f5955a96533f71691536a77a9247
+Author: Stephane Nicoll <snicoll@pivotal.io>
+Date:   Thu Jan 5 17:04:34 2017 +0100
+
+    Revert Shade annotation processor dependencies
+    
+    This commit reverts 45d5b60
+    
+    See gh-7883
+
+commit 45d5b60f6dd92553ecd91bba8c0fc051ac6995e1
+Author: Phillip Webb <pwebb@pivotal.io>
+Date:   Wed Jan 4 22:57:22 2017 -0800
+
+    Shade annotation processor dependencies
+    
+    Update the annotation processor to be completely self contained. The
+    single required dependency is now "shaded" into the jar.
+    
+    Fixes gh-7883
+
+commit 4cb7d86aec541cb71f14cfa11e060dca3fa601d3
+Author: Phillip Webb <pwebb@pivotal.io>
+Date:   Wed Jan 4 22:54:39 2017 -0800
+
+    Drop annotation processor spring-core dependency
+    
+    Remove the spring-core dependency from the annotation processor.
+    
+    Fixes gh-7882
+
+commit 732011987d714c129543f23e43113380994d86c8
+Author: Phillip Webb <pwebb@pivotal.io>
+Date:   Tue Jan 3 15:04:31 2017 -0800
+
+    Fix ManagementContextConfiguration @Order support
+    
+    Update `ManagementContextConfigurationsImportSelector` to instantiate
+    classes so that order annotations are respected.
+    
+    Fixes gh-7814
+
+commit 8a9a61b64ffcb4f9d22f16ea1301a2f48e1107ca
+Author: Phillip Webb <pwebb@pivotal.io>
+Date:   Tue Jan 3 14:41:48 2017 -0800
+
+    Prevent duplicate JmxEndpoint MBean registration
+    
+    Update JmxEndpoint support so that the `@ManagedResource` annotation
+    is no longer required. This prevents both `EndpointMBeanExporter` and
+    the regular `AnnotationMBeanExporter` from both registering the bean.
+    
+    Fixes gh-7813
+    See gh-6579
+
+commit 54aeff47a23210c94dd8f35ee1985a96c0d6db2e
+Author: Phillip Webb <pwebb@pivotal.io>
+Date:   Thu Dec 29 22:43:44 2016 -0800
+
+    Add exclude support to @ImportAutoConfiguration
+    
+    Update `@ImportAutoConfiguration` with support for an exclude attribute
+    that works in a similar way to `@EnableAutoConfiguration`.
+    
+    Also update existing `@Test...` annotation with exclude attribute
+    aliases.
+    
+    Fixes gh-6809
+
+commit 887a206b0cece430a6661134c4256a0cee708223
+Author: Andy Wilkinson <awilkinson@pivotal.io>
+Date:   Mon Dec 5 13:17:12 2016 +0000
+
+    Remove redundant @ConfigurationProperties annotation
+    
+    See gh-7397
+
+commit 45d672f5b36a7191057c1cd8e25c45d5f42cf07c
+Author: Andy Wilkinson <awilkinson@pivotal.io>
+Date:   Wed Nov 30 20:52:20 2016 +0000
+
+    Ignore Spock annotations when creating test context cache key
+    
+    Closes gh-7524
+
+commit 1cd781b2426f1b63b80d990e19d7d7c6a6fd735a
+Author: Andy Wilkinson <awilkinson@pivotal.io>
+Date:   Fri Nov 18 15:58:58 2016 +0000
+
+    Make spring-boot-test compatible with Mockito 2.1 and 2.2
+    
+    We use some internal Mockito classes and some  breaking API changes
+    have been made to them in Mockito 2. This commit introduces a utility
+    class, SpringBootMockUtil, to shield our code from these differences.
+    Mockito 1 is called directly and Mockito 2 is called via reflection.
+    
+    To allow these changes to be tested, FilteredClassPathRunner has been
+    enhanced to also support overriding a dependency on the class path.
+    As a result it has been renamed to ModifiedClassPathRunner. The new
+    ClassPathOverrides annotation can be used to provide the Maven
+    coordinates of one or more dependencies that should be resolved and
+    added to the class path. Such additions are added to the start of
+    the class path so that they override any existing dependency that
+    contains the same classes.
+    
+    Closes gh-6520
+
+commit 64d32191cfcd95ec2531707027aea36175935a44
+Author: Andy Wilkinson <awilkinson@pivotal.io>
+Date:   Wed Oct 19 12:03:33 2016 +0100
+
+    Ignore Kotlin annotations when creating test context cache key
+    
+    Every classes that's compiled by Kotlin is annotated with
+    kotlin.Metadata. The attributes of this annotation always differ so
+    if they are used in the cache key, context caching will effectively
+    be disabled.
+    
+    This commit updates the key used by ImportsContextCustomizer to
+    ignore the kotlin.Metadata annotation. Additionally, to align with
+    with Java where annotations in java.lang.annotation are ignored,
+    annotations in kotlin.annotation are also ignored.
+    
+    Closes gh-7101
+
+commit 90722a9bca89a933d375077945cf5497f7643bcb
+Author: Madhura Bhave <mbhave@pivotal.io>
+Date:   Tue Oct 11 14:59:03 2016 -0700
+
+    Add @ConditionalOnCloudPlatform
+    
+    Add a @ConditionalOnCloudPlatform annotation that matches based on the
+    active ClouldPlatform.
+    
+    Fixes gh-7155
+
+commit 312292b93eb4dbd5ebf522089d185b4c798be771
+Author: Andy Wilkinson <awilkinson@pivotal.io>
+Date:   Wed Sep 21 17:20:49 2016 +0100
+
+    Update Animal Sniffer and related annotations for Java 8 baseline
+    
+    Closes gh-6981
+
+commit 2c621f4094a40e68b20c9b073f927683fd5979c4
+Author: Phillip Webb <pwebb@pivotal.io>
+Date:   Fri Sep 16 16:49:36 2016 -0700
+
+    Fix @AutoConfigureTestDatabase imports
+    
+    Update `@AutoConfigureTestDatabase` so that it always imports
+    `DataSourceAutoConfiguration`. Prior to this commit the annotation
+    could only be applied if something else also imported DataSource
+    auto-configuration.
+    
+    Fixes gh-6897
+
+commit a2e4127d4f7be77b4c7ea0428dbe663f0320f949
+Author: Phillip Webb <pwebb@pivotal.io>
+Date:   Fri Sep 16 13:07:44 2016 -0700
+
+    Fix multi-annotation nested condition logic
+    
+    Update `AbstractNestedCondition` to correctly group nested conditions
+    on members.
+    
+    Fixes gh-6672
+
+commit ebb08c36552a8fda9f21dcbde812b16db5ca8570
+Author: Phillip Webb <pwebb@pivotal.io>
+Date:   Thu Sep 15 10:12:59 2016 -0700
+
+    Generate property meta-data for test projects
+    
+    Add annotation processor to `spring-boot-test` and
+    `spring-boot-test-autoconfigure`.
+    
+    Fixes gh-6893
+
+commit 05fc96733594e8253ee70d5e6af93678ef0783d5
+Author: Andy Wilkinson <awilkinson@pivotal.io>
+Date:   Tue Aug 16 11:37:19 2016 +0100
+
+    Update FilteredClassPathRunner so that JUnit rules work
+    
+    Previously, the tests class and any JUnit annotations it contained were
+    loaded by a different class loader to JUnit. This meant that the JUnit
+    annotations were loaded twice and @Rule-annotated fields were not found.
+    This commit updates FitleredClassPathRunner to use a custom class loader
+    that ensures that any org.junit.* classes are only loaded by a single
+    class loader.
+
+commit 43afc149a14219c13f6830b6e503ac2c9c218f44
+Author: Phillip Webb <pwebb@pivotal.io>
+Date:   Mon Jul 11 16:38:10 2016 -0700
+
+    Consider WebAppConfiguration in @SpringBootTest
+    
+    Update SpringBootTestContextBootstrapper to consider the
+    `@WebAppConfiguration` annotation and use sensible resourceBasePath
+    defaults.
+    
+    Fixes gh-6371
+
+commit 328676007374e579470ade81e1d2ba007c8b4b97
+Author: Andy Wilkinson <awilkinson@pivotal.io>
+Date:   Wed Jul 6 16:41:06 2016 +0100
+
+    Make it easier to add auto-configuration to a test slice
+    
+    Previously, an entry had to be added to spring.factories using the
+    name of one of the @AutoConfigure… meta-annotations on the @…Test
+    annotation as the key. This indirection was unnecessarily complicated.
+    
+    This commit simplifies things by allowing the name of the @…Test
+    annotation itself to be used as the key.
+    
+    Closes gh-6335
+
+commit 5c44c77287dfa1089b4ac7bf93282a484727a43f
+Author: Andy Wilkinson <awilkinson@pivotal.io>
+Date:   Wed Jul 6 12:20:51 2016 +0100
+
+    Document auto-configuration classes imported by each @…Test annotation
+    
+    Closes gh-6044
+
+commit 8cbe30ab5eb72cdc005c7ec57cdf912ca929de7b
+Author: Andy Wilkinson <awilkinson@pivotal.io>
+Date:   Mon Jul 4 14:23:36 2016 +0100
+
+    Ensure that Jersey and Jackson honour JAXB annotations
+    
+    By default Jersey configures Jackson to use both Jackson annotations
+    and JAXB annotations when introspective types for (de)serialization.
+    However, the changes made in 5776d6a8 mean that Jersey no longer uses
+    its default ObjectMapper configuration and uses the auto-configured
+    ObjectMapper instead. This had the unwanted side-effect of leaving
+    Jersey with an ObjectMapper that only uses Jackson annotations and
+    ignores JAXB annotations.
+    
+    This commit updates JerseyAutoConfiguration so that it will add the
+    JaxbAnnotationIntrospector to the auto-configured ObjectMapper for
+    both serialization and deserialization. It uses
+    AnnotationIntrospectorPair to ensure retain any existing
+    introspectors.
+    
+    Closes gh-6310
+
+commit 654801083b3e56cb7307324de61b4e2e06936ea9
+Author: Phillip Webb <pwebb@pivotal.io>
+Date:   Fri Jun 24 11:44:55 2016 -0700
+
+    Provide unified @EntityScan annotation
+    
+    Add a new `@EntiyScan` annotation that's used by auto-configuration to:
+    * Set JPA packagesToScan.
+    * Set Neo4J's SessionFactory packages.
+    * Set the initial entity set for Spring Data MongoDB, Cassandra and
+      Couchbase mapping contexts.
+    
+    Additionally deprecate `@org.springframework.boot.orm.jpa.EntityScan`.
+    
+    See gh-6142
+
+commit 5d59193a09630c694f4534821621140d087080f9
+Author: Phillip Webb <pwebb@pivotal.io>
+Date:   Fri Jun 24 11:31:37 2016 -0700
+
+    Remove @NodeEntityScan annotation
+    
+    Remove `@NodeEntityScan` in preparation for a unified `@EntityScan`
+    annotation.
+    
+    See gh-6142
+
+commit 06b81cf16f91da74ef734a1b0989886e1ed9dca7
+Author: Stephane Nicoll <snicoll@pivotal.io>
+Date:   Mon Jun 20 14:20:16 2016 +0200
+
+    Use `@AliasFor` when applicable
+    
+    This commit adds `@AliasFor` meta-data to annotations that declare an
+    alias attribute.
+    
+    `@ConditionalOnProperty` and `@AutoconfigureRestDocs` were not migrated
+    due to the use of `AnnotationMetadata#getAnnotationAttributes`.
+    
+    Closes gh-5187
+
+commit f27bdcb737ed74b101b8bc82fda02bc9e9eaf84f
+Author: Phillip Webb <pwebb@pivotal.io>
+Date:   Fri Jun 10 17:06:45 2016 -0700
+
+    Prevent APT crashes on older Java versions
+    
+    Update TypeUtils to guard against the use of older Java versions.
+    Both `Collection` and `Map` type lookups now fallback to generic free
+    versions of the classes.
+    
+    Prior to this commit using `xmlbeans-maven-plugin` in combination with
+    Spring Boot's annotation processor could result in
+    `IllegalArgumentException: Incorrect number of type arguments`.
+    
+    Fixes gh-6122
+
+commit b84330663da0110f4c44006c698e7cc78d2633ff
+Author: Phillip Webb <pwebb@pivotal.io>
+Date:   Tue May 31 09:29:24 2016 -0700
+
+    Update spring-boot-sample-test REST code
+    
+    Update RemoteVehicleDetailsService and the related test to use the new
+    RestTemplateBuilder class and @RestClientTest annotation.
+    
+    See gh-6030
+    See gh-5507
+
+commit 2eafb3d88721e34490763d0c4ea14f17abebd736
+Author: Phillip Webb <pwebb@pivotal.io>
+Date:   Tue May 31 09:33:21 2016 -0700
+
+    Add @RestClientTest support
+    
+    Add @RestClientTest annotation that can be used when testing REST
+    clients. Provides auto-configuration for a MockRestServiceServer which
+    can be used when the bean under test builds a single RestTemplate
+    via the auto-configured RestTemplateBuilder.
+    
+    Closes gh-6030
+
+commit e9a226c8f8821e9d42cf53bccdc68fe54580ffa6
+Author: Andy Wilkinson <awilkinson@pivotal.io>
+Date:   Mon May 23 12:35:00 2016 +0100
+
+    Fix handling of annotations on super classes in AnnotationsPropertySource
+    
+    Closes gh-6006
+
+commit cd365bcae1ed96d07e6bacc0fff8e3f1fde8a068
+Author: Phillip Webb <pwebb@pivotal.io>
+Date:   Fri May 13 20:00:48 2016 -0700
+
+    Improve @PropertyMapping error message
+    
+    Improve the message thrown when a @PropertyMapping is used in
+    combination with a @Component to include the actual annotations that
+    are causing the problem.
+    
+    Fixes gh-5897
+
+commit 0a765e36f1fad90736a65ca2b92fbdbe3adee7be
+Author: Andy Wilkinson <awilkinson@pivotal.io>
+Date:   Tue May 10 09:39:38 2016 +0100
+
+    Protect against stack overflow when searching meta annotations
+    
+    It is legal for an annotation to be annotated with itself. Previously,
+    when searching for meta annotations this could lead to a stack overflow.
+    This was likely to occur when using Kotlin as, like Java, its Target
+    annotation is annotated with itself. A stack overflow doesn’t occur
+    with Java’s Target annotation due to some short-circuiting logic for
+    annotations in java.lang.
+    
+    This commit updates the logic for finding meta-annotations to
+    short-circuit when an annotation that has already been seen is
+    encountered.
+    
+    Closes gh-5902
+
+commit 3348ed5bb328a8cc45552d25bf1f64b4817db0e7
+Author: Andy Wilkinson <awilkinson@pivotal.io>
+Date:   Mon May 9 16:34:53 2016 +0100
+
+    Make use of new GetMapping and PostMapping annotations
+    
+    Closes gh-5277
+
+commit 34420a8768a1d66266c35753f2d350a26f6c63b3
+Author: Andy Wilkinson <awilkinson@pivotal.io>
+Date:   Thu May 5 17:33:18 2016 +0100
+
+    Allow @ConditionalOnProperty to be used as a meta-annotation
+    
+    Closes gh-5819
+
+commit 02bd3dc62da349d708ced82d1f98e69ff49b84db
+Author: Phillip Webb <pwebb@pivotal.io>
+Date:   Mon May 2 15:35:21 2016 -0700
+
+    Add @AutoConfigureCache annotation
+    
+    Add @AutoConfigureCache annotation to configure the specific cache
+    manager to use with a test. By default the NoOpCacheManager is used.
+    
+    The @JsonTest, @DataJpaTest and @WebMvcTests have also been updated to
+    use the annotation.
+    
+    Fixes gh-5765
+
+commit 4ccc7dc55498a709cf24ba3ab2c67dde0483a71c
+Author: Stephane Nicoll <snicoll@pivotal.io>
+Date:   Mon May 2 10:38:19 2016 +0200
+
+    Ignore invalid accessors
+    
+    Previously, if a void method with a single argument was named "set", the
+    annotation processor wrongly considered it was a setter candidate. This
+    commit updates the condition to ignore it.
+    
+    Closes gh-5826
+
+commit a7cb689f951b71d5d066388352f4f9e548cfbfd3
+Author: Phillip Webb <pwebb@pivotal.io>
+Date:   Wed Apr 27 10:28:28 2016 -0700
+
+    Move @LocalServerPort annotation
+    
+    Move the @LocalServerPort to org.springframework.boot.context.embedded
+    since it's only really useful when working with embedded servlet
+    containers.
+    
+    See gh-5822
+
+commit 41ddda4a15da42b08883949d9767cb6cc6a8c743
+Author: Andy Wilkinson <awilkinson@pivotal.io>
+Date:   Thu Apr 28 17:25:58 2016 +0100
+
+    Support the use of @AliasFor with @PropertyMapping
+    
+    Previously, when @AliasFor was used, the value of the mapped property
+    would be incorrect as the value of the canonical attribute would be
+    used, rather than the value of the alias.
+    
+    This commit updates AnnotationsPropertySource to use a merged annotation
+    as the source of attribute values, thereby ensuring that any aliased
+    attributes are configured correctly.
+    
+    Closes gh-5821
+
+commit 34b691560742f2bbba1cba7066d3892b0a2e4175
+Author: Andy Wilkinson <awilkinson@pivotal.io>
+Date:   Thu Apr 28 14:00:42 2016 +0100
+
+    Consider meta-annotations when creating an AnnotationsPropertySource
+    
+    Previously, meta-annotations were not considered when looking for
+    annotations that may have property mappings but were considered when
+    looking for a `@PropertyMapping` annotation. This led to three
+    problems:
+    
+    1. Properties that should have been included in the property source
+       were not included
+    2. Properties that were included may have had the wrong name
+    3. Properties were included when they should not have been
+    
+    `@DataJpaTests` provided a concrete example of all three problems:
+    
+    1. The `replace` and `connection` attributes from
+       `@AutoConfigureTestDatabase` were not included in the property
+       source
+    2. The `showSql` attribute from `@DataJpaTest` was mapped as
+       `spring.test.database.spring.jpa.show-sql`
+    3. The `useDefaultFilters` attribute from `@DataJpaTest` was included
+       in the property source.
+    
+    This commit updates AnnotationsPropertySource to consider
+    meta-annotations when looking for attributes that should be mapped.
+    This addresses the first problem. Furthermore,
+    AnnotationsPropertySource has been updated to no longer consider
+    meta-annotations when looking for a type-level property mapping.
+    This addresses the second and third problems.
+    
+    Closes gh-5794
+
+commit f364d713dde1b9b6794cd6ed77a55f1156e5b915
+Author: Stephane Nicoll <snicoll@pivotal.io>
+Date:   Fri Apr 15 14:02:38 2016 +0200
+
+    Add `LocalManagementPort`
+    
+    Add an annotation alias for the actual management port, similar to what
+    was done for the main context (`LocalServerPort`).
+    
+    See gh-5548
+
+commit e5a253e68951dcf975b9844b3b39afac2222b503
+Author: Andy Wilkinson <awilkinson@pivotal.io>
+Date:   Thu Apr 7 12:14:22 2016 +0100
+
+    Improve diagnostics when OnBeanCondition type deduction fails
+    
+    When @ConditionalOnBean or @ConditionalOnMissingBean are used on a
+    @Bean method, they will, in the absence of any other configuration,
+    attempt to deduce the bean's type by examining the method's return
+    type. This deduction can fail. See gh-4841, gh-4934, and gh-5624
+    for some examples of possible failure causes. Previously, this
+    failure was only logged as a debug message leaving the user with a
+    misleading message suggesting that the @ConditionalOnBean or
+    @ConditionalOnMissingBean annotation was not configured correctly.
+    
+    This commit improves the diagnostics by mention the possibility of
+    type deduction in the exception message and including the exception
+    that caused deduction to fail as the cause.
+    
+    Closes gh-4934
+
+commit 539d57551c13ef21f610012d7ed86dd577c3131f
+Merge: 5479c4c 01f3e70
+Author: Stephane Nicoll <snicoll@pivotal.io>
+Date:   Tue Apr 5 07:53:37 2016 +0200
+
+    Merge pull request #5570 from stepio/master
+    
+    * pr/5570:
+      Manage jackson-module-jaxb-annotations dependency
+
+commit 01f3e7059b6ed43bd9251e899ec802e7081a7c74
+Author: Igor Stepanov <igor.stepanov@keystonett.com>
+Date:   Mon Apr 4 19:40:39 2016 +0300
+
+    Manage jackson-module-jaxb-annotations dependency
+    
+    Closes gh-5570
+
+commit b0b190b362367c235d22fabaaf3311a4ed04ea3c
+Author: Phillip Webb <pwebb@pivotal.io>
+Date:   Mon Apr 4 19:58:33 2016 -0700
+
+    Delete @SpringApplicationConfiguration
+    
+    Remove the @SpringApplicationConfiguration annotation since it offers
+    little value over @SpringApplicationTest.
+    
+    See gh-5562
+
+commit eb3180d581ae372d073c18d6c3d34cc47a2139c8
+Author: Andy Wilkinson <awilkinson@pivotal.io>
+Date:   Mon Apr 4 15:41:13 2016 +0100
+
+    Provide test auto-configuration for Spring REST Docs
+    
+    This commit introduces a new annotation, @AutoConfigureRestDocs,
+    which can be used to enable auto-configuration of Spring REST Docs.
+    The auto-configuration removes the need to use Spring REST Docs' JUnit
+    rule and will automatically configure MockMvc. Combined with the new
+    auto-configuration for MockMvc it allows a test class to be free of
+    boilerplate configuration:
+    
+    @RunWith(SpringRunner.class)
+    @WebMvcTest
+    @AutoConfigureRestDocs(outputDir = "target/generated-snippets",
+            uriScheme = "https", uriHost = "api.example.com",
+            uriPort = 443)
+    public class ExampleDocumentationTests {
+    
+        @Autowired
+        private MockMvc mvc;
+    
+        @Test
+        public void documentIndex() {
+            // …
+        }
+    
+    }
+    
+    For more advanced customization a RestDocsMockMvcConfigurationCustomizer
+    bean can be used.
+    
+    If a RestDocumentationResultHandler is found in the context, it will
+    be passed to the ConfigurableMockMvcBuilder's alwaysDo method as part
+    of its customization.
+    
+    Closes gh-5563
+
+commit 34070e5a8e82cef6059ea9f5d774629bd2a0699a
+Author: Phillip Webb <pwebb@pivotal.io>
+Date:   Fri Apr 1 11:45:08 2016 -0700
+
+    Add Support for Mockito spies
+    
+    Add a @SpyBean annotation that can be used to create spies.
+    
+    Fixes gh-5538
+
+commit 33f0ea348065b86dbc51bedd5be599374de62cf9
+Author: Andy Wilkinson <awilkinson@pivotal.io>
+Date:   Thu Mar 31 16:55:28 2016 +0100
+
+    Rework SpringApplicationTest to support web modes
+    
+    Rework the new testing support so that @SpringApplicationTest can be
+    used for standard integration tests, web integration tests with a
+    mock Servlet environment and web integration tests with an embedded
+    servlet container. This means that it a replacement for 1.3's
+    @IntegrationTest and @WebIntegrationTest and allows all
+    SpringApplication testing to be configured using a common annotation.
+    
+    The old @IntegrationTest and @WebIntegrationTest along with their
+    supporting classes have been reinstated to their previous form (while
+    remaining deprecated). This should ensure that they continue to work
+    in 1.4 exactly as they did in 1.3 giving users a smooth path to
+    @SpringApplicationTest.
+    
+    See gh-5477
+
+commit fd437797b6c44a6dd77bd74d3729838ab7769b35
+Author: Stephane Nicoll <snicoll@pivotal.io>
+Date:   Tue Mar 22 16:03:14 2016 +0100
+
+    Polish contribution
+    
+    This commit polihes the original Neo4j contribution in several areas.
+    
+    Rather than providing the packages to scan, this commit rearranges the
+    `EntityScan` and `EntityScanRegistrar` so that the logic can be shared
+    for other components. If no package is provided, scanning now defaults to
+    the "auto-configured" package(s) and a `@NodeEntityScan` annotation
+    allows to override that.
+    
+    The configuration has also been updated to detect the driver based on the
+    `uri` property. If the embedded driver is available we use that by
+    default. If it is not available, we're trying to connect to a Neo4j
+    server running on localhost. It is possible to disable the embedded mode
+    or set the `uri` parameter explicitly to deviate from these defaults.
+    
+    The sample no longer relies on the embedded driver for licensing reason:
+    rather it expects an instance running on localhost (like other
+    data-related samples) and gracefully ignore any connection error. A
+    README has been added in the sample to further explain the available
+    options;
+    
+    Closes gh-5458
+
+commit 81d56355715a58b511257eb79a3059477652138e
+Author: Phillip Webb <pwebb@pivotal.io>
+Date:   Tue Mar 22 11:42:47 2016 -0700
+
+    Add @DataJpaTest annotation
+    
+    Add @DataJpaTest and @AutoConfigureTestDatabase annotations to allow
+    testing of an application "slice" that only deals JPA.
+    
+    See gh-4901
+
+commit bbc91cc03f5df31c1985811d07abe4f9a906355e
+Author: Phillip Webb <pwebb@pivotal.io>
+Date:   Tue Mar 22 12:04:49 2016 -0700
+
+    Add @WebMvcTest annotation
+    
+    Add @WebMvcTest and @AutoConfigureMockMvc annotations to allow testing
+    of an application "slice" that only deals with Spring MVC.
+    
+    See gh-4901
+
+commit 0bd89017b6ea203c44f0f3e31366d33529e98654
+Author: Phillip Webb <pwebb@pivotal.io>
+Date:   Tue Mar 22 11:42:16 2016 -0700
+
+    Add @JsonTest annotation
+    
+    Add @JsonTest and @AutoConfigureJsonTesters annotations to allow testing
+    of an application "slice" that only deals with JSON marshalling.
+    
+    See gh-4901
+
+commit 46099c753b1a2bfcc53d11899091735e632203c4
+Author: Phillip Webb <pwebb@pivotal.io>
+Date:   Tue Mar 22 11:42:08 2016 -0700
+
+    Add @PropertyMapping support
+    
+    Add @PropertyMapping annotation which can be used to mark annotation
+    attributes that should contribute Environment properties.
+    
+    Provides a quick way for tests to change auto-configuration behavior in
+    a structured way.
+    
+    Fixes gh-4901
+
+commit fb70a56c79c477650e47824d98dc0d1ac3737e7e
+Author: Phillip Webb <pwebb@pivotal.io>
+Date:   Tue Mar 1 16:26:26 2016 -0800
+
+    Support override enable auto-configuration
+    
+    Provide a way for full auto-configuration to be disabled
+    programmatically. Primarily added to allow special test annotations to
+    take over partial auto-configuration but still load
+    @SpringBootApplication classes.
+    
+    See gh-4901
+
+commit 47f801d5359ebc1ea9330979e4d2e8188952415a
+Author: Phillip Webb <pwebb@pivotal.io>
+Date:   Mon Feb 29 15:50:39 2016 -0800
+
+    Make @ImportAutoConfiguration a meta-annotation
+    
+    Update `@ImportAutoConfiguration` so that it can be used as a
+    meta-annotation. Also relocate it from the `test` package.
+    
+    Fixes gh-5473
+
+commit 45c4f5f3f1e1f055ba348f6d04c2b318bb5ba008
+Author: Phillip Webb <pwebb@pivotal.io>
+Date:   Mon Feb 22 12:04:58 2016 -0800
+
+    Add @MockBean support
+    
+    Add a `@MockBean` annotation which can be used to setup and inject mocks
+    into an application context. The annotation can be used on test classes,
+    test fields, configuration classes or configuration fields. When used on
+    a field the annotation also acts as an injection point.
+    
+    Fixes gh-5042
+
+commit 0829a1bde88be730e2dd5422c725003edf3adb00
+Author: Phillip Webb <pwebb@pivotal.io>
+Date:   Thu Feb 18 09:48:17 2016 -0800
+
+    Drop superfluous annotations
+    
+    Update internal tests to drop annotations that can now
+    be inferred.
+    
+    Fixes gh-5470
+
+commit 7dffb702b5a2517b8135db6493ae073eaffeb146
+Author: Phillip Webb <pwebb@pivotal.io>
+Date:   Fri Mar 11 23:19:48 2016 -0800
+
+    Unify use of @BootStrapWith
+    
+    Update @IntegrationTest to use @BootstrapWith rather than an explicitly
+    defined set of test execution listeners.
+    
+    Also introduce a new @SpringApplicationTest annotation that is similar
+    to  @SpringApplicationConfiguration but a bootstrapper.
+    
+    Fixes gh-5230
+
+commit 600a06af8339ced8d7376dc3ba3a849f06b65017
+Author: Phillip Webb <pwebb@pivotal.io>
+Date:   Tue Mar 1 15:38:22 2016 -0800
+
+    Auto-exclude test components from scanning
+    
+    Add TestTypeExcludeFilter which will automatically attempt to exclude
+    test only configurations. All `@Configuration` annotated inner-classes
+    of tests are automatically excluded. The `@TestConfiguration` annotation
+    can be used to explicitly if a configuration needs explicit exclusion.
+    
+    See gh-5295
+    See gh-4901
+
+commit 965dd33ec80f33b1084b7cd7739798cd1e8c5c4a
+Author: Phillip Webb <pwebb@pivotal.io>
+Date:   Mon Feb 22 10:32:37 2016 -0800
+
+    Introduce @SpringBootConfiguration annotation
+    
+    Add a new @SpringBootConfiguration annotation that can be used to
+    indicate the primary application configuration. The new annotation is
+    primarily indented to allow test automatically code to find the main
+    configuration class.
+    
+    See gh-5295
+
+commit 6035fe4c4815e6b0b9ab422e8d440dc0db1f6cbb
+Author: Andy Wilkinson <awilkinson@pivotal.io>
+Date:   Tue Mar 8 11:00:39 2016 +0000
+
+    Make it easier to run JUnit tests against a subset of the class path
+    
+    Due to `@ConditionalOnClass` and `@ConditionalOnMissingClass`, the
+    behaviour of many auto-configuration classes is dependant on the
+    contents of the class path, yet we do not have a lightweight way of
+    testing such classes against a specific class path.
+    
+    This commit introduces FilteredClassPathRunner, a JUnit Runner that
+    runs a class’s tests using a filtered class path. A
+    `@ClassPathExclusions` annotation on a test class can be used to
+    filter entries from the project’s default class path, thereby allowing
+    a configuration class’s behaviour in the presence or absence of
+    certain classes to be tested more easily.
+    
+    Closes gh-5359
+
+commit b260c20df0105842218ce9788130634f9b1f5dfa
+Author: Phillip Webb <pwebb@pivotal.io>
+Date:   Tue Mar 8 17:25:58 2016 -0800
+
+    Support JsonSerializer/JsonDeserializer Beans
+    
+    Add a `@JsonComponent` annotation that can be used to indicate that a
+    Bean is a JsonSerializer and/or JsonDeserializer that should be
+    registered with Jackson.
+    
+    Support is provide via a new `JsonComponentModule` which is
+    auto-configured in `JacksonAutoConfiguration`.
+    
+    Also add `JsonObjectSerializer` and `JsonObjectDeserializer` classes
+    which provided as a convenient base for serializers that work with
+    Objects.
+    
+    Fixes gh-3898
+
+commit d9f4d6ce912deea0bd064c9bb977bfa7973d5d01
+Author: Stephane Nicoll <snicoll@pivotal.io>
+Date:   Mon Feb 29 15:48:46 2016 +0100
+
+    Allow custom CacheResolver
+    
+    Previously, if a bean of type `CacheResolver` was present in the context
+    the whole cache auto-configuration would back off. If said
+    `CacheResolver` hasn't been defined via the `CachingConfigurer`
+    infrastructure, the application context would fail with a rather
+    unpleasant error message.
+    
+    It can be quite common to define custom `CacheResolver` beans as the cache
+    annotations allow to defines custom cache resolvers per operation. This
+    commit makes sure that the cache auto-configuration will back-off only if
+    the `CacheResolver` is named `cacheResolver`.
+    
+    Closes gh-5201
+
+commit bb473c32e29023b49992af7fa4ea76532d06ac0a
+Author: Andy Wilkinson <awilkinson@pivotal.io>
+Date:   Mon Feb 29 14:44:27 2016 +0000
+
+    Enable Animal Sniffer checking of spring-boot-loader-tools
+    
+    Previously, Animal Sniffer checking of spring-boot-loader-tools
+    was disabled as it failed with an NPE. This has been fixed in
+    Animal Sniffer 1.15.
+    
+    This commit upgrades Animal Sniffer to 1.15 and adds the necessary
+    annotations to suppress failures for safe usage of sun.* and Java 7
+    APIs.
+    
+    Note that UsesUnsafeJava has been copied from spring-boot and made
+    package-private. This retains the clearer intent of the custom
+    annotation (versus @IgnoreJRERequirement) while avoiding the change
+    in the build order that would be necessary for
+    spring-boot-loader-tools to use the annotation from spring-boot.
+    
+    Closes gh-5284
+
+commit 5febd497dad8309c11316fe15a8808459592077e
+Author: Stephane Nicoll <snicoll@pivotal.io>
+Date:   Wed Feb 24 11:38:05 2016 +0100
+
+    Support customization of CacheManager
+    
+    This commit allows to customize the auto-configured `CacheManager` by
+    exposing a bean of type `CacheManagerCustomizer`. The implementation may
+    reference the type of a `CacheManager` to determine in which case it has
+    to be invoked.
+    
+    Several implementations can be provided and ordered using the regular
+    `Ordered` interface and `@Order` annotation.
+    
+    Closes gh-5039
+
+commit 617c97322d8d0c6d4e8081bd5d4a4f8e2d8eb565
+Author: Andy Wilkinson <awilkinson@pivotal.io>
+Date:   Mon Feb 22 17:55:27 2016 +0000
+
+    Allow endpoint paths to be configured via endpoint.<name>.path
+    
+    Support for configuring an endpoint’s path separately from its id was
+    introduced in 97255785, but it didn’t work for a variety of reasons:
+    
+     1. Some custom MVC endpoints did not have configuration properties
+        bound to them
+     2. Some generic endpoints rejected the path property as they were
+        configured not to ignore unknown fields
+     3. The property used to configure the path was dependent on the id
+        of the endpoint. This meant that the path property’s name would
+        change if the endpoint’s id was changed
+    
+    This commit addresses these problems:
+    
+     1. @ConfigurationProperties has been added to custom MvcEndpoints where
+        it was missing
+     2. Generic endpoints have been updated to ignore unknown fields,
+        allowing the path of their MVC adapter to be configured
+     3. Rather than using the id of a generic endpoint to determine the name
+        of its path property, the prefix or value of the endpoint’s
+        @ConfigurationProperties annotation is used instead. Any generic
+        endpoint that is not annotated with @ConfigurationProperties is
+        ignored, making its path unconfigurable.
+    
+    Closes gh-5105
+
+commit 34ae7e3eeec6348a8c386e4c1f278798f210c2a0
+Author: Phillip Webb <pwebb@pivotal.io>
+Date:   Mon Feb 22 12:07:49 2016 -0800
+
+    Fix packages and annotations used in sample
+    
+    Fixup accidental error in previous commit.
+
+commit 95c4cdbedce461b3480318b5126d78619434663d
+Author: Phillip Webb <pwebb@pivotal.io>
+Date:   Sat Feb 20 15:27:36 2016 -0800
+
+    Fix packages and annotations used in sample
+    
+    Update a few of the samples to correct the packages used in tests and
+    to make use of the `@SpringBootApplication` annotation.
+
+commit ebffa493e4021b905dcba114958194caa3ac6641
+Author: Stephane Nicoll <snicoll@pivotal.io>
+Date:   Tue Feb 9 17:19:11 2016 +0100
+
+    Harmonize ConfigurationProperties bean name
+    
+    When `@EnableConfigurationProperties` is defined, Spring Boot
+    automatically registers a bean in the context for each class specified
+    on the annotation. Previously, the name of the bean only included the
+    prefix which leads to conflict if two different classes use the same
+    prefix.
+    
+    This commit changes the bean name structure to be <prefix>-<fqn> where
+    prefix is the prefix used on the annotation and <fqn> the fully qualified
+    name of the target class.
+    
+    Closes gh-4395
+
+commit 6b4e4e652a516762edf8844c89828a41035c9070
+Author: Stephane Nicoll <snicoll@pivotal.io>
+Date:   Tue Jan 12 15:55:39 2016 +0100
+
+    Clarify annotation processor config with AspectJ
+    
+    Closes gh-4847
+
+commit 8618ec89b1dbcb45c9c1fe86d7ef073ee2e60ce0
+Author: Andy Wilkinson <awilkinson@pivotal.io>
+Date:   Tue Dec 1 15:40:03 2015 +0000
+
+    Ensure that environment post processors are ordered correctly
+    
+    Previously, ConfigFileApplicationListener would always add itself to the
+    end of the list of environment post processors loaded via
+    spring.factories. This meant that its order (highest precedence + 10)
+    would not be honoured and it would only be in the right place in the
+    list if any other post processors happened to have a higher precedence.
+    
+    This commit updates ConfigFileApplicationListener to sort the list of
+    post processors using AnnotationAwareOrderComparator once its added
+    itself to the list.
+    
+    Closes gh-4595
+
+commit 141907c65fb6191aa46938a39ce4df39dc9d580d
+Merge: 89aba8b ae13082
+Author: Stephane Nicoll <snicoll@pivotal.io>
+Date:   Thu Nov 26 20:25:00 2015 +0100
+
+    Merge branch '1.2.x'
+    
+    # Conflicts:
+    #	spring-boot-tools/spring-boot-configuration-processor/src/main/java/org/springframework/boot/configurationprocessor/ConfigurationMetadataAnnotationProcessor.java
+    #	spring-boot-tools/spring-boot-configuration-processor/src/test/java/org/springframework/boot/configurationprocessor/ConfigurationMetadataAnnotationProcessorTests.java
+
+commit 2c4f88e221afa376661c474285e86f53c0dd4f0b
+Author: Stephane Nicoll <snicoll@pivotal.io>
+Date:   Fri Nov 6 17:02:12 2015 +0100
+
+    Fix Hazelcast auto-configuration ordering
+    
+    Make sure that the general Hazelcast auto-configuration is processed
+    before the cache auto-configuration. This was supposed to be fixed and
+    tested in 721b5a2 but unfortunately the `@AutoConfigureAfter` annotation
+    was placed on a regular `@Configuration` class (which has no effect).
+    
+    The tests were passing because the ordering is actually hardcoded in the
+    test. The relevant tests now use `ImportAutoConfiguration` that simulates
+    the same order as the one use by the actual application.
+    
+    Closes gh-4389
+
+commit 0b326035b0c223a1a07a04e65cbdf6183a618ed6
+Author: Stephane Nicoll <snicoll@pivotal.io>
+Date:   Fri Oct 30 14:39:43 2015 +0100
+
+    Fix detection of property setter
+    
+    Previously, the meta-data annotation processor was taking the first
+    setter that match the property name it has to handle. Contrary to
+    getters that are enforced by a return type (no argument), multiple
+    setter candidates may exist.
+    
+    If a property's type got narrowed over time, the original setter may
+    have been marked as Deprecated. As the annotation processor takes the
+    first setter that matches based on the name only, it may pick up the
+    deprecated one and therefore mark the property as being (wrongly)
+    deprecatede in the meta-data.
+    
+    It turns out that checking for the actual type of the setter parameter
+    brought a side effect: some primitive properties may use the primitive
+    or the Wrapper counter part. This commit not only look at the proper
+    setter based on the type but also fallback on the wrapper (or) primitive
+    if necessary.
+    
+    Closes gh-4338
+
+commit 6578239f679f90d3404fff98f439c1eb61b9a75d
+Author: Stephane Nicoll <snicoll@pivotal.io>
+Date:   Thu Oct 29 10:29:41 2015 +0100
+
+    Fix binding of Collection of enum
+    
+    As there is no way to copy all the converters of a `ConversionService` to
+    another, `RelaxedConversionService` uses a fallback `ConversionService`
+    when the user-provided one failed.
+    
+    That fallback is taking care of converting `String` to `Enum` in a case
+    insensitive way but it has no registered converter to convert a comma
+    separated String to a collection of something.
+    
+    Ironically, our current test suite has plenty of cases where we map a
+    `String` to  a collection of enums and they all pass. This is because
+    the tests do not provide a custom `ConverterService` so we end up
+    immediately in the fallback scenario. Since no converter is able to
+    convert the String to a collection, the property editor support of the
+    binder takes care of that for us and try to convert each individual
+    value.
+    
+    In a regular use case however, a `ConversionService` is provided and
+    fails to map the collection if the String value(s) don't have the exact
+    same case as the annotations they represent. Since the original
+    `ConversionService` has claimed it was able to convert a collection,
+    the raw `String` value is passed to the fallback converter and that one
+    fails to convert the raw String.
+    
+    The fallback converter now registers the necessary converters to
+    convert collections. Additional tests have been added to test that in
+    a more explicit way.
+    
+    Closes gh-4322
+
+commit 3740c817d3eb273dbdd9d27992ed41f92383be46
+Author: Stephane Nicoll <snicoll@pivotal.io>
+Date:   Wed Oct 28 20:12:13 2015 +0100
+
+    Ensure that `@ConfigurationProperties` is mandatory
+    
+    Previously it was possible to bind a bean to the root prefix by just
+    adding `@EnableConfigurationProperties` with the class of said bean.
+    
+     This use case is misleading and prevents any meta-data to be generated
+     for that object since the annotation processor reacts on the presence of
+     the `@ConfigurationProperties` annotation.
+    
+     If a class is included in the list of configuration properties bean to
+     create via the `@EnableConfigurationProperties` annotation we now make
+     sure that the `@configurationProperties` annotation is present on it.
+    
+     Closes gh-3460
+
+commit c4122b8f8d77585c04be7c0edf7090340ffc8873
+Author: Andy Wilkinson <awilkinson@pivotal.io>
+Date:   Wed Oct 28 12:14:31 2015 +0000
+
+    Work around brittle annotation scanning in Mojarra
+    
+    FacesListener in Mojarra 2.2.12 (used in Glassfish 4.1.1) is a
+    ServletContainerInitializer that’s annotated to handle types annotated
+    with javax.annotation.Resource.
+    OAuth2RestOperationsConfiguration.SessionScopedConfiguration is one such
+    class. This leads to com.sun.faces.config.DelegatingAnnotationProvider
+    calling getAnnotations on SessionScopedConfiguration.class. This fails
+    with a java.lang.ArrayStoreException due to SessionScopedConfiguration
+    being annotated with @ConditionalOnBean(OAuth2ClientConfiguration) and
+    OAuth2ClientConfiguration not being on the classpath.
+    DelegatingAnnotationProvider currently catches NoClassDefFoundErrors
+    thrown during its annotation processing. It needs to be made more
+    robust so that it also copes with an ArrayStoreException, in a similar
+    way to how org.glassfish.apf.impl.AnnotationProcessorImpl was updated to
+    fix GLASSFISH-21265 [1]. I’ve opened an issue to this effect [2].
+    
+    In the meantime, we can work around the brittleness in
+    DelegatingAnnotationProvider by restructuring
+    SessionScopedConfiguration. This commit moves the use of @Resource into
+    a nested inner class, ClientContextConfiguration, while leaving the use
+    of @ConditionalOnBean on SessionScopedConfiguration. This means that it
+    is now ClientContextConfiguration that is passed to FacesListener and
+    processed by DelegatingAnnotationProcessor, thereby avoiding exposing
+    it to the @ConditionalOnBean annotation that it does not handle
+    gracefully. A Glassfish-based deployment test has also been added to
+    verify the fix.
+    
+    Closes gh-2079
+    Closes gh-4321
+    
+    [1] https://java.net/jira/browse/GLASSFISH-21265
+    [2] https://java.net/jira/browse/JAVASERVERFACES-4076
+
+commit 02ef68163a0380e3628b8562b0ad2ba6e1f86bfe
+Author: Stephane Nicoll <snicoll@pivotal.io>
+Date:   Fri Oct 9 16:53:17 2015 +0200
+
+    Remove redundant deprecated attribute
+    
+    The `deprecated` attribute is deprecated as of Spring Boot 1.3 and
+    replaced by the `deprecation` object. Any IDE relying on the previous
+    structure still expects the `deprecated` attribute though.
+    
+    The annotation processor is adding that information automatically when it
+    merges manual content so it is not necessary to define that attribute in
+    the source.
+    
+    Closes gh-4127
+
+commit 82fffe306241b7ce4065e8f53f61012548c24b4f
+Author: Phillip Webb <pwebb@pivotal.io>
+Date:   Wed Oct 7 16:54:34 2015 -0700
+
+    Relax `ParenPad` checkstyle rule
+    
+    Eclipse Mars has a formatter bug (#479291) that sometimes adds
+    additional whitespace on annotations. Until it's fixed we need to relax
+    the `ParenPad` checkstyle rule.
+
+commit c8ec2cb70b6e94c0495f9ba7809b799391ee724c
+Author: Dave Syer <dsyer@pivotal.io>
+Date:   Wed Sep 23 09:02:59 2015 +0100
+
+    Add missing annotation to openTSDB sample
+
+commit 7f2be6ce270a038da43bf6c1d902e23787f13109
+Author: Andy Wilkinson <awilkinson@pivotal.io>
+Date:   Mon Sep 21 16:48:50 2015 +0100
+
+    Add auto-configuration for Jackson's parameter names module
+    
+    The parameter names module allows users of Java 8 that have compiled
+    their code with the -parameters option to avoid the name for
+    annotations to map the json onto constructor and method parameters
+    with the names of the parameters being used instead.
+    
+    This commit adds auto-configuration for the module that will only
+    be enabled when running on Java 8.
+    
+    Closes gh-3804
+
+commit 003268fb4eca9dde435a78650d8ad0e387526f04
+Author: Andy Wilkinson <awilkinson@pivotal.io>
+Date:   Mon Aug 17 16:45:44 2015 +0100
+
+    Add support for @WebFilter, @WebListener, @WebServlet
+    
+    This commit adds a new annotation, @ServletComponentScan, that can be
+    used to enable scanning for @WebFilter, @WebListener, and @WebServlet
+    annotated classes. Registration beans will be automatically created for
+    any classes that are found, with the configuration derived from the
+    annotation.
+
+commit 1ee31e73d3b41a12326edea79c0a00dd0aad9d3f
+Author: Stephane Nicoll <snicoll@pivotal.io>
+Date:   Mon Aug 10 16:34:30 2015 +0200
+
+    Avoid NPE if @ConfigurationProperties is not present
+    
+    The annotation processor detects `@ConfigurationProperties` bean or
+    method definition and merges manual meta-data. The former step will fail
+    with a NPE if the annotation is not present on the classpath. This could
+    happen if the annotation processor is added to a module that is not
+    actually using Spring Boot.
+    
+    We now have a defensive check that skips that steps but still attempts to
+    merge manual meta-data if present.
+    
+    Closes gh-3720
+
+commit 9a537070142558e312c4fe6b1f35e4d777203b79
+Author: Phillip Webb <pwebb@pivotal.io>
+Date:   Wed Aug 5 14:08:04 2015 -0700
+
+    Add @ImportAutoConfiguration annotation for tests
+    
+    Add a new `@ImportAutoConfiguration` annotation that can be used by
+    tests that wish to selectively import certain auto-configuration
+    classes. Also add `@AutoConfigurationPackage` so that package
+    registration is decoupled from `@EnableAutoConfiguration`.
+    
+    An added benefit of the change is @EnableAutoConfigurationImportSelector
+    can now be subclassed to provide custom annotation support if needed.
+    
+    Fixes gh-3660
+    See gh-2772
+
+commit 3ff878a94b43e5c671a007cb9beb247d54a30ec7
+Author: Phillip Webb <pwebb@pivotal.io>
+Date:   Wed Aug 5 10:03:43 2015 -0700
+
+    Remove `include` from @EnableAutoConfiguration
+    
+    Revert commit 1d31d23e29424ebd8501197c63fb168d1cc942a8 to
+    remove `include` from `@EnableAutoConfiguration`. We'll
+    add a dedicated annotation instead to fix this.
+    
+    See gh-3660
+
+commit 1d31d23e29424ebd8501197c63fb168d1cc942a8
+Author: Phillip Webb <pwebb@pivotal.io>
+Date:   Tue Aug 4 16:43:05 2015 -0700
+
+    Add `include` support to @EnableAutoConfiguration
+    
+    Update the `@EnableAutoConfiguration` annotation to include an `include`
+    attribute which can be used to specify specific auto-configuration
+    classes.
+    
+    Primarily added to so that tests can selectively auto-configure without
+    needing to worry about class import order.
+    
+    Fixes gh-3660
+
+commit bfe930a873414bb44fccde13060aa6651415d007
+Author: Stephane Nicoll <snicoll@pivotal.io>
+Date:   Tue Aug 4 13:59:57 2015 +0200
+
+    Auto-configure @EnableConfigurationProperties
+    
+    Add an auto-configuration that avoid a Spring Boot user to add
+    `@EnableConfigurationProperties` to its configuration to benefit from
+    that feature.
+    
+    As our own auto-configurations are tested independently, such annotation
+    is still present to avoid a useless reference to this new
+    auto-configuration.
+    
+    Closes gh-2457
+
+commit 3b4928c5492487a347a3fd072afb126de17a3236
+Author: Phillip Webb <pwebb@pivotal.io>
+Date:   Fri Jul 17 14:15:15 2015 -0700
+
+    Restore ServerProperties.getSessionTimeout()
+    
+    Restore the deprecated method to give people a change to migrate. The
+    @DeprecatedConfigurationProperties annotation is now used to generate
+    the deprecated meta-data, removing the need for manual meta-data.
+    
+    Closes gh-3537
+
+commit e9d252e05c372b446abba3bec23dc75d1dc0a138
+Author: Phillip Webb <pwebb@pivotal.io>
+Date:   Fri Jul 17 14:13:11 2015 -0700
+
+    Add @DeprecatedConfigurationProperties annotation
+    
+    Add a new @DeprecatedConfigurationProperties annotation which can be
+    used by the `ConfigurationMetadataAnnotationProcessor` to generating
+    meta-data deprecated blocks.
+    
+    Fixes gh-3543
+
+commit 71dbec381a70402ba24ebaabd73d41ce19244873
+Author: Phillip Webb <pwebb@pivotal.io>
+Date:   Tue Jul 7 14:58:56 2015 -0700
+
+    Create @ManagementContextConfiguration annotation
+    
+    Replace the previously used `EndpointWebMvcConfiguration`
+    `spring.factories` key with a dedicated ManagementContextConfiguration
+    annotation.
+    
+    Also renamed the EndpointWebMvcHypermediaConfiguration and
+    EndpointWebMvcConfiguration classes to make it clearer that they are
+    for the management context.
+    
+    See gh-3345
+
+commit 9cea8925a8f782638681091981052164c54a303c
+Author: Sam Brannen <sam@sambrannen.com>
+Date:   Thu Jul 2 14:18:35 2015 +0200
+
+    Use @AliasFor in @SpringApplicationConfiguration
+    
+    Spring Framework 4.2 introduces first-class support for explicit
+    annotation attribute overrides via a new @AliasFor annotation.
+    
+    In order to avoid potential naming conflicts in the future and to make
+    the current, implicit attribute overrides explicit (as well as
+    documented), this commit retrofits @SpringApplicationConfiguration with
+    @AliasFor.
+    
+    Closes gh-3400
+    Closes gh-3401
+
+commit b1ad2c30eb2d88a2bdf6f5486b10c7f17fdf7f8e
+Author: Andy Wilkinson <awilkinson@pivotal.io>
+Date:   Mon May 11 14:56:42 2015 +0100
+
+    Ignore type-constrained converter when auto-configuring Jackson converter
+    
+    Previously, JacksonHttpMessageConvertersConfiguration would configure a
+    general-purpose MappingJackson2HttpMessageConverter only if there was
+    no existing MappingJackson2HttpMessageConverter in the application
+    context. This was problematic when a
+    TypeConstrainedMappingJackson2HttpMessageConverter bean was present.
+    Such a bean is only capable of performing conversion for a specific
+    type, and therefore is no substitute for a general purpose converter,
+    yet its presence was causing the auto-configuration of a general
+    purpose converters to be turned off. This would leave Spring MVC’s
+    default converter being used for application/json requests which would
+    not honour the user’s Jackson configuration.
+    
+    This commit enhances @ConditionalOnMissingBean so that the annotation
+    can be used to specify one or more types that should be ignored when
+    searching for beans. This allows the
+    TypeConstrainedMappingJackson2HttpMessageConverter beans that are
+    published by Spring Data REST to be ignored such that the
+    general-purpose MappingJackson2HttpMessageConverter is still
+    auto-configured.
+    
+    Fixes gh-2914
+
+commit 1cfc6f64f64353bc5530a8ce8cdacfc3eba3e7b2
+Author: Oliver Gierke <info@olivergierke.de>
+Date:   Tue Mar 31 19:23:23 2015 +0200
+
+    Allow multiple @EntityScan annotations to be used
+    
+    Update EntityScanRegistrar so that multiple @EntityScan annotations can
+    be used with a single application. Previously, when an application used
+    multiple annotations only the first one found would get applied. This
+    changes alters that to augment the packages that will be scanned.
+    
+    Fixes gh-2757
+
+commit 321a1492972ed6dca27f81f3a214f289fa4b9d60
+Author: Stephane Nicoll <snicoll@pivotal.io>
+Date:   Mon Jun 15 11:20:03 2015 +0200
+
+    Only associate JTA transaction manager
+    
+    This is related to 38cca9c but for the Rabbit support. Update
+    RabbitAnnotationDrivenConfiguration to only associate a JTA transaction
+    manager, if any.
+    
+    Closes gh-3222
+
+commit 38cca9c1f34f582b67a93c534a48ed420bb88f37
+Author: Stephane Nicoll <snicoll@pivotal.io>
+Date:   Mon Jun 8 15:06:14 2015 +0200
+
+    Only associate JTA transaction manager to JMS factory
+    
+    The JMS MessageListenerContainer supports the PlatformTransactionManager
+    abstraction with either a `JmsTransactionManager` for local transactions
+    or `JtaTransactionManager` for distributed transactions. The former is
+    kind of deprecated (`setTransacted` should be used instead). In any case,
+    any other `PlatformTransactionManager` implementation is not supported.
+    
+    Update JmsAnnotationDrivenConfiguration to only associated a JTA
+    transaction manager, if any.
+    
+    Closes gh-3150
+
+commit b41f8523388a3611a4fa9e570fc5ee0d2bc228ad
+Author: Phillip Webb <pwebb@pivotal.io>
+Date:   Fri May 29 23:40:25 2015 -0700
+
+    Add @UsesUnsafeJava annotation
+    
+    Add a new annotation to indicate to Animal Sniffer that a method uses
+    a call to `Unsafe`.
+    
+    Closes gh-3080
+
+commit 33f06e1cb0dc8663c05cb45712afd4f87ddf9be5
+Author: Dave Syer <dsyer@pivotal.io>
+Date:   Mon Jun 1 11:30:00 2015 +0100
+
+    Ensure redis export properties are actually set using a @Value()
+    
+    Previously the @Value annotation was not on a top level @Bean field
+    (it was nested inside). Manually constructing the bean in a separate
+    configuration class seems like the best way to get it to actually bind
+    at runtime.
+
+commit 8a83bd12bd9d57fbadbe006bfd574020ca648598
+Author: Dave Syer <dsyer@pivotal.io>
+Date:   Sun May 31 12:51:07 2015 +0100
+
+    Refactor annotations for metric export
+    
+    Users can add @ExportMetric[Reader,Writer] to readers and writers that
+    they want to participate in the default exporter. There is also still an
+    @ActuatorMetricWriter that is used for the legacy (non-Java8) Gauge and
+    CounterServices.
+
+commit c5dc3f564b3e58305cd3623c2f58d3200dcaf9ff
+Author: Dave Syer <dsyer@pivotal.io>
+Date:   Sat May 23 17:37:14 2015 +0100
+
+    Add @EnableOAuth2Sso and spring.oauth2.sso.*
+    
+    User can enable OAuth2 SSO by declaring the intent (@EnableOAuth2Sso)
+    and also configuring the client properties (spring.oauth2.client.*).
+    The spring.oauth2.sso.* are only needed to change the path for the
+    login (defaults to /login) - any other security configuration for the
+    protected resources can be added in a WebSecurityConfigurerAdapter
+    which carries the @EnableOAuth2Sso annotation.
+
+commit 53f67a448f8ef7a47ca5c472c26e1c1a1ef19359
+Author: Greg Turnquist <gturnquist@gopivotal.com>
+Date:   Thu Oct 2 12:13:01 2014 -0500
+
+    Auto-configure Spring Security OAuth2 when detected on the classpath
+    
+    * Automatically spin up Authorization Server and Resource Server
+    * Automatically configures method level security included OAuth2Expression handler
+    * Wrote extensive unit tests verifying default behavior as well as the auto-configuration backing off when custom Authorization/Resource servers are included
+    * Created org.springframework.boot.security.oauth2 subpackage to contain it
+    * Can also disable either resource of authorization server completely with a single property for each
+    * Print out the auto-generated secrets and other settings
+    * Added spring-boot-sample-secure-oauth2 to provide a sample that can be run and poked with curl as well as some automated tests.
+    * Make users ask for which servers to install by adding @Enable*
+    * User has to @EnableGlobalMethodSecurity instead of using properties files
+    
+    Add Spring Security OAuth2 support to Spring Boot CLI
+    
+    * Triggered from either @EnableAuthorizationServer or @EnableResourceServer
+    * Needs to have @EnableGlobalMethodSecurity to allow picking the annotation model.
+    * By default, comes with import support for @PreAuthorize, @PreFilter, @PostAuthorize, and @PostFilter via a single start import
+    * Also need import support for the enable annotations mentioned above.
+    * Added extra test case and sample (oauth2.groovy)
+
+commit 50af2b144b40ef8142b47f52afc5ee160073f57e
+Author: Andy Wilkinson <awilkinson@pivotal.io>
+Date:   Tue May 19 13:46:46 2015 +0100
+
+    Add dependency management for hibernate-validator-annotation-processor
+    
+    Closes gh-3006
+
+commit 5ceb35473d656e086aa13fbc433df003377a4819
+Author: Dave Syer <dsyer@pivotal.io>
+Date:   Mon May 18 11:21:33 2015 +0100
+
+    Allow multiple readers/writers to be @ActuatorMetric*
+    
+    In principle you might have multiple "system" repositories, all
+    of which you want to go to public metrics or not be metrics exporters.
+    This change adds a new annotation and renames the old one, so that
+    reades and writers can be distinguished, and also changes the
+    autowiring of them to accept multiple values.
+    
+    Also adds automatic public metrics for Spring Integration.
+
+commit 51c49b69c54208c397a8cb78062e05c6fd2f606d
+Author: Andy Wilkinson <awilkinson@pivotal.io>
+Date:   Thu Mar 19 17:15:10 2015 +0000
+
+    Support bom-based dependency management in the CLI
+    
+    Previously, the CLI’s dependency management used proprietary Properties
+    file-based metadata to configure its dependency management. Since
+    spring-boot-gradle-plugin’s move to using the separate dependency
+    management plugin the CLI was the only user of this format.
+    
+    This commit updates the CLI to use Maven boms to configure its
+    dependency management. By default it uses the spring-boot-dependencies
+    bom. This configuration can be augmented and overridden using the new
+    @DependencyManagementBom annotation which replaces @GrabMetadata.
+    
+    Closes gh-2688
+    Closes gh-2439
+
+commit ff7c66c0d242595341536a8354037682ab223ca6
+Author: Stephane Nicoll <snicoll@pivotal.io>
+Date:   Tue Mar 31 08:18:54 2015 +0200
+
+    Fix annotation() javadoc
+
+commit 151220f41d1108c9b84f98c6d8eddc710a0d5863
+Author: Stephane Nicoll <snicoll@pivotal.io>
+Date:   Tue Mar 17 16:21:23 2015 +0100
+
+    Add cache manager auto-configuration
+    
+    Add support for cache manager auto-configuration that is triggered when
+    the `EnableCaching` annotation is added to a Spring Boot application.
+    
+    A new "spring.cache" set of configuration keys is also provided. The
+    "spring.cache.mode" allows the user to specify the cache provider that
+    should be auto-configured. If no explicit configuration is provided,
+    the environment is checked for the best suited cache implementation,
+    that is:
+    
+    - Generic if at least one `Cache` bean is defined in the context.
+    - Hazelcast if either a default configuration file is present or the
+      `spring.cache.config` property is set.
+    - JCache if one JSR-107 provider is present
+    - Redis if a `RedisTemplate` is defined in the context
+    - Guava
+    - Simple as a fallback option, using concurrent maps
+    - NoOp (that is, no cache) if the mode is set to "none"
+    
+    If the provider supports it, it is possible to specify the caches
+    to create on startup via `spring.cache.cache-names`. If the provider
+    relies on a configuration file and a custom one needs to be used
+    `spring.cache.config` can be set to such custom resource.
+    
+    If more than one JSR-107 provider is present, it is possible to force
+    the provider to use by setting the mode to `jcache` and specifying the
+    fully qualified class name of the CachingProvider to use via
+    `spring.cache.jcache.provider`.
+    
+    See gh-2633
+
+commit 7a73c5883f857f7dfb56d73410af96eae04a0e63
+Author: Andy Wilkinson <awilkinson@pivotal.io>
+Date:   Tue Mar 24 13:51:49 2015 +0000
+
+    Avoid using @Order on @Configuration classes as Spring now honours it
+    
+    In Spring Framework 4.1, @Order on a @Configuration class had no effect.
+    This allowed us to use it on auto-configuration classes to control
+    the ordering of auto-configuration classes without it having any
+    broader implications for configuration class ordering.
+    
+    Spring Framework 4.2 now honours @Order on @Configuration classes. This
+    breaks a number of tests where we were relying on the order that the
+    classes were passed to register when evaluating various bean conditions.
+    
+    This commit replaces the use of @Order on auto-configuration classes
+    with a new annotation, @AutoConfigureOrder. The new annotation is
+    handled by AutoConfigurationSorter where it’s used to order
+    auto-configuration classes. This allows us to order auto-configuration
+    classes without the unwanted side-effect of this also affecting the
+    general ordering of configuration classes.
+    
+    See gh-2575
+
+commit d5a82aaed84628dd42d082e3c29eb774ff0a1661
+Author: Phillip Webb <pwebb@pivotal.io>
+Date:   Tue Feb 24 20:26:54 2015 -0800
+
+    Document "annotation processing with Gradle"
+    
+    Provide details of how to configure Gradle, including the work-around
+    require to parse any additional metadata files.
+    
+    Fixes gh-2316
+
+commit 5c4b698f8635b4cd9ae31cdd82f9899b0daf6c12
+Author: Phillip Webb <pwebb@pivotal.io>
+Date:   Tue Feb 24 14:01:03 2015 -0800
+
+    Support string names @AutoConfigureBefore/After
+    
+    Update @AutoConfigureBefore and @AutoConfigureAfter annotations to
+    support String classnames in addition direct Class references.
+    
+    Fixes gh-2529
+
+commit 1f0d45d79552a09210328b34c984326387d983de
+Author: Phillip Webb <pwebb@pivotal.io>
+Date:   Mon Feb 23 18:28:23 2015 -0800
+
+    Protect against NPE and improve error message
+    
+    Update ConfigurationMetadataAnnotationProcessor so that `prefix` is
+    only obtained when the annotation is not null. Also improve exception
+    message by including the element.
+
+commit 23c175f674e610546753cb9161309144c54573ad
+Author: Andy Wilkinson <awilkinson@pivotal.io>
+Date:   Wed Jan 28 11:10:07 2015 +0000
+
+    Polish metadata annotation processor’s incremental build support
+    
+    The main change in this commit is to introduce a new BuildHandler
+    abstraction. A BuildHandler is responsible for producing the metadata
+    for a build. Two implementations are provided; one for standard builds
+    and one for incremental builds. This change means that the annotation
+    processor is no longer concerned with the two different build types
+    and can use the same logic in each case.
+    
+    The code for reading and writing metadata files has also been moved
+    out into a separate class, MetadataStore, to allow it to be easily
+    utilised from multiple places.
+    
+    Closes gh-2313
+
+commit 8df43a8a791c5fe87e478f1cae5fecbb60ba0095
+Author: Kris De Volder <kdevolder@pivotal.io>
+Date:   Fri Jan 9 10:37:51 2015 -0800
+
+    Update the metadata annotation processor to support incremental builds
+    
+    This commit udpdates the metadata annotation processor so that change
+    data from an incremental build is merged with the metadata from the
+    previous build.
+    
+    Closes gh-2321
+
+commit 65acaf885ba8015705e3e478ec11ec293ad5134c
+Author: Kris De Volder <kdevolder@pivotal.io>
+Date:   Thu Jan 15 15:38:24 2015 -0800
+
+    Remove incorrect assumption that output will be in folder named classes
+    
+    When running in Eclipse, by default Gradle builds its output into a
+    folder named bin. This commit update the annotation processor to remove
+    the failure assumption that the output will always be located beneath
+    a folder named classes.
+    
+    Closes gh-2369
+    See gh-2361
+
+commit 376de01636398a4fe8e2eaa7bb8348ff791abb48
+Author: Andy Wilkinson <awilkinson@pivotal.io>
+Date:   Wed Jan 14 16:42:43 2015 +0000
+
+    Don't remove @GrabResolver in JarCommand, disable initClass instead
+    
+    Previously, JarCommand removed all @GrabResolver annotations in an
+    AST transformation. This was being performed as custom resolver
+    configuration is not necessary in a jar as all of the dependencies are
+    available from the jar. Furthermore, leaving the annotations in place
+    caused a failure when the jar was run due to a missing Ivy dependency
+    that's required by Groovy's default GrapeEngine, GrapeIvy.
+    
+    The removal of @GrabResolver annotations was being done before they
+    could be used by Groovy's GrabAnnotationTransformation to configure
+    the GrapeEngine's resolvers. This resulted in the annotations having
+    no effect such that a dependency that was only available from a
+    repository made available by @GrabResolver would fail to resolve if
+    it was not cached locally.
+    
+    This commit updates the AST transformation to leave the @GrabResolver
+    annotations in place but to set their initClass attribute to false.
+    This allows the annotation to be used while the jar's being compiled,
+    but supresses the generation of the static initializer that adds the
+    custom resolver to the GrapeEngine when the compiled code's run via
+    java -jar.
+    
+    Fixes gh-2330
+
+commit 10177fb754911d3039fd2a416dd457a85b8b1de2
+Author: Phillip Webb <pwebb@pivotal.io>
+Date:   Wed Jan 7 09:40:36 2015 -0800
+
+    Update @SupportedSourceVersion to RELEASE_8
+    
+    Update the @SupportedSourceVersion annotation to RELEASE_8 since it
+    should indicate "the latest source version an annotation processor
+    supports".
+    
+    Fixes gh-2302
+
+commit be30385e152ed7770a4a6959922117bdcf2524de
+Author: Phillip Webb <pwebb@pivotal.io>
+Date:   Tue Jan 6 19:03:29 2015 -0800
+
+    Add @WebIntegrationTest annotation
+    
+    Add `@WebIntegrationTest` which is similar to `@IntegrationTest` and
+    `@WebAppConfiguration`. The annotation using Spring's `@BootstrapWith`
+    annotation rather than `@TestExecutionListeners` which allows it to
+    work when `@TestExecutionListeners` (even ServletTestExecutionListener)
+    are declared on the test class.
+    
+    This annotation is particularly useful for TestNG users that extend
+    Spring's `AbstractTestNGSpringContextTests` class.
+    
+    Fixes gh-2299
+    See gh-1956
+    See gh-2135
+
+commit 165b85dd0e23d71c96d3f07cfe2ccc4885c70ce3
+Author: Phillip Webb <pwebb@pivotal.io>
+Date:   Tue Jan 6 16:02:43 2015 -0800
+
+    Improve @ConfigurationProperty binding exception
+    
+    Include more details in the message including the class being bound
+    and the prefix from the annotation.
+    
+    Fixes gh-2246
+
+commit 7c29c96da6738b18db770b89f4bfdfadb824fb34
+Author: Phillip Webb <pwebb@pivotal.io>
+Date:   Tue Jan 6 14:50:56 2015 -0800
+
+    Change additional metadata file lookup logic
+    
+    Update ConfigurationMetadataAnnotationProcessor to find the additional
+    metadata json file using createResource rather than getResource. Prior
+    to this commit the file could be skipped when multiple files were
+    contained on the classpath.
+    
+    Fixes gh-2271
+
+commit 8628adcb7449588b38b0ffa3e80056ee97b27e4a
+Author: Phillip Webb <pwebb@pivotal.io>
+Date:   Mon Dec 22 21:59:00 2014 -0800
+
+    Order EmbeddedServletContainerCustomizers
+    
+    Add Ordered interface to all EmbeddedServletContainerCustomizers with
+    a value of 0. Prior to this commit it was difficult for a user to
+    define a customizer that would be applied before ours, even if they
+    implemented Ordered or added @Order annotations.
+    
+    Fixes gh-2123
+
+commit 77427f53ccddec94ca2dfb34562022a4e1636c8e
+Author: Stephane Nicoll <snicoll@pivotal.io>
+Date:   Thu Dec 11 17:51:26 2014 +0100
+
+    Support of Lombok annotated ConfigurationProperties
+    
+    Previously, no configuration properties were discovered on a class using
+    lombok instead of regular getters/setters.
+    
+    This commit adds a support for some of the lombok annotations,
+    specifically that is @Data, @Getter and @Setter. Provides the same
+    semantic as what lombok is generating.
+    
+    Closes gh-2114
+
+commit 5b231e600b4533a520cf0c1f7b491f1cfe353b49
+Author: Stephane Nicoll <snicoll@pivotal.io>
+Date:   Thu Nov 27 15:27:12 2014 +0100
+
+    Also flag deprecated properties in a @Deprecated class
+    
+    Previously, any property defined in a @Deprecated class were not marked
+    as deprecated as only the getter or field was inspected for the
+    annotation.
+    
+    An additional check on the class has been added to handle this case.
+    
+    Fixes gh-2014
+
+commit e56a1ba561ac6ef19658c01e1d75985acde65db8
+Author: Phillip Webb <pwebb@pivotal.io>
+Date:   Fri Nov 21 14:16:37 2014 -0800
+
+    Refine inner class detection algorithm
+    
+    Update the ConfigurationMetadataAnnotationProcessor nested class
+    algorithm to prevent inner classes being added as both groups and
+    properties.
+    
+    Fixes gh-1975
+
+commit f75b266d647e5bd48ec9563acaa8cf63b38babd6
+Author: Phillip Webb <pwebb@pivotal.io>
+Date:   Wed Nov 19 14:15:35 2014 -0800
+
+    Add 'deprecated' field to configuration meta-data
+    
+    Update the ConfigurationMetadataAnnotationProcessor to detect the
+    @Deprecated annotation on getters or setters.
+    
+    Fixes gh-1846
+
+commit f224c7ac9ede6f2a0ffa0bf0dafa942d1c59ef69
+Author: Phillip Webb <pwebb@pivotal.io>
+Date:   Mon Nov 17 21:29:21 2014 -0800
+
+    Find @ConfigurationProperties annotation on proxy
+    
+    Update ConfigurationPropertiesReportEndpoint to find
+    @ConfigurationProperties using `context.findAnnotationOnBean` rather
+    than `AnnotationUtils.findAnnotation`. This will correctly find the
+    annotation even if the bean is an interface based proxy.
+    
+    Fixes gh-1927
+
+commit e902f6b91d08e66353983b21cdcc06af57649cf6
+Author: Phillip Webb <pwebb@pivotal.io>
+Date:   Mon Nov 10 23:03:32 2014 -0800
+
+    Fix annotation processor builder setter detection
+    
+    Update TypeElementMembers to correctly detect builder style setters.
+    The previous logic could fail because of the crazy way that TypeMirror
+    implements its equals() method.
+    
+    Fixes gh-1859
+    See gh-1854
+
+commit 7b09cbee35b2b8e5a4efc65506667350069798a8
+Author: Phillip Webb <pwebb@pivotal.io>
+Date:   Mon Nov 10 22:01:15 2014 -0800
+
+    Don't generate empty configuration meta-data
+    
+    Update ConfigurationMetadataAnnotationProcessor to only write non-empty
+    meta-data files.
+    
+    Fixes gh-1858
+
+commit d039f4310773d0abf7acb70eaed58ecd0df7659b
+Author: Phillip Webb <pwebb@pivotal.io>
+Date:   Thu Nov 6 13:50:45 2014 -0800
+
+    Update samples to use @SpringBootApplication
+    
+    Update the relevant samples to use the new @SpringBootApplication
+    annotation.
+    
+    Closes gh-1842
+
+commit e76a571dd320cad51ba9c006e9d500613e6b00b4
+Author: Phillip Webb <pwebb@pivotal.io>
+Date:   Thu Nov 6 13:50:37 2014 -0800
+
+    Add @SpringBootApplication annotation
+    
+    Add a new @SpringBootApplication which is equivalent to @Configuration,
+    @EnableAutoConfiguration and @ComponentScan.
+    
+    See gh-1842
+
+commit 2696d370971964e20a78a24d0e05378d4beffe80
+Author: Phillip Webb <pwebb@pivotal.io>
+Date:   Wed Nov 5 21:03:10 2014 -0800
+
+    Protect against transitive additional meta-data
+    
+    Update ConfigurationMetadataAnnotationProcessor to ensure that only
+    local `additional-spring-configuration-metadata.json` files are merged
+    with the final output.
+    
+    See gh-1830
+
+commit 7e5bb9697c0c0b64e05e6d77810c74477873c903
+Author: Phillip Webb <pwebb@pivotal.io>
+Date:   Wed Nov 5 21:01:25 2014 -0800
+
+    Call meta-data processor regardless of annotations
+    
+    Update ConfigurationMetadataAnnotationProcessor so that it gets called
+    even if the source code doesn't include any @ConfigurationProperties
+    items.
+    
+    See gh-1830
+
+commit 6e0414645719d14b289d3b76738cfc7bc37e3a1e
+Author: Phillip Webb <pwebb@pivotal.io>
+Date:   Wed Nov 5 07:50:48 2014 -0800
+
+    Ensure meta-data file exists for spring-boot jar
+    
+    Rename 'additional-spring-configuration-metadata.json' to
+    'spring-configuration-metadata.json' and drop the annotation processor.
+    
+    The project has no @ConfigurationProperties defined so the annotation
+    processor didn't kick in.
+    
+    Fixes gh-1830
+
+commit 9d01d4fa84fc9f0388c3d2a5bf37f4ba8d844b3d
+Author: Phillip Webb <pwebb@pivotal.io>
+Date:   Sun Nov 2 18:03:14 2014 -0800
+
+    Document configuration meta-data
+    
+    Add an appendix to the reference documentation describing the format
+    of configuration meta-data and how the annotation processor can be used.
+    
+    Closes gh-1001
+
+commit a46396f691a238cdbfa7f50ac31123ed92777e3f
+Author: Stephane Nicoll <snicoll@pivotal.io>
+Date:   Fri Oct 31 10:09:33 2014 -0700
+
+    Add @NestedConfigurationProperty meta-data support
+    
+    Add a @NestedConfigurationProperty annotation which can be used to
+    customize how configuration mete-data is generated.
+    
+    Prior to this commit only inner-classes where considered nested
+    (see Tomcat in ServerProperties). Using this new annotation, the Ssl
+    property in ServerProperties can be detected as well.
+    
+    See gh-1001
+
+commit c73adcd198fe2088049484bc4441aa47392884c3
+Author: Phillip Webb <pwebb@pivotal.io>
+Date:   Tue Oct 28 15:09:09 2014 -0700
+
+    Add a defaultValue attribute to config meta-data
+    
+    Update `ConfigurationMetadataAnnotationProcessor` to include the
+    'defaultValue' of a property when possible. For example the
+    'defaultValue' or 'server.port' is '8080'.
+    
+    Default values are detected by inspecting the field assignments of
+    @ConfigurationProperties items. In order to detect field values some
+    internals of the Java compiler are used. To save a dependency on
+    'tools.jar' internal javac classes are accessed using reflection.
+    
+    See gh-1001
+
+commit 884c058e573ff3bf3824aea414f56485d514d00d
+Author: Stephane Nicoll <snicoll@pivotal.io>
+Date:   Fri Oct 31 10:18:28 2014 -0700
+
+    Add processor to generate configuration meta-data
+    
+    Adds an annotation processor to generates a JSON meta-data file at
+    compile time from @ConfigurationProperties items. Each meta-data file
+    can include an array or 'properties' and 'groups'.
+    
+    A 'property' is a single item that may appear in a Spring Boot
+    'application.properties' file with a given value. For example,
+    'server.port' and 'server.context-path' are properties. Each property
+    may optionally include 'type' and 'description' attributes to provide
+    the data type (e.g. `java.lang.Integer`, `java.lang.String`) and
+    some short documentation (taken from the field javadoc) about what the
+    property is for. For consistency, the type of a primitive is translated
+    to its wrapper counterpart, i.e. `boolean` becomes `java.lang.Boolean`.
+    
+    A 'group' provides a higher level grouping of properties. For example
+    the 'server.port' and 'server.context-path' properties are in the
+    'server' group.
+    
+    Both 'property' and 'group' items may additional have 'sourceType' and
+    'sourceMethod' attributes to indicate the source that contributed them.
+    
+    Users may use `META-INF/additional-spring-configuration-metadata.json`
+    to manually provide additionally meta-data that is not covered by
+    @ConfigurationProperties objects. The contents of this file will be
+    read and merged with harvested items. The complete meta-data file is
+    finally written to `META-INF/spring-configuration-metadata.json`.
+    
+    See gh-1001
+
+commit 0cdb1d3f22307b84887797a0f059ee0c9357716e
+Author: Andy Wilkinson <awilkinson@pivotal.io>
+Date:   Thu Oct 30 13:29:27 2014 +0000
+
+    Make Spring Security's filter's order configurable and default to zero
+    
+    Previously, Spring Security's filter had no configured order. Due to
+    the use of AnnotationAwareOrderComparater this meant that its order
+    defaulted to LOWEST_PRECEDENCE. This meant that a user had to declare
+    a FilterRegistrationBean for the filter and explicitly set its order
+    if they want another filter to run after Spring Security's.
+    
+    This commit updates the security auto-configuration to assign a
+    default order of zero to Spring Security's filter, allowing filters
+    to be easily configured to run before it or after it. This default
+    value can overridden using the server.filter-order property. The
+    default order is also exposed as a constant on SecurityProperties,
+    allowing it to be referenced from other filter declarations.
+    
+    Closes gh-1640
+
+commit 24f95b975d65e2fa2690d349060cedc8b9bcfeaa
+Author: Phillip Webb <pwebb@pivotal.io>
+Date:   Tue Oct 21 16:04:55 2014 -0700
+
+    Rework @TestPropertySource compatibility
+    
+    Rework @TestPropertySource changes introduced in commit d251b513
+    to restore compatibility with Spring Boot 1.1
+    
+    - Only add the `server.port` property when no @IntegrationTest
+      annotation is found.
+    - Always add a default `spring.jmx.enabled=false` property.
+    - Restore the SpringApplicationContextLoader.getEnvironmentProperties
+      protected method.
+    - Remove the @IntegrationTest.properties attribute.
+    
+    See gh-1697
+
+commit 31874090b8e9b55ff6edfefdaac889a1a5188825
+Author: Andy Wilkinson <awilkinson@pivotal.io>
+Date:   Mon Oct 20 10:14:53 2014 +0100
+
+    Fix ArrayStoreException caused by JerseyAutoConfiguration again
+    
+    This is a follow-on from the changes made in 2b7bf3e. In addition to the
+    problematic use of @ConditionalOnClass that was addressed in 2b7bf3e,
+    JerseyAutoConfiguration also used @ConditionalOnBean referencing a
+    Jersey class. This has the same problem when used on a class that
+    implements WebApplicationInitializer. Implementing
+    WebApplicationInitializer causes the class’s annotations to be
+    introspected during servlet container initialiser processing. If a
+    @ConditionalOnBean annotation references a Class that cannot be
+    loaded an ArrayStoreException occurs.
+    
+    This commit updates JerseyAutoConfiguration to reference ResourceConfig
+    as a String. This allows it annotations to be introspected without
+    attempting to load a Jersey class that may not be on the classpath.
+    
+    Fixes gh-1733
+    Fixes gh-1719
+
+commit d251b5133882ad5cc0d787a3066b9112178204be
+Author: Dave Syer <dsyer@pivotal.io>
+Date:   Wed Oct 15 16:59:55 2014 +0100
+
+    Integrate with @TestPropertySource
+    
+    Spring 4.2 has a @TestPropertySource which has some of the features of
+    @IntegrationTest. This change adds @TestPropertySource to the @IntegrationTest
+    annotation, so that (for instance) the cache key for the context includes
+    properties for the test.
+    
+    Since @IntegrationTest has slightly different semantics I do not propose to
+    deprecate it. Users can use it or @TestPropertySource, the main difference being that
+    with @IntegrationTest the Spring Boot context loader is aware of the annotation
+    and it will set sensible defaults for server.port and spring.jmx.enabled.
+    
+    There are some reflection hacks to overcome the usual fortifications of Spring Test.
+    
+    Fixes gh-1697
+
+commit 2b7bf3e73359e0b5d7e31b899f638df2c9d30c43
+Author: Andy Wilkinson <awilkinson@pivotal.io>
+Date:   Mon Oct 13 11:16:55 2014 +0100
+
+    Fix ArrayStoreException caused by JerseyAutoConfiguration
+    
+    JerseyAutoConfiguration is annotated with @ConditionalOnClass. It
+    references both SpringComponentProvider.class and
+    ServletRegistration.class. Normally, this wouldn't be a problem as, in
+    the absence of either of those classes, the configuration class bean
+    will not be present in the bean factory and, therefore, its
+    annotations will never be introspected using reflection.
+    
+    However, JerseyAutoConfiguration is a WebApplicationInitializer. This
+    means that when it's deployed to a standalone container,
+    JerseyAutoConfiguration is found by the container and its class is
+    passed to SpringServletContainerInitializer.
+    SpringServletContainerInitializer introspects every
+    WebApplicationInitializer class so that it can order them. This blows
+    up if Jersey's SpringComponentProvider class isn't on the classpath as
+    the annotation is referencing SpringComponentProvider as a Class and
+    the attempt to load it fails. The problem can be avoided by
+    referencing SpringComponentProvider using a String.
+    
+    Fixes gh-1696
+
+commit c40aab657f5fae39bcbcdd3d8f71736b8c9848bc
+Author: Phillip Webb <pwebb@pivotal.io>
+Date:   Fri Oct 10 14:08:24 2014 -0700
+
+    Don't import JmsBootstrapConfiguration directly
+    
+    Remove the direct unconditional JmsBootstrapConfiguration @Import from
+    JmsAnnotationDrivenConfiguration in favor of the nested
+    EnableJmsConfiguration class.
+    
+    Fixes gh-1513
+
+commit dca637f51fa3d1ff99a03590b1ed232a92a72888
+Author: Phillip Webb <pwebb@pivotal.io>
+Date:   Fri Oct 10 11:12:04 2014 -0700
+
+    Replace @ConditionalOnExpression with OnProperty
+    
+    Replace where possible all @ConditionalOnExpression annotations with
+    @ConditionalOnProperty which is both faster to run and more descriptive.
+    
+    Fixes gh-1685
+
+commit b798d001d77db5ef0c751a86554d90472dd23d63
+Author: bangsen.yin <020lilin@gmail.com>
+Date:   Fri Sep 26 11:28:25 2014 +0800
+
+    Add missing @Param annotations to CityRepository in Data REST sample
+    
+    Without the @Param annotations, using either of the search URIs would
+    resulted in a 400 response and an error describing the lack of @Param
+    annotation.
+    
+    See gh-1627
+
+commit 5d1a114aa693e22451f0ace4f3d1500e3a9c22be
+Merge: 4282199 cf22e28
+Author: Andy Wilkinson <awilkinson@pivotal.io>
+Date:   Tue Sep 23 10:14:03 2014 +0100
+
+    Merge branch '1.1.x'
+    
+    Redundant @ConditionalOnMissingBean annotation has been removed.
+    ActiveMQConnectionFactoryConfiguration is not auto-configuration and
+    is imported by ActiveMQAutoConfiguration which is protected by
+    @ConditionalOnMissingBean(ConnectionFactory.class)
+
+commit 3c5b007ff9ce7a57b65f411956e06ded05cc7d4c
+Author: Phillip Webb <pwebb@pivotal.io>
+Date:   Wed Sep 17 21:55:43 2014 -0700
+
+    Add @Order annotations to conditions
+    
+    Fixes gh-1574
+
+commit eed58eecb4b5d486736bbf013cc44bf64b8b5dc4
+Author: Andy Wilkinson <awilkinson@pivotal.io>
+Date:   Tue Sep 16 15:56:22 2014 +0100
+
+    Improve error handling in EnableAutoConfigurationImportSelector
+    
+    Previously, EnableAutoConfigurationImportSelector assumed that it
+    would always find auto-configuration attributes from an
+    @EnableAutoConfiguration annotation. This assumption does not hold
+    true in certain circumstances, although exactly what those
+    circumstances are is unclear. It could occur if the import selector
+    were used directly, but it's package-private making that unlikey. In
+    such circumstances a NullPointerException was being thrown.
+    
+    This commit asserts that the attributes are non-null and, should the
+    assertion fail, produces an error that is more helpful than an NPE.
+    
+    Closes gh-1512
+
+commit 6f9f335ea1ca03665a7c7f81649a931e93a6b902
+Author: Andy Wilkinson <awilkinson@pivotal.io>
+Date:   Fri Sep 12 14:19:10 2014 -0500
+
+    Add additional class conditions for JTA auto-configuration
+    
+    Previously, JTA auto-configuration would fail with a variety of
+    ClassNotFoundExceptions and NoClassDefFoundErrors if it was used with
+    an “incomplete” classpath. This commit adds a number of classes to
+    @ConditionalOnClass annotations so that the auto-configuration backs
+    off gracefully in the absence of certain classes.
+    
+    Specifically, the following now work as expected:
+    
+     - Deploying an app to a server with JTA available via JNDI when the
+       app does not use transactions
+     - Auto-configuration of Atomikos without JMS
+     - Auto-configuration of Bitronix without JMS
+    
+    Both XADataSourceAutoConfiguration and JndiDataSourceAutoConfiguration
+    have been updated to back off in the absence of spring-jdbc; a
+    dependency of DataSourceProperties which is used by both classes.
+    
+    Error handling in AtomikosDependsOnBeanFactoryPostProcessor and
+    BitronixDependentBeanFactoryPostProcessor has been enhanced so that the
+    correct dependencies are established, even in the absence of JMS.
+    
+    Fixes gh-1538
+
+commit 8ed461947f4d69ae0cf8a9e243e8955d38d6ad95
+Author: Stephane Nicoll <snicoll@pivotal.io>
+Date:   Fri Sep 5 15:27:46 2014 +0200
+
+    Improve RabbitMQ support in CLI
+    
+    This commit deprecates the proprietary EnableRabbitMessaging annotation
+    in favour of the standard @EnableRabbit introduced as of Spring Rabbit
+    1.4.
+    
+    Fixes gh-1494
+
+commit affb202e741e453fa731f3a9bffa32bbf0f5fbf7
+Author: Stephane Nicoll <snicoll@pivotal.io>
+Date:   Thu Aug 28 14:25:14 2014 +0200
+
+    Improve JMS support in cli
+    
+    This commit deprecates the proprietary EnableJmsMessaging annotation in
+    favour of the standard @EnableJms introduced as of Spring 4.1. This
+    commit also updates the sample and adds an integration test as the
+    feature was actually broken.
+    
+    Fixes gh-1456
+
+commit b3ce079ea1455e50c5ced49e10954964150b18f5
+Author: Phillip Webb <pwebb@pivotal.io>
+Date:   Tue Aug 26 13:11:47 2014 -0700
+
+    Automatically apply @EnableJMS
+    
+    Automatically apply @EnableJMS when spring-jms is on the classpath
+    and the annotation hasn't already been applied. This allow for Spring's
+    new @JmsListener annotation to just work.
+    
+    Fixes gh-1425
+
+commit d7d77f3d06c520df65d8f7877b4d161619eba746
+Author: Stephane Nicoll <snicoll@gopivotal.com>
+Date:   Fri Jun 6 19:03:33 2014 +0200
+
+    Add OnPropertyValueCondition annotation
+    
+    This commit adds a new conditional annotation that checks if a
+    property has a given value. This allows to replace constructs
+    such as
+    
+    @ConditionalOnExpression("'${app.myProperty:foo}' == 'foo'")
+    
+    to
+    
+    @ConditionalOnPropertyValue(property="app.myProperty",
+            value="foo", defaultMatch=true)
+    
+    Which is definitely more verbose but has the following advantages:
+    
+    1. Works by default if the actual property in the environment is
+       a bit different (i.e. my-property)
+    2. Works if the value of the property has a diferent case (FoO or
+       FOO would match)
+    3. Gives a precise reporting in the auto configuration report
+    
+    The defaultMatch flag is meant to mention that the condition should
+    also match if the value is not set; the auto-config report would
+    also have an explicit report about it.
+    
+    Fixes gh-1000
+
+commit 34a32991fa19ba65127d41389216f9e1abab5641
+Author: Phillip Webb <pwebb@gopivotal.com>
+Date:   Wed Jun 18 16:30:39 2014 -0700
+
+    Be defensive about solr classes required
+    
+    Update SolrAutoConfiguration to specifically require HttpSolrServer
+    and CloudSolrServer classes rather than the generic SolrServer.
+    
+    This prevents the rather cryptic "@ConditionalOnMissingBean annotations
+    must specify at least one bean" error that can occur if an earlier
+    version of solr happens to be on the classpath (as is the case when
+    hibernate-search is used).
+    
+    Fixes gh-1098
+
+commit 30bef1e95ec0037855535f84148f8beaa657e0b5
+Author: Oliver Gierke <info@olivergierke.de>
+Date:   Fri Jun 6 12:04:39 2014 +0200
+
+    Add @ConditionalOnJava
+    
+    Added a new @ConditionalOnJava annotation that allows to conditionally
+    enable configuration based on the Java version that is running.
+    
+    The annotation currently supports two modes of restricting Java versions:
+    the default mode checks for a Java version equal or better than the
+    requested one. Beyond that it can be configured to only match if Java
+    version is older than the configured one.
+
+commit d6718025e622cc34951079b7ea65231a7c3b0456
+Author: Oliver Gierke <info@olivergierke.de>
+Date:   Wed Jun 4 17:09:32 2014 +0200
+
+    Make HypermediaAutoConfiguration more lenient.
+    
+    HypermediaAutoConfiguration didn't consider an @EnableHypermediaSupport
+    annotation being present in the user configuration which could've caused
+    it to be evaluated twice.
+    
+    This is especially the case if both the auto-configuration for Spring
+    HATEOAS and Spring Data REST kick in as Spring Data REST actively declares
+    @EnableHypermediaSupport. The double evaluation then causes injection
+    ambiguities as we now get multiple beans of e.g. LinkDiscoverers deployed.
+
+commit 156dadaebe774733010fcfef741109925be61d46
+Author: Andy Wilkinson <awilkinson@gopivotal.com>
+Date:   Tue Jun 3 15:57:36 2014 +0100
+
+    Initialize DependencyResolutionContext with default dependency mgmt
+    
+    In the absence of a @GrabMetadata annotation,
+    DependencyResolutionContext provided no dependency management. This
+    was leading to incorrect dependency versions being pulled in. This
+    commit intializes the context with default dependency management that
+    will be replaced should @GrabMetadata be encountered.
+    
+    Fixes #1021
+
+commit 05d1a104e47bf5191cc0491594369c5b77767113
+Author: Dave Syer <dsyer@gopivotal.com>
+Date:   Wed May 28 14:00:22 2014 +0100
+
+    Add spring-test annotations to auto imports
+
+commit 064998697ddd39a9e8bd5440674de6397ef6bdf4
+Author: Dave Syer <dsyer@gopivotal.com>
+Date:   Wed May 28 12:11:48 2014 +0100
+
+    Ensure CLI adds @EnableAutoConfiguration in an appropriate place
+    
+    Up to now we have been treating the *first* class to be compiled
+    as the "main" application and adding @EnableAutoConfiguration. This
+    isn't always appropriate (e.g. if it's a test case), so now we
+    look for an appropriate annotation before falling back to the old
+    behaviour.
+    
+    In addition ensures classes with a field of type Reactor trigger
+    the reactor auto imports.
+    
+    See gh-969
+
+commit d2fc80b8183c722e1a807c8d63e855a2b6f00988
+Author: Andy Wilkinson <awilkinson@gopivotal.com>
+Date:   Mon May 19 15:58:42 2014 +0100
+
+    Allow custom dependency metadata to be used with the CLI
+    
+    Add support for a new annotation, @GrabMetadata, that can be used
+    to provide the coordinates of one or more properties files, such as
+    the one published by Spring IO Platform, as a source of dependency
+    metadata. For example:
+    
+    @GrabMetadata("com.example:metadata:1.0.0")
+    
+    The referenced properties files must be in the format
+    group:module=version.
+    
+    Limitations:
+    
+     - Only a single @GrabMetadata annotation is supported
+     - The referenced properties file must be accessible in one of the
+       default repositories, i.e. it cannot be accessed in a repository
+       that's added using @GrabResolver
+    
+    Closes #814
+
+commit 8aa819cb791d8f782e4c1098da9ed88019fdd055
+Merge: 506c0f5 56b8faf
+Author: Phillip Webb <pwebb@gopivotal.com>
+Date:   Thu May 8 15:16:24 2014 +0100
+
+    Merge pull request #812 from maciejwalkowiak/conditionalOnPropertiesPresent
+    
+    * conditionalOnPropertiesPresent:
+      Add @ConditionalOnProperty annotation
+
+commit 56b8faf31badd96f9c2d15fbc943f7b04b4fe20d
+Author: Maciej Walkowiak <walkowiak.maciej@yahoo.com>
+Date:   Thu May 8 11:34:43 2014 +0200
+
+    Add @ConditionalOnProperty annotation
+    
+    Add @ConditionalOnProperty which enables conditional bean creation when
+    all required properties are defined in the Environment.
+    
+    Fixes gh-812
+
+commit 4248665fcdb3128c33f6f4cf7ac5626bc7ecab5b
+Author: Phillip Webb <pwebb@gopivotal.com>
+Date:   Thu May 1 21:36:44 2014 +0100
+
+    Remove freemarkerConfiguration bean
+    
+    Remove `freemarkerConfiguration` from the FreeMarkerAutoConfiguration
+    since it should not be needed for most applications.
+    
+    The previous code also caused problems since it included a
+    @ConditionalOnBean annotation on a bean that was created in the same
+    configuration.
+
+commit c11d94105acf12b36257fc996e55e14e04a68f62
+Author: Phillip Webb <pwebb@gopivotal.com>
+Date:   Tue Mar 25 14:21:14 2014 -0700
+
+    Log AutoConfigurationPackages warnings just once
+    
+    Update AutoConfigurationPackages to log warnings on the first access,
+    rather than during setup. This works around the fact that the CLI
+    currently add multiple @EnableAutoConfiguration annotations.
+    
+    Fixes gh-579
+
+commit 5ab88b2344defff9c68cb7f470512505abf3d4cc
+Author: Phillip Webb <pwebb@gopivotal.com>
+Date:   Thu Mar 20 16:30:34 2014 -0700
+
+    Automatically add schedule annotation imports
+
+commit 123457a58850be6b36e09db6195c42a462e1bb8d
+Author: Dave Syer <dsyer@gopivotal.com>
+Date:   Tue Mar 11 12:36:03 2014 +0000
+
+    Add @IntegrationTest annotation for test classes
+    
+    Allowing use of embededded container in @SpringApplicationConfiguration
+    tests, e.g.
+    
+    ```
+    @RunWith(SpringJUnit4ClassRunner.class)
+    @SpringApplicationConfiguration(classes = Config.class)
+    @WebAppConfiguration
+    @IntegrationTest
+    public class SpringApplicationIntegrationTestTests {
+    
+    	@Test
+    	public void nestedConfigClasses() {
+    		String body = new RestTemplate().getForObject("http://localhost:8080/",
+    				String.class);
+    		assertEquals("Hello World", body);
+    	}
+    
+    	@Configuration
+    	@EnableWebMvc
+    	@RestController
+    	protected static class Config {
+    
+    		@Bean
+    		public DispatcherServlet dispatcherServlet() {
+    			return new DispatcherServlet();
+    		}
+    
+    		@Bean
+    		public EmbeddedServletContainerFactory embeddedServletContainer() {
+    			return new TomcatEmbeddedServletContainerFactory();
+    		}
+    
+    		@RequestMapping("/")
+    		public String home() {
+    			return "Hello World";
+    		}
+    
+    	}
+    
+    }
+    ```
+    
+    Fixes gh-473
+
+commit af458cb253d67fff55a0c70f926fa58fcb800378
+Author: Oliver Gierke <info@olivergierke.de>
+Date:   Mon Feb 17 19:04:03 2014 +0100
+
+    Upgrade to Spring Data Codd GA release.
+    
+    Adapt auto-configuration code to use the new constructor introduced
+    in Spring Data Commons' AnnotationConfigurationSource.
+    
+    Fixes gh-365
+
+commit f0bfecd375a00c4e3f1b1d1eb687a4251bb3452d
+Author: Phillip Webb <pwebb@gopivotal.com>
+Date:   Fri Feb 7 11:15:51 2014 -0800
+
+    Refactor PropertySource support
+    
+    Locate PropertySourcesLoaders using SpringFactoriesLoader and refactor
+    the interface to expose file extensions and support 'profiles' within
+    documents.
+    
+    Rework ConfigFileApplicationListener for consistent profile loading.
+    Profiles are now loaded in a consistent order for both profile specific
+    files, and contained profile documents (i.e. YAML sub-sections).
+    
+    Also update ConfigFileApplicationListener so that it no longer directly
+    processes @ProperySource annotations. Instead the standard Spring
+    ConfigurationClassPostProcessor will insert @PropertySource items with
+    ConfigFileApplicationListener later re-ordering them.
+    
+    The SpringApplication can no longer be configured using @ProperySource
+    annotations, however, application.properties may still be used.
+    
+    Fixes gh-322
+
+commit 3e9457ea8e55568e406d88d0e459f1bc274f882d
+Author: Dave Syer <dsyer@gopivotal.com>
+Date:   Thu Jan 30 10:14:30 2014 +0000
+
+    Make @ConfigurationProperties available in @PostConstruct
+    
+    Also means that persistence annotation processing can take advantage
+    of external properties bound in this way.
+
+commit 0ecf7ed2a507c82961f37d60654849d4bb923904
+Author: Christian Dupuis <cdupuis@gopivotal.com>
+Date:   Tue Jan 28 14:38:57 2014 +0100
+
+    Register @ConfigurationProperties beans with <prefix>.CONFIGURATION_PROPERTIES in case no value or name is specified on the class level annotation
+
+commit 096ace6896c806e22e1ceedf8417ece834d05522
+Author: Phillip Webb <pwebb@gopivotal.com>
+Date:   Sun Jan 19 21:40:39 2014 -0800
+
+    Add @EntityScan annotation
+    
+    Add an @EntityScan annotation that can be used to configure the
+    `packagesToScan` attribute on `LocalContainerEntityManagerFactoryBean`.
+    
+    Fixed gh-239
+
+commit f103a976f8aecc29476f3b383aa31c7654588e0f
+Author: Phillip Webb <pwebb@gopivotal.com>
+Date:   Thu Jan 16 22:49:32 2014 -0800
+
+    Don't use @ComponentScan for default packages
+    
+    Update the 'default' package used for @Entity and Repository scanning
+    to be the package of the class annotated with @EnableAutoConfiguration
+    rather than using @ComponentScan.
+    
+    This allows JPA and Spring Data to be used without requiring component
+    scanning and also removes the confusion that could arise from reusing
+    the @ComponentScan annotation, which already has well defined semantics.
+    
+    Fixes gh-200
+
+commit 5fb42c3c3351100db0ac0d832a7acfc1ac763cf1
+Author: Andy Wilkinson <awilkinson@gopivotal.com>
+Date:   Wed Jan 15 10:51:42 2014 +0000
+
+    Support @Grab when app has multiple groovy scripts
+    
+    The AST transformation that processes @Grab annotations is driven once
+    per source file. Previously, this meant that if an app consisted of
+    multiple source files then multiple, discrete dependency resolutions
+    would be performed.
+    
+    This commit updates AetherGrapeEngine to cache a previous resolution's
+    outcome and use its dependency to influence the outcome of subsequent
+    resolutions. For example if a one resolution results in spring-core
+    4.0.0.RELEASE being added to the classpath, subsequent resolutions
+    that depend upon spring-core will always get the 4.0.0.RELEASE
+    version. This is achieved by using the dependencies found by earlier
+    resolutions as dependency management configuration of the current
+    resolution. This removes the possibility of multiple versions of the
+    same dependency ending up on the classpath.
+    
+    In addition to using the results of earlier resolutions to provide
+    dependency management configuration, default dependency management
+    configuration is also provided. This configuration is specified by
+    the springcli.properties file and ensures that, where Boot prescribes
+    certain versions of a dependency, that is the version that will be
+    resolved. For example, this ensures that spring-data-redis, which
+    depends upon Spring 3.1.4, pulls in the version of Spring that Boot
+    requires instead.
+    
+    Fixes #224
+
+commit 3336b6da44b53bfcd1e7dadc0c4444f9b5232edd
+Author: Andy Wilkinson <awilkinson@gopivotal.com>
+Date:   Tue Jan 7 10:31:10 2014 +0000
+
+    Remove redundant @GrabResolver transform
+    
+    Previously, a transform was used to add @GrabResolver annotations
+    during compilation that added the Spring milestone and snapshot
+    repositories. This functionality is now handled by
+    RepositoryConfigurationFactory so the transform is no longer required.
+
+commit d39a8360b77a26086613eb067f7043a04ea5025a
+Author: Oliver Gierke <info@olivergierke.de>
+Date:   Sat Dec 28 13:34:45 2013 +0100
+
+    Added support to allow manually declaring a EntityManagerFactoryBean.
+    
+    Added the necessary @ConditionalOnMissingBean annotations to allow selectively declaring an EntityManagerFactoryBean, a JpaVendorAdapter or a PlatformTransactionManager. Especially the first one might be necessary to make sure the persistence provider evaluates an orm.xml. This unfortunately rules out using the packages to scan feature of Spring's LCEMFB.
+    
+    I've filed https://jira.springsource.org/browse/SPR-11260 to potentially remove the need for this workaround in Spring itself.
+
+commit bd0a499ab8d920412068b4534fc8ceedac1e773b
+Author: Dave Syer <dsyer@gopivotal.com>
+Date:   Mon Dec 23 08:44:32 2013 +0000
+
+    Parse @PropertySource annotations on SpringApplication sources
+    
+    If any of the sources has a @PropertySource annotation (or many)
+    then we can add those properties to the Environment. It's a nice
+    convenient way of specifying a custom external properties location
+    for an app.
+    
+    One problem is that Spring will come along and parse the same
+    annotations later as part of the @Configuration parsing. The
+    user has pretty limited control over how that is done, and it
+    will never be done in a "natural" way for a Boot application
+    (which would prefer that the default application.properties
+    is applied *last*, whereas Spring will apply the @PropertySource
+    last).
+    
+    To get round that problem we add the property sources with
+    a different name (key in the PropertySources in Environment),
+    prefixing named property sources with "boot.", and adding
+    others with a name that is the same as the resource location
+    (instead of its description, which is the default for
+    Spring).
+    
+    Another problem is that Spring doesn't know about YAML, so
+    the user is currently restricted to using properties files
+    with this annotation.
+
+commit 997b015d108ef4330e30bb673ce4fb27e9b25e5a
+Author: Dave Syer <dsyer@gopivotal.com>
+Date:   Tue Dec 17 17:15:05 2013 +0000
+
+    Split SecurityAutoConfiguration
+    
+    Spring Security 3.2 has a new annotation @EnableWebMvcSecurity that we
+    should use if MVC is being used.
+
+commit cf53b7643043deb0b49d3a43d0a007969748b71e
+Author: Dave Syer <dsyer@gopivotal.com>
+Date:   Tue Dec 10 17:14:27 2013 +0000
+
+    Remove another annotation= attribute
+    
+    Hopefully really fixes gh-151
+
+commit 2543ef7072d14456af073bacfaafcf43fd4a147e
+Author: Dave Syer <dsyer@gopivotal.com>
+Date:   Mon Dec 9 09:48:40 2013 +0000
+
+    Change @Conditional for existing security configuration
+    
+    Fixed by using `WebSecurityConfiguration` to detect existing
+    security configuration (not the annotation).
+    
+    Fixes gh-151
+
+commit fd2583ed28e84d3d43aa5a81e8dbaa2e54e3a83a
+Author: Andy Wilkinson <awilkinson@gopivotal.com>
+Date:   Mon Nov 18 12:40:57 2013 +0000
+
+    Support concise @Grab on all types of imports
+    
+    Previously, the automatic addition of the group and version to a
+    @Grab annotation based on the module name would only work on standard
+    import statements. This commit adds support for this functionality
+    on wildcard imports, static imports and wildcard static imports.
+    
+    All of the following are now supported:
+    
+    @Grab('spring-core')
+    import org.springframework.util.Assert
+    
+    @Grab('spring-core')
+    import org.springframework.util.*
+    
+    @Grab('spring-core')
+    import static org.springframework.util.Assert.isTrue
+    
+    @Grab('spring-core')
+    import static org.springframework.util.Assert.*
+
+commit 32fc2c3d1c0a1ed532221dc14aabdd40fc73877b
+Author: Andy Wilkinson <awilkinson@gopivotal.com>
+Date:   Wed Nov 6 17:46:53 2013 +0000
+
+    Remove Boot-specifics from AetherGrapeEngine
+    
+    With the goal of making AetherGrapeEngine generally useful with Groovy,
+    this commit removes any Boot specifics from it. Specifically, there
+    is now only a single default repository: Maven Central. The
+    Boot-specific Spring milestone and snapshot repositories are now added
+    via @GrabResolver annotations that are added using an ASTTransformation.
+    
+    As part of this change, AetherGrapeEngine has also been updated to store
+    its repositories using a LinkedHashSet, this ensures that the same
+    repository is not used more than once while maintaining their ordering.
+
+commit 5aba3272c20065b5c260b6ccbe4c065528df078e
+Author: Andy Wilkinson <awilkinson@gopivotal.com>
+Date:   Wed Nov 6 12:37:33 2013 +0000
+
+    Add support for @GrabResolver to AetherGrapeEngine
+    
+    @GrabResolver can now be used to add a repository to the list that is
+    used for dependency resolution. Any repository that is added via the
+    annotation will then be available for the lifetime of the
+    AetherGrapeEngine instance. In reality, this equates to the lifetime
+    of the Boot application. This is in keeping with the documented default
+    behaviour [1]: "By default, the grape subsystem is shared globally, so
+    added resolvers will become available for any subsequent grab calls".
+    
+    [1] - http://groovy.codehaus.org/api/groovy/lang/GrabResolver.html
+    
+    [bs-345]
+    [60145036]
+
+commit b19f6bb238cd25b416ecb1c6e1c1993372c335f1
+Author: Phillip Webb <pwebb@gopivotal.com>
+Date:   Mon Nov 4 22:35:23 2013 -0800
+
+    Isolate class loading for launched CLI apps
+    
+    Rework classloading for launched applications so that CLI classes and
+    dependencies are not visible. This change allows many of the previous
+    hacks and workarounds to be removed.
+    
+    With the exception of the 'org.springframework.boot.groovy' package
+    and 'groovy-all' all user required depndencies are now pulled in
+    via @Grab annotations.
+    
+    The updated classloading algorithm has enabled the following changes:
+    
+    - AetherGrapeEngine is now back in the cli project and the
+      spring-boot-cli-grape project has been removed. The AetherGrapeEngine
+      has also been simplified.
+    
+    - The TestCommand now launches a TestRunner (similar in design to the
+      SpringApplicationRunner) and report test failures directly using
+      the junit TextListener. Adding custom 'testers' source to the users
+      project is no longer required. The previous 'double compile' for
+      tests has also been removed.
+    
+    - Utility classes have been removed in favor of using versions from
+      spring-core.
+    
+    - The CLI jar is now packaged using the 'boot-loader' rather than using
+      the maven shade plugin.
+    
+    This commit also applied minor polish refactoring to a number of
+    classes.
+
+commit b63016d8fcb4703400ea864555f9ec9901acef20
+Author: Greg Turnquist <gturnquist@gopivotal.com>
+Date:   Fri Nov 1 23:01:54 2013 -0500
+
+    Create a report based on Boot's autoconfiguration decisions
+    - Gather autoconfiguration conditional decisiions (true and false)
+    - Provide an actuator endpoint as one means to read the report
+    - Define @EnableAutConfigurationReport annotation to turn this feature on
+    - Tidy up autoconfig report a bit and log it if --debug=true
+
+commit 18ee229748422bfc23c357ebe9db25831bc6c4d8
+Author: Dave Syer <dsyer@gopivotal.com>
+Date:   Thu Oct 24 12:21:02 2013 -0400
+
+    Add support for annotation scan in @ConditionalOn*Bean
+
+commit 39e8e46e2ae0d5e6671b5b62cfcb820cedb2667c
+Author: Andy Wilkinson <awilkinson@gopivotal.com>
+Date:   Mon Oct 14 14:19:08 2013 +0100
+
+    Provide an Aether-based Grape Engine
+    
+    Previously, @Grab annotations would use Ivy to download the
+    dependencies with some of Ivy's known limitations being worked around
+    by GrapeEngineCustomizer.
+    
+    This commit adds a GrapeEngine implementation that uses Aether,
+    the dependency resolution 'engine' used by Maven and Grails. To ensure
+    consistent behaviour with a Maven build, the Aether-powered dependency
+    resolution uses the dependency management configuration from the
+    spring-boot-starter-parent pom file.
+
+commit 97f93bfa645c4d26892f272752bce41cd0e5cf33
+Author: Andy Wilkinson <awilkinson@gopivotal.com>
+Date:   Thu Oct 10 15:04:04 2013 +0100
+
+    Support simple @Grab annotations everywhere
+    
+    Previously, simple @Grab annotations only worked on classes. This commit
+    updates the simple @Grab support so that they can be used on anything
+    that can be annotated with @Grab.
+    
+    The simplified @Grab support relies upon springcli.properties having
+    been generated. This commit adds an M2E lifecycle mapping for the
+    antrun plugin so that springcli.properties is generated as part of an
+    Eclipse build, thereby making it easier to run tests in Eclipse that
+    rely upon the simplified @Grab support.
+
+commit c1ec5e5c0e9651f8404c3a085ff39731d748b706
+Author: Andy Wilkinson <awilkinson@gopivotal.com>
+Date:   Tue Oct 8 10:41:35 2013 +0100
+
+    Support @Grab without a version or group
+    
+    Usually, use of @Grab requires you to specify a group, module, and
+    version when identifying a dependency. This can be done in two
+    different ways:
+    
+    @Grab(group='alpha', module='bravo', version='1.0.0')
+    @Grab('alpha:bravo:1.0.0')
+    
+    This commit allows users to only specify a module: the group is
+    inferred and the version is the one dictated by the boot CLI. Both
+    forms are supported:
+    
+    @Grab(module='bravo')
+    @Grab('bravo')
+    
+    Groovy's global AST transformations, which is how Grab is implemented,
+    do not support ordering and we need to augment the AST for the Grab
+    annotation before its processed by the Grab AST transformation. To
+    work around this, reflection is used to get hold of the compile
+    operations in the conversion phase, and a new AST transformation is
+    inserted immediately before the first AST transformation operation.
+    
+    To allow a module's groupId and version to be resolved consistently,
+    META-INF/springcli.properties has been enhanced to include properties
+    for each module that we want to support in the following form:
+    
+    <module>.groudId = <groudId>
+    <module>.version = <version>
+    
+    <groupId> and <version> are taken from the Maven project's
+    dependencies and VPP, a Velocity-based pre-processor, is used to
+    automatically generate the enhanced properties file.
+    
+    To prevent pollution of spring-boot-cli's class path with the
+    dependencies that are only required to populate springcli.properties,
+    a separate project, spring-boot-cli-properties, has been created.
+    spring-boot-cli depends upon this now project causing it to, via the
+    shade plug, include the properties file in its jar.
+    
+    Previously DependencyCustomizer allow a dependency to be added by
+    specifying its full coordinates, i.e. a group ID, artifact ID, and
+    version. This commit updates DependencyCustomizer to only require
+    an artifact/module ID. The group ID and version are then resolved
+    using the same mechanism as the enhanced @Grab support.
+    
+    [#56328644] [bs-312] Allow @Grab without version
+
+commit fa6e6fde6c8d71710b0e84819485d22ea18d9daa
+Author: Greg Turnquist <gturnquist@gopivotal.com>
+Date:   Fri Sep 20 09:23:51 2013 -0500
+
+    Add JMS autoconfig support
+    
+    * application.properties support for spring.jms and spring.activemq
+    
+    * more tests to verify ActiveMQConnectionFactory pooling
+    
+    * Groovy support and simple sample with activemq
+    
+    * Groovy detection mechanism is @EnableJmsMessaging annotation
+
+commit 604b9069b135a584eda42df11f834f2f9096786f
+Author: Oliver Gierke <info@olivergierke.de>
+Date:   Mon Sep 23 17:06:13 2013 +0200
+
+    #58 - Upgraded Spring Data JPA dependencies to Babbage release train.
+    
+    Adapted to changes in the API in Spring Data Commons which requires to pass in the current Environment into the AnnotationRepositoryConfigurationSource.
+
+commit 8a1e39c4dce11f72228511ef45fce4c6cb229175
+Author: Dave Syer <dsyer@gopivotal.com>
+Date:   Tue Sep 3 09:40:48 2013 +0100
+
+    Remove unused annotation
+
+commit 347f30d1351e049a06c8e16baca01a6000fccaf9
+Author: Phillip Webb <pwebb@gopivotal.com>
+Date:   Thu Aug 29 11:49:40 2013 -0700
+
+    Recognize @RestController as MVC Application
+    
+    Update CLI SpringMvcCompilerAutoConfiguration to recognize Spring's new
+    @RestController annotation.
+
+commit 6a227a2298c309777f8333c731fc165a7affae79
+Author: Phillip Webb <pwebb@gopivotal.com>
+Date:   Tue Aug 27 10:58:12 2013 -0700
+
+    Move non-inherited JPA @Condition annotations
+    
+    Move JPA @Condition annotations from JpaBaseConfiguration to
+    HibernateJpaAutoConfiguration since they are not inherited.
+
+commit 29afcb7898f1fdf3c5ef8c122d130c5d5305f4ef
+Author: Biju Kunjummen <Biju.Kunjummen@gmail.com>
+Date:   Sun Aug 25 10:29:28 2013 -0400
+
+    Added an @Execute annotation to RunMojo
+    
+    Update RunMojo to include an @Execute annotation. Allows the use of
+    `mvn spring-boot:run` without having to compile/package first. Now a
+    command like `mvn clean spring-boot:run` works.
+    
+    The phase for @Execute annotation is along the lines of what is used
+    for the `jetty:run` plugin.
+
+commit 021fe45d83ba1b5acd94a27b4f575241b18633c6
+Author: Phillip Webb <pwebb@vmware.com>
+Date:   Tue Aug 20 10:05:52 2013 -0700
+
+    Exclude spring-data-rest package from being stored
+    
+    Update AutoConfigurationUtils to specifically exclude spring-data-rest
+    packages from being stored. This prevent missing class errors caused
+    when Spring Boot attempts to use @ComponentScan packages as the source
+    for JPA entities and reads annotations that are not on the classpath.
+    
+    Issue: #55489346
+
+commit 1ff76459db50a96e4451f3f278aec870a8430bc9
+Author: Phillip Webb <pwebb@vmware.com>
+Date:   Mon Aug 12 22:17:13 2013 -0700
+
+    Polish ConditionalOn annotations
+    
+    Update ConditionalOn annotations :
+    - Use consistent attribute names for OnClass and OnMissingClass
+    - Update javadoc
+    - Rename tests to reflect the annotation rather than the interface
+
+commit b572d98cbf2d041ce7fcab212296a952620a6041
+Author: Phillip Webb <pwebb@vmware.com>
+Date:   Wed Jun 12 12:26:45 2013 -0700
+
+    Support ordering of auto-configuration classes
+    
+    Update EnableAutoConfigurationImportSelector to sort auto-configuration
+    classes based on @Order and @AutoConfigureAfter annotations.
+
+commit 3536fc68f507b113c04e9eb5df6dd7c192e06a86
+Author: Phillip Webb <pwebb@vmware.com>
+Date:   Wed Jun 12 12:20:52 2013 -0700
+
+    Update On(Missing)Bean Condition logic
+    
+    Update OnBeanCondition and OnMissingBeanCondition to work better
+    with @Configuration classes and to support an optional considerHierarchy
+    annotation value.
+    
+    The class value for conditions can now also be inferred when used on
+    @Bean methods.
+
+commit 969c7d6fa188bd9e60cb2be837c1832eb0b5a66c
+Author: Dave Syer <dsyer@vmware.com>
+Date:   Fri May 31 16:16:19 2013 +0100
+
+    Make sure ThymeleafAutoConfiguration works if imported directly
+    
+    Before this change if Layout dialect not available then the nested class is
+    loaded and barfs because it depended on the layout dialect (in a
+    @ConditionalOnClass annotation).
+
+commit 990627b3288d274522ecf67a0933259ecc3b5970
+Author: Dave Syer <dsyer@vmware.com>
+Date:   Fri May 31 13:24:04 2013 +0100
+
+    [bs-144] Make EmbedddedContainerConfiguration an import selector
+    
+    Previously EmbedddedContainerConfiguration cannot be imported directly.
+    This change ensures that the nested classes are not loaded automatically
+    so there can be no issues with the annotation parameters.
+    
+    There might be a case for a change in Spring here since the framework
+    itself could just be more cautious when processing nested classes.
+    
+    [Fixes #50880927]
+
+commit 51e6c8c8b6e847e2600420252160e331c85bd46a
+Merge: 25f6840 6c4e39d
+Author: Phillip Webb <pwebb@vmware.com>
+Date:   Mon May 27 18:38:06 2013 -0700
+
+    Merge pull request #1 from gregturn/fix-annotation-and-typos
+    
+    # By Greg Turnquist
+    * fix-annotation-and-typos:
+      Fixed name of annotation and a typo in the code.
+
+commit 6c4e39d4c1356bd3c068af3a2d42cf020e960842
+Author: Greg Turnquist <gturnquist@gopivotal.com>
+Date:   Wed May 22 16:33:34 2013 -0500
+
+    Fixed name of annotation and a typo in the code.
+

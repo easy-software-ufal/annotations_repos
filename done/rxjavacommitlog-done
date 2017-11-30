@@ -1,0 +1,14 @@
+commit 5d6ac534b3af7b885c2e0f877bdffdbef020e85a
+Author: Nicklas Ansman Giertz <nicklas@ansman.se>
+Date:   Wed Jun 28 10:43:24 2017 +0200
+
+    Remove the @NonNull annotation from Function (#5449)
+    
+    As per per the discussion in #5447
+
+[BUG Candidate] this commit removes @NonNull. Used to cause crash at runtime (Kotlin). See #5442.
+
+
+
+
+

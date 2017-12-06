@@ -44,6 +44,7 @@ public class MyCommitVisitor implements CommitVisitor {
 									reportWriter.writeLine("BasicInfo:" + System.lineSeparator());
 									reportWriter.writeLine("commit: " + commit.getHash());
 									reportWriter.writeLine("file: " + m.getFileName());
+									reportWriter.writeLine("url: " + this.buildCommitUrl(repo, commit));
 									reportWriter.writeLine("================================================"
 											+ System.lineSeparator());
 
@@ -68,6 +69,13 @@ public class MyCommitVisitor implements CommitVisitor {
 				}
 			}
 		}
+	}
+
+	private String buildCommitUrl(SCMRepository repo, Commit commit) {
+		String uri = repo.getOrigin();
+		if (uri.endsWith(".git"))
+			uri = uri.substring(0, uri.lastIndexOf(".git"));
+		return uri + "/commit/" + commit.getHash();
 	}
 
 	private boolean hasAnnotation(String line) {

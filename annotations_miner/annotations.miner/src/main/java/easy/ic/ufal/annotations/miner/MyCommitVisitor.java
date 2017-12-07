@@ -59,6 +59,11 @@ public class MyCommitVisitor implements CommitVisitor {
 					if (detectedLines) {
 						reportWriter
 								.writeLine("================================================" + System.lineSeparator());
+						reportWriter.writeLine("Commit msg:" + System.lineSeparator());
+						reportWriter.writeLine(commit.getMsg());
+
+						reportWriter
+								.writeLine("================================================" + System.lineSeparator());
 						reportWriter.writeLine("Diff Block:" + System.lineSeparator());
 						reportWriter.writeLine(diffParser.getFullDiff());
 					}

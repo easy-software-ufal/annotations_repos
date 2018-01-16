@@ -1,4 +1,4 @@
-search projects with bugs with annotations
+search projects with bugs and annotations
 
 ## Requirements
 

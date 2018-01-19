@@ -10,6 +10,14 @@ pip install virtualenv --upgrade
 pip install freeze --upgrade
 ```
 
+### Github Token
+
+Create a file named `github_token.py` on root directory. In this file, create a constant named `TOKEN`. This constant will be assigned to token string.
+
+To generate this token, go to Github settings, open `development settings`, and go to `Personal access tokens`. Click on `Generate new token`, check `public_repo` (above `repo`), and click on `Generate token` at the end of page. Copy token (and store in some safe location) and paste as string in TOKEN constant.
+
+**warning**: the file `github_token.py` is ignored by git, because contains sensitive information. See `.gitignore` for details
+
 ## First time use
 
 Create virtual environment folder by running the following command in the root project:

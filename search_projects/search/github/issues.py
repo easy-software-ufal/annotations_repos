@@ -16,7 +16,9 @@ class IssuesSearch:
             print("---------------------")
             sleep(10)'''
         # TODO: for each issue...
+        for issue in s:
             # TODO: get issue body
+            ibody = issue.body
             # TODO: search for annotations words
             # TODO: catch repo url and count, and issue url (write in json)
             # TODO: check if project is maven (write in json)

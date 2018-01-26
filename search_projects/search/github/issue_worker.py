@@ -2,6 +2,7 @@ from github import Github
 from time import sleep, time
 import datetime
 import math
+import sys
 
 import github_token
 from search.github.issue_process import IssueProcess
@@ -54,11 +55,14 @@ class IssueWorker:
             max_count = results.totalCount
 
         print("total: " + str(results.totalCount))
+        print(str(count) + " of " + str(max_count - 1))
 
         while count < max_count:
             try:
                 issue = results[count]
-
+                
+                sys.stdout.write("\033[F") #back to previous line
+                sys.stdout.write("\033[K") #clear line
                 print(str(count) + " of " + str(max_count - 1))
 
                 issue_process = IssueProcess(issue)
@@ -70,7 +74,6 @@ class IssueWorker:
                     else:
                         self.project_map[issue_process.get_project_url()] = 1
                     issue_process.record_info()
-                    print(" issue analyzed and recorded")
 
                 self.last_created_at = issue.created_at
 

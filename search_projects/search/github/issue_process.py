@@ -8,7 +8,6 @@ class IssueProcess:
 
     # TODO: implement it!
     def analyze(self):
-        print("analyzing issue: " + self.issue.title)
 
         # self.body = self.issue.body
 

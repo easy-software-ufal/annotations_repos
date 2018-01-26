@@ -1,4 +1,4 @@
-from search.github.issues import IssuesSearch
+from search.github import IssuesSearch
 
 IssuesSearch.run()
 

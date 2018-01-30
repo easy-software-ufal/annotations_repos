@@ -1,1 +1,10 @@
 .venv
+
+# has TOKEN constant
+github_token.py
+
+*.swp
+*.pyc
+**/__pycache__
+
+/reports/

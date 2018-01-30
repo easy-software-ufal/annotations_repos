@@ -6,3 +6,5 @@ github_token.py
 *.swp
 *.pyc
 **/__pycache__
+
+/reports/

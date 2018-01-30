@@ -1,5 +1,8 @@
 from github import Github
 import re
+import os
+
+import config
 
 class IssueProcess:
     def __init__(self, issue):
@@ -22,9 +25,6 @@ class IssueProcess:
                     self.contains_annotation():
                 self.valid = True
                 break
-        if self.valid:
-            print(self.title)
-            print(self.body + "\n")
 
     def is_valid(self):
         return self.valid
@@ -32,6 +32,20 @@ class IssueProcess:
     def get_project_url(self):
         return self.url;
 
-    # TODO: implement it!
     def record_info(self):
-        pass
+        folder_name = self.url.replace("https://github.com/","")
+        folder_name = folder_name.replace("/","_")
+        
+        if not os.path.exists(os.path.join(config.OUTPUT_FOLDER, folder_name)):
+            os.makedirs(os.path.join(config.OUTPUT_FOLDER, folder_name))
+        
+        if not os.path.exists(os.path.join(config.OUTPUT_FOLDER, folder_name, str(self.issue.id))):
+            with open(os.path.join(config.OUTPUT_FOLDER, folder_name, str(self.issue.id)), "w") as f:
+                f.write("issue: "+self.title+"\n")
+                f.write("url: "+self.issue.url + "\n")
+                f.write("project: "+self.url + "\n")
+                f.write("labels: "+ "\n")
+                for label in self.issue.labels:
+                    f.write("   "+label.name + "\n")
+                f.write("------------------------\n")
+                f.write(self.body)

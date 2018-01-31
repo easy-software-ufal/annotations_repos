@@ -8,3 +8,4 @@ github_token.py
 **/__pycache__
 
 /reports/
+/.idea/

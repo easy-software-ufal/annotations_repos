@@ -1,8 +1,9 @@
-from github import Github
+from github import Github, GithubException
 from time import sleep, time
 import datetime
 import math
 import sys
+import os
 
 import github_token
 from search.github.issue_process import IssueProcess
@@ -78,7 +79,7 @@ class IssueWorker:
                 self.last_created_at = issue.created_at
 
                 count += 1
-            except Exception as e:
+            except GithubException as e:
                 print("\n######################")
                 print("error: " + str(e))
                 
@@ -91,6 +92,13 @@ class IssueWorker:
                         '%Y-%m-%d %H:%M:%S'))
                 sleep(time_to_reset)
                 print("########################\n")
+            except KeyboardInterrupt:
+                try:
+                    sys.exit(0)
+                except SystemExit:
+                    os._exit(0)
+            except:
+                count += 1
 
     def get_project_map(self):
         return self.project_map

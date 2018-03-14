@@ -24,4 +24,15 @@ public class TestUser {
 		Set<ConstraintViolation<User>> violations = validator.validate(user);
 		assertTrue(violations.isEmpty());
 	}
+	
+	@Test
+	public void testNullAttr() throws Exception {
+		ValidatorFactory factory = Validation.buildDefaultValidatorFactory();
+		Validator validator = factory.getValidator();
+
+		User user = new User();
+
+		Set<ConstraintViolation<User>> violations = validator.validate(user);
+		assertFalse(violations.isEmpty());
+	}
 }

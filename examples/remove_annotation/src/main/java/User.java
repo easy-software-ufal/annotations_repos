@@ -4,7 +4,6 @@ import javax.validation.constraints.NotNull;
 
 public class User {
 	
-	@NotNull
 	private String name;
 	
 	public String getName() {

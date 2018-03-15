@@ -1,6 +1,7 @@
 
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
 
 import java.util.Set;
 
@@ -9,15 +10,21 @@ import javax.validation.Validation;
 import javax.validation.Validator;
 import javax.validation.ValidatorFactory;
 
+import org.junit.BeforeClass;
 import org.junit.Test;
 
 public class TestUser {
+	
+	private static Validator validator = null;
+	
+	@BeforeClass
+	public static void initValidator() {
+		ValidatorFactory factory = Validation.buildDefaultValidatorFactory();
+		validator = factory.getValidator();
+	}
 
 	@Test
-	public void testAll() {
-		ValidatorFactory factory = Validation.buildDefaultValidatorFactory();
-		Validator validator = factory.getValidator();
-
+	public void checkUserValidity() {
 		User user = new User();
 		user.setName("Carlos");
 
@@ -27,9 +34,6 @@ public class TestUser {
 	
 	@Test
 	public void testNullAttr() throws Exception {
-		ValidatorFactory factory = Validation.buildDefaultValidatorFactory();
-		Validator validator = factory.getValidator();
-
 		User user = new User();
 
 		Set<ConstraintViolation<User>> violations = validator.validate(user);

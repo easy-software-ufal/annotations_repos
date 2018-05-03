@@ -1,0 +1,8 @@
+<RCC>
+    <qresource prefix="/">
+        <file>main.qml</file>
+        <file>MyModel.qml</file>
+        <file>ListViewWithInput.qml</file>
+        <file>ListViewMasterWithInput.qml</file>
+    </qresource>
+</RCC>

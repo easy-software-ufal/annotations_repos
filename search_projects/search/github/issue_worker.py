@@ -4,6 +4,7 @@ import datetime
 import math
 import sys
 import os
+from multiprocessing import Lock
 
 import github_token
 from search.github.issue_process import IssueProcess
@@ -31,21 +32,43 @@ class IssueWorker:
             self.asc = "asc"
         self.labels = labels
         self.state = state
+        self.mutex = Lock()
         if start_created_at == None or start_created_at == "":
             self.start_created_at = ""
         else:
             self.start_created_at = start_created_at
 
+    def saveStatus(self,variable,value):
+        with open("status.conf","+") as file:
+            with self.mutex:
+                asc = {}
+                for line in file:
+                    line = line.split('=')
+                    asc["".join(line[0].strip())] = "".join(line[1].strip())
+                asc[variable] = str(value)
+                for k,v in asc:
+                    k.join(" = ".join(v)) 
+                    file.write(k)
+
+    def readStatus(self):
+        asc = {}
+        with open("status.conf","r") as file:
+            with self.mutex:
+                for line in file:
+                    line = line.split('=')
+                    asc["".join(line[0].strip())] = "".join(line[1].strip())
+        return asc
+         
     def analyze(self):
         github_obj = Github(github_token.TOKEN)
         
         if self.start_created_at in [None, ""]:
             results = github_obj.search_issues(self.terms, self.order_by, \
-                    self.desc, language = "Java", label = self.labels, \
+                    self.desc, language = "C#", label = self.labels, \
                     state = self.state)
         else:
             results = github_obj.search_issues(self.terms, self.order_by, \
-                    self.desc, language = "Java", label = self.labels, \
+                    self.desc, language = "C#", label = self.labels, \
                     state = self.state, created = self.start_created_at)
         
         count = 0
@@ -57,6 +80,9 @@ class IssueWorker:
 
         print("total: " + str(results.totalCount))
         print(str(count) + " of " + str(max_count - 1))
+
+#        status = self.readStatus()
+#        count = int (status["count"])
 
         while count < max_count:
             try:
@@ -77,14 +103,21 @@ class IssueWorker:
                     issue_process.record_info()
 
                 self.last_created_at = issue.created_at
-
                 count += 1
+#                self.saveStatus("count",count)
             except GithubException as e:
                 print("\n######################")
-                print("error: " + str(e))
+                msg = str(e)
+                print("error: " + msg)
                 
                 time_to_reset = github_obj.rate_limiting_resettime - time()
                 time_to_reset = math.ceil(time_to_reset)
+
+                if "Repository access blocked" in msg:
+                    count += 1
+                    time_to_reset = 0
+                    print("Ignoring repository, reason:")
+                    print(msg)
 
                 print(" waiting " + str(time_to_reset) + " seconds.....")
                 print(" time to reset: " + datetime.datetime.fromtimestamp( \

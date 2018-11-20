@@ -13,10 +13,10 @@ class IssueProcess:
         self.title = issue.title
 
     def contains_annotation(self):
-        searchObj1 = re.search("\\s@[a-zA-Z]+", self.title)
-        searchObj2 = re.search("\\s@[a-zA-Z]+", self.body)
-        return (searchObj1 or searchObj2 or ("annotation" in self.body.lower()) \
-                or ("annotation" in self.title.lower()))
+        searchObj1 = re.search("(\\[\\w+\\])+", self.title)
+        searchObj2 = re.search("(\\[\\w+\\])+", self.body)
+        return (searchObj1 or searchObj2 or ("attribute" in self.body.lower()) \
+                or ("attribute" in self.title.lower()))
 
     def analyze(self):
         self.valid = False

@@ -12,7 +12,7 @@ class IssuesSearch:
 
         while(not exit):
             # TODO: instead "bug defect", use "bug OR defect"
-            issue_worker = IssueWorker("Annotation annotation @", \
+            issue_worker = IssueWorker("Attribute attribute @", \
                     "created", True, "bug OR defect", "closed", \
                     last_created_at)
             issue_worker.analyze()

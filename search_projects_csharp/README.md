@@ -1,26 +1,32 @@
-search projects with bugs and annotations
+# Find bugs related to Code annotations.
+#### C# version.
+This script is written with python. It crawls over C# projects hosted on GitHub, gets its closed issues and then returns those containing the word 'Attribute' or C# code annotation regex (\[\w+\])+. Finally, it saves the results at **reports** directory, over directories named after projects, each contaning the filtered issues.
 
-## Requirements
+### Requirements.
 
-This works with Python 3. Therefore, install more recent **python 3.x** interpreter. And make sure to have **pip** tool available (in windows, this comes with more recent interpreter; in linux, install **python-pip**). In linux, **python-dev** is recomended.
+Most recent version of **python 3.x** interpreter. Make sure you have **pip** tool available (for Microsoft Windows, it comes bundled with the interpreter; For GNU/Linux, install **python-pip**). For GNU/Linux, **python-dev** package is recommended.
 
-With **pip** tool, install (in ubuntu, use "sudo" before each command):
+Using **pip** tool, install (for Ubuntu, use "sudo -H" before each command):
 ```terminal
 pip install virtualenv --upgrade
 pip install freeze --upgrade
 ```
 
-### Github Token
+### GitHub token.
 
-Create a file named `github_token.py` on root directory. In this file, create a constant named `TOKEN`. This constant will be assigned to token string.
+Create a file named `github_token.py` at the script's root directory. Inside the file, declare a constant named `TOKEN`. This constant has to be assigned to the token string. It should look like this:
+```
+TOKEN="6f49fc9cbe66449b58f26a007a841f7b82ab9d13"
+```
+Where 6f49... should be your GitHub account token. 
 
-To generate this token, go to Github settings, open `development settings`, and go to `Personal access tokens`. Click on `Generate new token`, check `public_repo` (below `repo`), and click on `Generate token` at the end of page. Copy token (and store in some safe location) and paste as string in TOKEN constant.
+To generate a token, go to GitHub settings, open `development settings`, then go to `Personal access tokens`. Click on `Generate new token`, check `public_repo` (below `repo`) boxes, then click on `Generate token` at the end of page. Copy the token (store it somewhere safe) then paste it inside quotes, assigning it to the `TOKEN` constant.
 
-**warning**: the file `github_token.py` is ignored by git, because contains sensitive information. See `.gitignore` for details
+**WARNING**: `github_token.py` is ignored by git, it contains sensitive information (your GitHub account token). See `.gitignore` for more details about ignored files.
 
-## First time use
+### First time use.
 
-Create virtual environment folder by running the following command in the root project:
+Create a virtual environment directory by running the following command at the scrip root directory:
 
 **Linux**:
 ```terminal
@@ -31,7 +37,7 @@ virtualenv -p python3 .venv
 virtualenv -p python .venv
 ```
 
-This will create a *.venv* folder in the root project. This folder contains python3 interpreter (with *python* name), libraries and tools. This allow to keep libraries in the specific versions, dispite the libraries of the system. To activate this virtual environment, run:
+This will create a *.venv* (hidden) directory at the script's root directory. It contains a python3 interpreter (with *python* name), libraries and tools. This allows us to keep libraries in specific versions, being independet of libraries installed on the system. To activate the virtual environment, run:
 
 **Linux**:
 ```terminal
@@ -48,9 +54,9 @@ Now, install the project libraries:
 pip install -r requirements.txt
 ```
 
-## Activate the virtual environment
+### Activate the virtual environment.
 
-If the virtual environment is not yet active, run:
+If the virtual environment has not been actived yet, run:
 
 **Linux**:
 ```terminal
@@ -60,21 +66,21 @@ source .venv/bin/activate
 ```terminal
 .venv\Scripts\activate
 
-## Install new libraries in the virtual environment
+## If you want to instal new libraries in the virtual environment
 
-First, activate the virtual environment. After that, install the python library with pip:
+First, activate the virtual environment. Then, install the library you wish with pip:
 
 ```terminal
 pip install <package>
 ```
 
-And update the *requirements.txt*:
+You may update *requirements.txt* so your new libraries will always be installed on the virutal environment:
 
 ```terminal
 pip freeze > requirements.txt
 ```
 
-## Deactivate the virtual environment
+### To deactivate the virtual environment.
 
 Run:
 ```terminal

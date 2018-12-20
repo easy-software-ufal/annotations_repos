@@ -1,7 +1,0 @@
-[BUG CANDIDATE]
-commit 6d2c4613995b826465a6b9164185b686e24a3d68
-Author: Aidan Follestad <drummer.aidan@gmail.com>
-Date:   Tue Oct 27 15:56:42 2015 -0500
-
-Fixed annotations in inputRange(int, int)
-

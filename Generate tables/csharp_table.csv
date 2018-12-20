@@ -1,0 +1,61 @@
+Project Name,Domain,Operators,Number of Faults
+AgodaAnalyzers,"A set of opinionated Roslyn analyzers for C#","ADA",1
+aspnet-api-versioning,"Provides a set of libraries which add service API versioning to ASP.NET Web API, OData with ASP.NET Web API, and ASP.NET Core.","ADA",2
+Autofac,"An addictive .NET IoC container","RMA, ADA",4
+azure-iot-protocol-gateway,"Azure IoT protocol gateway enables protocol translation for Azure IoT Hub","RMA",1
+azure-webjobs-sdk,"Azure WebJobs SDK","RMAT, ADA",4
+BenchmarkDotNet,"Powerful .NET library for benchmarking","RPAV, ADAT, ADA",6
+BetterCMS,"A publishing focused and developer friendly .NET Open Source CMS.","RMA",1
+BinanceDotNet,"Official C# Wrapper for the Binance exchange API, with REST and WebSocket endpoints","RMA",1
+BootstrapTagHelpers,"ASP.Net TagHelpers for the Twitter Bootstrap Framework","ADA",1
+Cake.OctoDeploy,"An addin for Cake that allows for the easy creation of GitHub releases with or without assets","RMA",1
+Caliburn.Micro,"A small, yet powerful framework, designed for building applications across all XAML platforms. Its strong support for MV* patterns will enable you to build your solution quickly, without the need to sacrifice code quality or testability.","RMA",1
+ClearCanvas,"Open source RIS/PACS and DICOM viewer","ADA",1
+clipr,"Command Line Interface ParseR for .Net","ADA",1
+CodeOnlyStoredProcedures,"A library for easily calling Stored Procedures in .NET using only code (no xml or gui).","ADA",1
+CommandLineUtils,"Command line parsing and utilities for .NET Core and .NET Framework.","RPAV",1
+Cosmonaut,"A supercharged .NET SDK for Azure CosmosDB with ORM support","ADA",1
+couchbase-lite-net,"A lightweight, document-oriented (NoSQL), syncable database engine for .NET","RMA",1
+csharp-api-sdk,"Official .NET SDK for Fortnox API.","ADA",1
+duality,"a 2D Game Development Framework","ADA",1
+EDI.Net,"EDI Serializer/Deserializer. Supports EDIFact, X12 and TRADACOMS formats","RPAV",1
+elasticsearch-net,"Elasticsearch.Net & NEST","ADAT, RMA, ADA",5
+EntityFramework-Reverse-POCO-Code-First-Generator,"EntityFramework Reverse POCO Code First Generator - Beautifully generated code-first code that is fully customisable. If you were to reverse engineer a database by hand, and lovingly create the code-first code, this is exactly what this generator creates.","RMA",1
+Frameworks,"Third party frameworks for Bridge.NET","RMA",2
+Hangfire.RecurringJobExtensions,"Extensions for Hangfire to build RecurringJob automatically","RPAV",1
+JsonApiDotNetCore,"JSONAPI Framework for ASP.Net Core","ADA",2
+JsonPatch,"[Archived] JSON PATCH library. Project moved to https://github.com/aspnet/AspNetCore","RMAT",1
+language-ext,"C# functional language extensions - a base class library for functional programming","CHODR",1
+Lean,"Lean Algorithmic Trading Engine by QuantConnect (C#, Python, F#)","RMA",1
+MetaWear-SDK-CSharp,".NET Standard 2.0 MetaMotion / MetaWear C# SDK","RMA",1
+monitor-table-change-with-sqltabledependency,"Get SQL Server notification on record table change","ADAT",1
+Mvc,"[Archived] ASP.NET Core MVC is a model view controller framework for building dynamic web sites with clean separation of concerns, including the merged MVC, Web API, and Web Pages w/ Razor. Project moved to https://github.com/aspnet/AspNetCore","RPAV, RMA, RPA, ADA",11
+NakedObjectsFramework,"Implementation of the 'naked objects pattern' on .NET platform. Turns a POCO domain model (that follows a few simple conventions) into a complete application. See the ReadMe (at the bottom of this page) for more details.","RMA, ADA",3
+Neo4jClient,".NET client binding for Neo4j","ADA",1
+NServiceBus,"The most popular service bus for .NET","ADA",2
+octokit.net,"A GitHub API client library for .NET ","RPAV",1
+opencover,"A code coverage tool for .NET 2 and above (WINDOWS OS only), support for 32 and 64 processes with both branch and sequence points","ADA",1
+OrchardCore,"Orchard Core is an open-source modular and extensible application framework built with ASP.NET Core, and a content management system (CMS) built on top of that application framework.","ADA",1
+poshtools,"PowerShell integration for Visual Studio 2015 and 2017.","RMAT",1
+PowerArgs,"The ultimate .NET Standard command line argument parser","ADA",1
+PyriteServer,"Pyrite3D frontend service for processed model distribution","RMA",1
+QCVOC,"An event management application for the Quad Cities Veteran's Outreach Center.","RMAT",1
+RefactoringEssentials,"Refactoring Essentials for Visual Studio","ADA",1
+RestSharp,"Simple REST and HTTP API Client for .NET","ADA",1
+Rosetta,"Toolset for migrating your codebase from C# to TypeScript","RPAV",1
+roslyn,"The Roslyn .NET compiler provides C# and Visual Basic languages with rich code analysis APIs.","ADA",5
+Routing,"[Archived] Middleware for routing requests to application logic. Project moved to https://github.com/aspnet/AspNetCore","RPAV",2
+Scrutor,"Assembly scanning and decoration extensions for Microsoft.Extensions.DependencyInjection","",1
+Security,"[Archived] Middleware for security and authorization of web apps. Project moved to https://github.com/aspnet/AspNetCore","RPAV, ADA",2
+SHFB,"Sandcastle Help File Builder (SHFB).  A standalone GUI, Visual Studio integration package, and MSBuild tasks providing full configuration and extensibility for building help files with the Sandcastle tools.","RPAV",1
+SkiaSharp,"SkiaSharp is a cross-platform 2D graphics API for .NET platforms based on Google's Skia Graphics Library. It provides a comprehensive 2D API that can be used across mobile, server and desktop models to render images.","RPAV",1
+SpecFlow,"Binding business requirements to .Net code","RMAT",1
+spmeta2,"The most comprehensive, enterprise-ready framework for provisioning artifacts for O365, SharePoint 2016, 2013 and 2010","RMA",1
+sqlite-net,"Simple, powerful, cross-platform SQLite client and ORM for .NET","RMA, ADA",4
+Starcounter.Authorization,"Authorization library for Starcounter apps","ADA",1
+TheBelt,"No description provided.","RPAV",1
+Tx,"Tx (LINQ to Events)","ADA",1
+VaraniumSharp,"Library containing useful extensions and helper methods","RMA",2
+VRTK.Unity.Core,"A set of design patterns for rapidly building VR solutions in Unity3d","SWTG",1
+xamarin-macios,"Bridges the worlds of .NET with the native APIs of Mac, iOS, tvOS, and watchOS.","ADA",1
+TOTAL, , ,100

@@ -1,0 +1,66 @@
+\begin{tabular}{llllr}
+\toprule
+{} &                                       Project Name &                                             Domain &            Operators &  Number of Faults \\
+\midrule
+0  &                                     AgodaAnalyzers &       A set of opinionated Roslyn analyzers for C\# &                  ADA &                 1 \\
+1  &                              aspnet-api-versioning &  Provides a set of libraries which add service ... &                  ADA &                 2 \\
+2  &                                            Autofac &                    An addictive .NET IoC container &             RMA, ADA &                 4 \\
+3  &                         azure-iot-protocol-gateway &  Azure IoT protocol gateway enables protocol tr... &                  RMA &                 1 \\
+4  &                                  azure-webjobs-sdk &                                  Azure WebJobs SDK &            RMAT, ADA &                 4 \\
+5  &                                    BenchmarkDotNet &             Powerful .NET library for benchmarking &      RPAV, ADAT, ADA &                 6 \\
+6  &                                          BetterCMS &  A publishing focused and developer friendly .N... &                  RMA &                 1 \\
+7  &                                      BinanceDotNet &  Official C\# Wrapper for the Binance exchange A... &                  RMA &                 1 \\
+8  &                                BootstrapTagHelpers &  ASP.Net TagHelpers for the Twitter Bootstrap F... &                  ADA &                 1 \\
+9  &                                    Cake.OctoDeploy &  An addin for Cake that allows for the easy cre... &                  RMA &                 1 \\
+10 &                                     Caliburn.Micro &  A small, yet powerful framework, designed for ... &                  RMA &                 1 \\
+11 &                                        ClearCanvas &              Open source RIS/PACS and DICOM viewer &                  ADA &                 1 \\
+12 &                                              clipr &             Command Line Interface ParseR for .Net &                  ADA &                 1 \\
+13 &                           CodeOnlyStoredProcedures &  A library for easily calling Stored Procedures... &                  ADA &                 1 \\
+14 &                                   CommandLineUtils &  Command line parsing and utilities for .NET Co... &                 RPAV &                 1 \\
+15 &                                          Cosmonaut &  A supercharged .NET SDK for Azure CosmosDB wit... &                  ADA &                 1 \\
+16 &                                 couchbase-lite-net &  A lightweight, document-oriented (NoSQL), sync... &                  RMA &                 1 \\
+17 &                                     csharp-api-sdk &                 Official .NET SDK for Fortnox API. &                  ADA &                 1 \\
+18 &                                            duality &                    a 2D Game Development Framework &                  ADA &                 1 \\
+19 &                                            EDI.Net &  EDI Serializer/Deserializer. Supports EDIFact,... &                 RPAV &                 1 \\
+20 &                                  elasticsearch-net &                           Elasticsearch.Net \& NEST &       ADAT, RMA, ADA &                 5 \\
+21 &  EntityFramework-Reverse-POCO-Code-First-Generator &  EntityFramework Reverse POCO Code First Genera... &                  RMA &                 1 \\
+22 &                                         Frameworks &              Third party frameworks for Bridge.NET &                  RMA &                 2 \\
+23 &                    Hangfire.RecurringJobExtensions &  Extensions for Hangfire to build RecurringJob ... &                 RPAV &                 1 \\
+24 &                                  JsonApiDotNetCore &                 JSONAPI Framework for ASP.Net Core &                  ADA &                 2 \\
+25 &                                          JsonPatch &  [Archived] JSON PATCH library. Project moved t... &                 RMAT &                 1 \\
+26 &                                       language-ext &  C\# functional language extensions - a base cla... &                CHODR &                 1 \\
+27 &                                               Lean &  Lean Algorithmic Trading Engine by QuantConnec... &                  RMA &                 1 \\
+28 &                                MetaWear-SDK-CSharp &     .NET Standard 2.0 MetaMotion / MetaWear C\# SDK &                  RMA &                 1 \\
+29 &       monitor-table-change-with-sqltabledependency &  Get SQL Server notification on record table ch... &                 ADAT &                 1 \\
+30 &                                                Mvc &  [Archived] ASP.NET Core MVC is a model view co... &  RPAV, RMA, RPA, ADA &                11 \\
+31 &                              NakedObjectsFramework &  Implementation of the 'naked objects pattern' ... &             RMA, ADA &                 3 \\
+32 &                                        Neo4jClient &                      .NET client binding for Neo4j &                  ADA &                 1 \\
+33 &                                        NServiceBus &              The most popular service bus for .NET &                  ADA &                 2 \\
+34 &                                        octokit.net &              A GitHub API client library for .NET  &                 RPAV &                 1 \\
+35 &                                          opencover &  A code coverage tool for .NET 2 and above (WIN... &                  ADA &                 1 \\
+36 &                                        OrchardCore &  Orchard Core is an open-source modular and ext... &                  ADA &                 1 \\
+37 &                                          poshtools &  PowerShell integration for Visual Studio 2015 ... &                 RMAT &                 1 \\
+38 &                                          PowerArgs &  The ultimate .NET Standard command line argume... &                  ADA &                 1 \\
+39 &                                       PyriteServer &  Pyrite3D frontend service for processed model ... &                  RMA &                 1 \\
+40 &                                              QCVOC &  An event management application for the Quad C... &                 RMAT &                 1 \\
+41 &                              RefactoringEssentials &           Refactoring Essentials for Visual Studio &                  ADA &                 1 \\
+42 &                                          RestSharp &           Simple REST and HTTP API Client for .NET &                  ADA &                 1 \\
+43 &                                            Rosetta &  Toolset for migrating your codebase from C\# to... &                 RPAV &                 1 \\
+44 &                                             roslyn &  The Roslyn .NET compiler provides C\# and Visua... &                  ADA &                 5 \\
+45 &                                            Routing &  [Archived] Middleware for routing requests to ... &                 RPAV &                 2 \\
+46 &                                            Scrutor &  Assembly scanning and decoration extensions fo... &                  NaN &                 1 \\
+47 &                                           Security &  [Archived] Middleware for security and authori... &            RPAV, ADA &                 2 \\
+48 &                                               SHFB &  Sandcastle Help File Builder (SHFB).  A standa... &                 RPAV &                 1 \\
+49 &                                          SkiaSharp &  SkiaSharp is a cross-platform 2D graphics API ... &                 RPAV &                 1 \\
+50 &                                           SpecFlow &         Binding business requirements to .Net code &                 RMAT &                 1 \\
+51 &                                            spmeta2 &  The most comprehensive, enterprise-ready frame... &                  RMA &                 1 \\
+52 &                                         sqlite-net &  Simple, powerful, cross-platform SQLite client... &             RMA, ADA &                 4 \\
+53 &                          Starcounter.Authorization &         Authorization library for Starcounter apps &                  ADA &                 1 \\
+54 &                                            TheBelt &                           No description provided. &                 RPAV &                 1 \\
+55 &                                                 Tx &                                Tx (LINQ to Events) &                  ADA &                 1 \\
+56 &                                      VaraniumSharp &  Library containing useful extensions and helpe... &                  RMA &                 2 \\
+57 &                                    VRTK.Unity.Core &  A set of design patterns for rapidly building ... &                 SWTG &                 1 \\
+58 &                                     xamarin-macios &  Bridges the worlds of .NET with the native API... &                  ADA &                 1 \\
+59 &                                              TOTAL &                                                    &                      &               100 \\
+\bottomrule
+\end{tabular}

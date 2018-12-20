@@ -1,0 +1,73 @@
+\begin{tabular}{llllr}
+\toprule
+{} &         Project Name &                                             Domain &   Operators &  Number of Faults \\
+\midrule
+0  &      abixen-platform &                                    Abixen Platform &         RMA &                 1 \\
+1  &      achieve-lib-api &  A set of projects that works as a lib for a va... &        RPAV &                 1 \\
+2  &             Achilles &  An advanced Java Object Mapper/Query DSL gener... &        RPAV &                 1 \\
+3  &         actframework &               An easy to use Java MVC server stack &  CHODR, ADA &                 6 \\
+4  &     ametiste-metrics &       Library for metric gathering and registering &         ADA &                 1 \\
+5  &        android-state &  A utility library for Android to save objects ... &         ADA &                 1 \\
+6  &      arquillian-cube &  Control (docker, kubernetes, openshift) contai... &         ADA &                 1 \\
+7  &             BatooJPA &  Batoo JPA - Fastest JPA Implementation Ever! O... &   SWTG, ADA &                 3 \\
+8  &                bazel &  a fast, scalable, multi-language and extensibl... &        RPAV &                 1 \\
+9  &    blaze-persistence &                Rich Criteria API for JPA providers &         ADA &                 1 \\
+10 &                  cas &  Apereo CAS - Enterprise Single Sign On for all... &         RMA &                 1 \\
+11 &               cofoja &                                 Contracts for Java &         ADA &                 1 \\
+12 &           concordion &  Concordion is an open source framework for Jav... &         ADA &                 1 \\
+13 &                 crux &                           No description provided. &   RPAV, ADA &                 2 \\
+14 &            damapping &                               DA Mapping Framework &         ADA &                 2 \\
+15 &          docdoku-plm &  The project purpose is to develop a comprehens... &        RPAV &                 1 \\
+16 &           dropwizard &  A damn simple library for building production-... &    RMA, ADA &                 5 \\
+17 &                druid &  Apache Druid (Incubating) - Column oriented di... &         RMA &                 1 \\
+18 &     eFapsApp-Commons &                           No description provided. &         RPA &                 1 \\
+19 &        elasticsearch &    Open Source, Distributed, RESTful Search Engine &         RMA &                 1 \\
+20 &                elide &  Elide is a Java library that lets you stand up... &         RMA &                 1 \\
+21 &            enunciate &  Build-time enhancement tool for Java-based Web... &    RMA, ADA &                 3 \\
+22 &                 ff4j &                   Feature Flags for Java made easy &         ADA &                 1 \\
+23 &                 flow &  Flow is a Java framework binding Vaadin web co... &         ADA &                 1 \\
+24 &            framework &  Vaadin 6, 7, 8   is a Java framework for moder... &         ADA &                 4 \\
+25 &            fscrawler &     Elasticsearch File System Crawler (FS Crawler) &         ADA &                 1 \\
+26 &                 gatk &  Official code repository for GATK versions 4 a... &         ADA &                 1 \\
+27 &                genie &         Distributed Big Data Orchestration Service &        RPAV &                 2 \\
+28 &                guava &                     Google core libraries for Java &         ADA &                 1 \\
+29 &             gwtquery &             A jQuery clone for GWT, and much more. &   RMA, RPAV &                 2 \\
+30 &    hibernate-hydrate &  Avoid Hibernate LazyInitializationException by... &         NaN &                 1 \\
+31 &          jDTO-Binder &               DTO framework for the java platform. &   ADAT, ADA &                 2 \\
+32 &          LoganSquare &  Screaming fast JSON parsing and serialization ... &         ADA &                 2 \\
+33 &            mapstruct &  An annotation processor for generating type-sa... &         ADA &                 4 \\
+34 &     material-dialogs &  [Version 2 is now a RC] A beautiful and fluid ... &        RPAV &                 1 \\
+35 &               needle &                 Effective Unit Testing for Java EE &         RMA &                 1 \\
+36 &                netty &  Netty project - an event-driven asynchronous n... &         RMA &                 1 \\
+37 &          NotRetrofit &         Type-safe REST client for Android and Java &         ADA &                 1 \\
+38 &        org.parallelj &  ParallelJ-Runtime is a part of the ParallelJ p... &        RPAV &                 1 \\
+39 &           Pericopist &                        Generates message catalogs. &        RPAV &                 2 \\
+40 &                podam &                           PODAM - POjo DAta Mocker &         ADA &                 1 \\
+41 &               presto &          Distributed SQL query engine for big data &         RMA &                 2 \\
+42 &                 qbit &  The Java microservice lib. QBit is a reactive ... &         ADA &                 1 \\
+43 &     riak-java-client &                          The Riak client for Java. &         ADA &                 2 \\
+44 &            RoboSpock &  A testing framework which brings powers of Spo... &       CHODR &                 1 \\
+45 &            smarthome &                         Eclipse SmartHome™ project &         RPA &                 1 \\
+46 &               sniffy &  Sniffy - hipster open-source interactive profi... &        ADAT &                 1 \\
+47 &               spring &                      Spring integration for Vaadin &         ADA &                 1 \\
+48 &          spring-boot &                                        Spring Boot &  RMAT, RPAV &                 2 \\
+49 &  spring-cloud-config &  External configuration (server and client) for... &         NaN &                 1 \\
+50 &  spring-cloud-consul &                                Spring Cloud Consul &         ADA &                 1 \\
+51 &     spring-data-jest &                Spring Data Implementation for Jest &         ADA &                 1 \\
+52 &      spring-security &                                    Spring Security &        RPAV &                 1 \\
+53 &           springlets &  Springlets provides a series of heterogeneus s... &         ADA &                 1 \\
+54 &            stag-java &                     Speedy Type Adapter Generation &         ADA &                 1 \\
+55 &   swagger4spring-web &                     Swagger support for Spring MVC &        ADAT &                 3 \\
+56 &                teasy &  Test easy with Teasy - UI automation testing f... &         ADA &                 1 \\
+57 &             thindeck &                    Web Hosting That Deploys Itself &         RMA &                 2 \\
+58 &            transfuse &  :syringe: Transfuse - A Dependency Injection a... &         ADA &                 1 \\
+59 &   vertx-mongo-client &                    Mongo Client for Eclipse Vert.x &         RMA &                 1 \\
+60 &  video-recorder-java &  This library allows easily record video of you... &        RPAV &                 1 \\
+61 &              vraptor &                      Simple Java Web MVC Framework &         ADA &                 1 \\
+62 &             vraptor4 &  A web MVC action-based framework, on top of CD... &         ADA &                 1 \\
+63 &        wildfly-camel &                            WildFly Camel Subsystem &         ADA &                 1 \\
+64 &               wisdom &                A modular and dynamic web framework &         ADA &                 2 \\
+65 &              xstream &      Serialize Java objects to XML and back again. &   ADAT, ADA &                 2 \\
+66 &                TOTAL &                                                    &             &               100 \\
+\bottomrule
+\end{tabular}

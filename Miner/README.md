@@ -1,6 +1,14 @@
 # Find bugs related to Code annotations.
-#### Java version.
-This script is written with python. It crawls over Java projects hosted on GitHub, gets its closed issues and then returns those containing the word 'Annotation' or Java code Annotation regex @[A-z]+. Finally, it saves the results at **reports** directory, over directories named after projects, each contaning the filtered issues.
+This script is written with python. It crawls over projects hosted on GitHub, gets its closed issues and then returns those
+ matching the desired criteria. Finally, it saves the results at **reports** directory, over directories named after projects, each contaning the filtered issues.
+ 
+The criteria we have used on the paper are the following:
+* C# projects.
+* Java projects.
+* "Annotation" word, in case of Java.
+* "Attribute" word, in case of C#.
+* @[A-z]+ Annotation regex.
+* ([\w+])+ Attribute regex.
 
 ### Requirements.
 

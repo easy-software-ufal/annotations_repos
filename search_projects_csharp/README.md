@@ -1,4 +1,4 @@
-# Find bugs related to Code annotations.
+# Find bugs related to Code Annotations.
 #### C# version.
 This script is written with python. It crawls over C# projects hosted on GitHub, gets its closed issues and then returns those containing the word 'Attribute' or C# code annotation regex (\[\w+\])+. Finally, it saves the results at **reports** directory, over directories named after projects, each contaning the filtered issues.
 

@@ -1,6 +1,8 @@
 ## Mutation Operators for Code Annotations
 This repository contains all scripts used on our paper.
 
+`Example` contains a motivating example code for proposing mutation operators for code annotations.
+
 `Generate tables`
 generates csv and LaTex tables containing data regarding code annotation related faults frequency and mutation operators, given software project.
 

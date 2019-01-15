@@ -1,12 +1,13 @@
 ## Mutation Operators for Code Annotations
 This repository contains all scripts used on our paper.
 
-`Example` contains a motivating example code (Java) for proposing mutation operators for code annotations.
+[`Example`](https://github.com/easy-software-ufal/annotations_repos/tree/master/Examples)
+contains a motivating example code (Java) for proposing mutation operators for code annotations.
 
-`Generate tables`
+[`Generate tables`](https://github.com/easy-software-ufal/annotations_repos/tree/master/Generate%20tables)
 generates csv and LaTex tables containing data regarding code annotation related faults frequency and mutation operators, given software project.
 
-`Miner`
+[`Miner`](https://github.com/easy-software-ufal/annotations_repos/tree/master/Miner)
 mine issues and pull requests given criteria. The criteria we have used is explained on readme file over Miner folder.    
 
 #### Following table guides readers over terms used regarding code annotations.
